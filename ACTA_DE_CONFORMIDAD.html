@@ -513,7 +513,7 @@
     <div class="doc-ref">
       <div class="ref-label">N.° Documento</div>
       <div class="ref-code">ACTA-ITI-001</div>
-      <div class="ref-date">Mayo 2026 · Semestre I</div>
+      <div class="ref-date">31 Mayo 2026 · Semestre I</div>
     </div>
   </div>
 
@@ -580,7 +580,11 @@
         </tr>
         <tr>
           <td class="lbl">Locales operativos</td>
-          <td class="val">Local 1: Planta de Producción &nbsp;|&nbsp; Local 2: Administración y Ventas &nbsp;|&nbsp; Local 3: Segunda Planta de Producción (TBD)</td>
+          <td class="val">
+            <strong>LOCAL 1</strong> — Planta de Producción 1 &nbsp;·&nbsp; Subred: 10.20.0.0/16<br>
+            <strong>LOCAL 2</strong> — Sede Central (Administración, Ventas, Centro de Datos) &nbsp;·&nbsp; Subred: 10.10.0.0/16<br>
+            <strong>LOCAL 3</strong> — Segunda Planta de Producción &nbsp;·&nbsp; Subred: 10.30.0.0/16
+          </td>
         </tr>
         <tr>
           <td class="lbl">Contacto de la empresa</td>
@@ -651,11 +655,19 @@
     <div class="sec">
       <div class="sec-title"><span class="num">4</span>Descripción del Proyecto</div>
       <div class="text-block">
-        El presente proyecto tiene como propósito diseñar e implementar una <strong>infraestructura tecnológica híbrida y segura</strong> para Franco's SAC, empresa del sector agroindustria alimentaria, que permita soportar su proceso de transformación digital mediante la adopción de un sistema ERP y una red corporativa estructurada.
+        El presente proyecto tiene como propósito diseñar e implementar una <strong>infraestructura tecnológica híbrida y segura</strong> para Franco's SAC, empresa del sector agroindustria alimentaria, que permita soportar su proceso de transformación digital mediante la adopción de un ERP empresarial basado en microservicios y una red corporativa estructurada en tres locales.
         <br><br>
-        Franco's SAC opera actualmente sin servidores, con una red WiFi no segmentada y sin sistemas de gestión integrados, lo que limita su capacidad operativa y su crecimiento. El proyecto abordará el diseño de una red segmentada (VLANs), la planificación del sistema de gestión de seguridad de la información (SGSI) y el diseño del centro de datos virtualizado, para su posterior implementación en los laboratorios Cisco de la Universidad Peruana Unión.
+        Franco's SAC opera actualmente sin servidores, con una red WiFi no segmentada y sin sistemas de gestión integrados. El proyecto diseña e implementa una arquitectura híbrida <strong>on-premises + AWS Cloud</strong> sobre los hipervisores ESXi de los laboratorios Cisco de la UPeU, con los siguientes componentes principales:
         <br><br>
-        La solución integrará conectividad redundante entre los 3 locales de la empresa, servicios de directorio activo, DNS, ERP (Odoo Community), base de datos y monitoreo de infraestructura, todo bajo estándares internacionales <strong>ISO 27001, TIA/EIA-568, IEEE 802.x, ISO/IEC 11801, NIST CSF y Uptime Institute</strong>.
+        <strong>Capa de red:</strong> segmentación por VLANs (Admin, Usuarios, DMZ, Servicios, Datos, Gestión, MGMT) en los 3 locales; Dual-WAN Failover con pfSense 2.7; túneles IPSec IKEv2 AES-256-GCM en topología hub-and-spoke (L1↔L2, L2↔L3, L2↔AWS); WAF NGINX + ModSecurity en DMZ; switch físico Cisco Catalyst 1000 con trunking 802.1Q.
+        <br><br>
+        <strong>Capa de servicios centralizados (Sede Central — Local 2):</strong> 4 hipervisores ESXi; Active Directory Samba (DC1 + DC2 réplica); NTP Chrony; File Server Samba/NFS; monitoreo Zabbix + Grafana + CloudWatch Agent; API Gateway NestJS en DMZ; NATS 2.x + JetStream como message broker; microservicios NestJS Docker (auth-ms, person-ms, sales-invent-ms, strategic-ms); bases de datos PostgreSQL 15 (person-db, sales-invent-db, strategic-db); streaming replication H3→H4 con RPO &lt; 5 min.
+        <br><br>
+        <strong>Capa de sedes remotas (Local 1 y Local 3):</strong> pfSense Dual-WAN + IPSec por sede; RODC Samba (DC3 en L1, DC4 en L3) para autenticación local sin VPN; File Server local + Agente Zabbix.
+        <br><br>
+        <strong>Capa cloud AWS:</strong> Route 53 (DNS + health checks), CloudFront + S3 (Angular SPA CDN), AWS VPN Gateway (IPSec site-to-site), S3 Backups (pg_dump diario), ECR (imágenes Docker).
+        <br><br>
+        Todo bajo estándares internacionales <strong>ISO 27001, ISO 27005, NIST CSF, TIA/EIA-568, IEEE 802.x, ISO/IEC 11801, Uptime Institute, TIA-942, ASHRAE TC9.9, ISO/IEC 20000 e ITIL 4</strong>.
       </div>
     </div>
 
@@ -665,23 +677,25 @@
 
       <p style="font-size:10px;margin-bottom:10px;"><strong>Incluye:</strong></p>
       <ul class="scope-list">
-        <li>Diseño de topología de red lógica y física para los 3 locales de Franco's SAC</li>
-        <li>Segmentación de red mediante VLANs por área (Administración, Ventas, Inventario, Producción, DMZ)</li>
-        <li>Planificación del Sistema de Gestión de Seguridad de la Información (SGSI) bajo ISO 27001</li>
-        <li>Diseño del centro de datos virtualizado (Tier I–II, Uptime Institute)</li>
-        <li>Implementación y testing de red en laboratorios Cisco de la UPeU (Semestre 2)</li>
-        <li>Implementación de controles de seguridad: firewall, IAM, backup, monitoreo</li>
-        <li>Implementación de servicios de centro de datos: AD, DNS, ERP (Odoo), base de datos</li>
-        <li>Documentación técnica formal bajo estándares internacionales</li>
-        <li>Declaración de cumplimiento ético conforme al Código ACM</li>
+        <li><strong>E1 — Diseño de Red:</strong> topología lógica y física de los 3 locales; segmentación por VLANs (10 Admin, 20 Usuarios, 30 DMZ, 40 Servicios, 50 Datos, 60 Gestión, 99 MGMT); diseño Dual-WAN + VPN IPSec IKEv2 mesh L1↔L2↔L3↔AWS; redundancia y alta disponibilidad; cumplimiento TIA/EIA-568, IEEE 802.x, ISO/IEC 11801</li>
+        <li><strong>E2 — Planificación de Seguridad:</strong> identificación de activos críticos; análisis de riesgos (ISO 27005 / NIST CSF); políticas de seguridad; roles y responsabilidades (RACI); SGSI bajo ISO 27001</li>
+        <li><strong>E3 — Diseño de Centro de Datos:</strong> arquitectura Tier II (Uptime Institute / TIA-942); layout físico 4 hipervisores ESXi Sede Central + H5 L1 + H6 L3; dimensionamiento CPU/RAM/almacenamiento; virtualización ESXi + arquitectura cloud híbrida AWS</li>
+        <li><strong>Infraestructura de red:</strong> pfSense 2.7 Dual-WAN Failover por sede; Cisco Catalyst 1000 trunk 802.1Q; WAF NGINX + ModSecurity en DMZ; AP WiFi VLAN 20; túneles IPSec IKEv2 AES-256-GCM</li>
+        <li><strong>Servicios centralizados (Sede Central):</strong> Active Directory Samba DC1 + DC2 réplica (H4); NTP Chrony; File Server Samba/NFS; RODC DC3 en L1 y DC4 en L3</li>
+        <li><strong>Backend ERP — microservicios:</strong> API Gateway NestJS en DMZ; NATS 2.x + JetStream broker; auth-ms, person-ms, sales-invent-ms, strategic-ms (NestJS Docker); PostgreSQL 15 (person-db, sales-invent-db, strategic-db) en VLAN 50; streaming replication H3→H4 RPO &lt; 5 min</li>
+        <li><strong>Monitoreo híbrido:</strong> Zabbix 6.x + Grafana (on-prem completo via agentes y SNMP); CloudWatch Agent (KPIs correlacionados con AWS); dashboards operativo y ejecutivo</li>
+        <li><strong>Cloud AWS:</strong> Route 53 + CloudFront + S3 (Angular SPA); AWS VPN Gateway site-to-site; S3 Backups pg_dump diario; ECR imágenes Docker microservicios</li>
+        <li><strong>E4–E6 Semestre 2:</strong> implementación y testing de red en labs Cisco UPeU; implementación controles seguridad (IAM, cifrado, firewall, backup); operación centro de datos (SLA, monitoreo, procedimientos ITIL 4)</li>
+        <li>Documentación técnica formal bajo estándares internacionales y Código de Ética ACM</li>
       </ul>
 
       <p style="font-size:10px;margin:12px 0 8px;"><strong>No incluye:</strong></p>
       <ul class="scope-list" style="background:#FEF8EC;border-radius:6px;">
-        <li style="color:var(--muted);">Adquisición e instalación de hardware físico en las instalaciones de Franco's SAC</li>
-        <li style="color:var(--muted);">Desarrollo de módulos personalizados para el sistema ERP</li>
+        <li style="color:var(--muted);">Adquisición e instalación de hardware físico en las instalaciones de Franco's SAC (el proyecto se implementa en labs ESXi de la UPeU)</li>
+        <li style="color:var(--muted);">Desarrollo del frontend Angular 20 ni del código fuente de los microservicios (responsabilidad del área SW)</li>
         <li style="color:var(--muted);">Migración de datos históricos de la empresa al nuevo sistema</li>
         <li style="color:var(--muted);">Capacitación al personal de Franco's SAC</li>
+        <li style="color:var(--muted);">Adquisición de licencias AWS en producción (el proyecto usa Free Tier o cuentas académicas)</li>
       </ul>
     </div>
 
