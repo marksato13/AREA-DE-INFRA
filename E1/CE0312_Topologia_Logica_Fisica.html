@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CE0312 – Diseño de Topología Lógica y Física</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap');
+
+    :root {
+      --navy:    #1B2A4A;
+      --blue:    #2E5090;
+      --gold:    #C8A951;
+      --gold-lt: #F0DFA0;
+      --bg:      #F4F6FA;
+      --white:   #FFFFFF;
+      --text:    #1E1E2E;
+      --muted:   #6B7280;
+      --border:  #D1D9E6;
+      --danger:  #C0392B;
+      --success: #1A7A4A;
+      --warn:    #B7770D;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 10.5pt; line-height: 1.7; }
+
+    .page { max-width: 900px; margin: 0 auto; background: var(--white); box-shadow: 0 4px 32px rgba(27,42,74,.15); }
+
+    /* ── COVER ── */
+    .cover { background: linear-gradient(160deg, var(--navy) 60%, var(--blue) 100%); color: var(--white); padding: 60px 64px 50px; position: relative; overflow: hidden; }
+    .cover::before { content: ''; position: absolute; top: -60px; right: -60px; width: 320px; height: 320px; border-radius: 50%; background: rgba(200,169,81,.08); }
+    .cover::after  { content: ''; position: absolute; bottom: -80px; left: -40px; width: 260px; height: 260px; border-radius: 50%; background: rgba(200,169,81,.05); }
+    .cover-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; }
+    .logo-badge { width: 48px; height: 48px; border-radius: 10px; background: var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 18px; color: var(--navy); flex-shrink: 0; }
+    .logo-text .univ  { font-size: 11px; color: rgba(255,255,255,.6); letter-spacing: .5px; }
+    .logo-text .school{ font-size: 13px; font-weight: 700; color: var(--white); font-family: 'Montserrat', sans-serif; }
+    .cover-code { display: inline-block; background: rgba(200,169,81,.18); border: 1px solid var(--gold); color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; padding: 5px 14px; border-radius: 4px; margin-bottom: 20px; text-transform: uppercase; }
+    .cover h1 { font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 800; line-height: 1.25; margin-bottom: 10px; color: var(--white); }
+    .cover-subtitle { font-size: 13px; color: rgba(255,255,255,.65); margin-bottom: 40px; }
+    .cover-divider { width: 56px; height: 4px; background: var(--gold); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 32px; }
+    .cover-meta-label { font-size: 9.5px; font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
+    .cover-meta-value { font-size: 11.5px; color: var(--white); font-weight: 600; }
+
+    /* ── VERSION BAR ── */
+    .version-bar { background: var(--navy); padding: 14px 64px; display: flex; align-items: center; gap: 8px; }
+    .version-bar span { font-size: 9.5px; font-family: 'Montserrat', sans-serif; font-weight: 600; letter-spacing: 1px; color: rgba(255,255,255,.5); text-transform: uppercase; }
+    .version-bar .vbadge { background: var(--gold); color: var(--navy); padding: 2px 10px; border-radius: 20px; font-size: 9px; font-weight: 800; }
+    .version-bar .vsep { color: rgba(255,255,255,.2); }
+
+    /* ── DOC BODY ── */
+    .doc-body { padding: 52px 64px; }
+
+    /* ── TOC ── */
+    .toc { background: var(--bg); border-left: 4px solid var(--gold); border-radius: 0 8px 8px 0; padding: 24px 28px; margin-bottom: 48px; }
+    .toc-title { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--navy); margin-bottom: 14px; }
+    .toc ol { list-style: none; counter-reset: toc-counter; padding-left: 0; }
+    .toc ol li { counter-increment: toc-counter; display: flex; align-items: baseline; gap: 8px; padding: 4px 0; font-size: 10.5px; color: var(--blue); border-bottom: 1px dashed var(--border); }
+    .toc ol li:last-child { border-bottom: none; }
+    .toc ol li::before { content: counter(toc-counter) "."; font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--gold); min-width: 18px; }
+    .toc ol li .toc-dots { flex: 1; border-bottom: 1px dotted var(--border); height: 1px; margin: 0 4px; position: relative; top: -4px; }
+    .toc ol li .toc-pg { font-weight: 700; color: var(--navy); font-size: 10px; }
+
+    /* ── SECTIONS ── */
+    .section { margin-bottom: 44px; }
+    .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+    .section-number { width: 38px; height: 38px; background: var(--navy); color: var(--white); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 15px; flex-shrink: 0; }
+    .section-title { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: .5px; }
+    .section-subtitle { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+    .subsection { margin-bottom: 28px; }
+    .subsection-title { font-family: 'Montserrat', sans-serif; font-size: 11.5px; font-weight: 700; color: var(--blue); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .subsection-title::before { content: ''; width: 3px; height: 14px; background: var(--gold); border-radius: 2px; flex-shrink: 0; }
+    p { margin-bottom: 12px; text-align: justify; }
+
+    /* ── INFO BOXES ── */
+    .info-box { border-radius: 8px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 14px; align-items: flex-start; }
+    .info-box.navy   { background: #EEF1F8; border-left: 4px solid var(--navy); }
+    .info-box.gold   { background: #FDF8EC; border-left: 4px solid var(--gold); }
+    .info-box.danger { background: #FDEEEE; border-left: 4px solid var(--danger); }
+    .info-box.success{ background: #EBF7F1; border-left: 4px solid var(--success); }
+    .info-box.warn   { background: #FEF8EC; border-left: 4px solid var(--warn); }
+    .info-icon { font-size: 17px; line-height: 1; padding-top: 2px; }
+    .info-content { flex: 1; }
+    .info-label { font-family: 'Montserrat', sans-serif; font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+    .info-box.navy   .info-label { color: var(--navy); }
+    .info-box.gold   .info-label { color: var(--warn); }
+    .info-box.danger .info-label { color: var(--danger); }
+    .info-box.success .info-label { color: var(--success); }
+    .info-box.warn   .info-label { color: var(--warn); }
+    .info-text { font-size: 10px; color: var(--text); }
+
+    /* ── TABLES ── */
+    .formal-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 10px; }
+    .formal-table thead tr { background: var(--navy); color: var(--white); }
+    .formal-table thead th { padding: 10px 14px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: .5px; text-align: left; text-transform: uppercase; }
+    .formal-table tbody tr:nth-child(even) { background: #F0F4FA; }
+    .formal-table tbody tr:nth-child(odd)  { background: var(--white); }
+    .formal-table tbody tr:hover           { background: var(--gold-lt); }
+    .formal-table tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+    .formal-table tfoot td { padding: 8px 14px; font-style: italic; font-size: 9px; color: var(--muted); border-top: 2px solid var(--border); }
+
+    /* ── BADGES ── */
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 8.5px; font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+    .badge-high  { background: #FDE8E8; color: var(--danger); }
+    .badge-med   { background: #FEF8EC; color: var(--warn); }
+    .badge-low   { background: #EBF7F1; color: var(--success); }
+    .badge-navy  { background: #EEF1F8; color: var(--navy); }
+    .badge-gold  { background: var(--gold-lt); color: #7A6010; }
+    .badge-blue  { background: #E8F0FE; color: #1A56DB; }
+    .badge-purple{ background: #F3E8FE; color: #7E22CE; }
+
+    /* ── TWO-COL ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0; }
+    .stat-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 18px 20px; }
+    .stat-card .stat-label { font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .stat-card .stat-value { font-family: 'Montserrat', sans-serif; font-size: 20px; font-weight: 800; color: var(--navy); }
+    .stat-card .stat-desc  { font-size: 9.5px; color: var(--muted); margin-top: 2px; }
+
+    /* ── ASCII DIAGRAM ── */
+    .diagram { background: #0D1117; border: 1px solid #21262d; border-left: 4px solid var(--gold); border-radius: 0 8px 8px 0; margin: 16px 0; overflow-x: auto; }
+    .diagram-title { font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); padding: 10px 20px; border-bottom: 1px solid #21262d; }
+    .diagram pre { font-family: 'Courier New', Courier, monospace; font-size: 9.2px; line-height: 1.55; color: #7ee787; white-space: pre; margin: 0; padding: 16px 20px; }
+
+    /* ── ZONE GRID (logical topology) ── */
+    .zone-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+    .zone-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 16px 0; }
+    .zone-block { border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+    .zone-header { padding: 7px 12px; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
+    .zone-body { padding: 10px 12px; background: var(--white); }
+    .zone-vlan { font-family: 'Montserrat', sans-serif; font-size: 8.5px; font-weight: 700; color: var(--muted); margin-bottom: 2px; }
+    .zone-subnet { font-size: 9px; color: var(--navy); font-family: 'Courier New', monospace; font-weight: 700; margin-bottom: 8px; }
+    .vm-chip { display: inline-block; border-radius: 4px; padding: 3px 8px; font-size: 8.2px; font-family: 'Montserrat', sans-serif; font-weight: 700; margin: 2px 2px 2px 0; }
+    .vm-chip.ubuntu  { background: #EBF7F1; border: 1px solid #1A7A4A; color: #1A7A4A; }
+    .vm-chip.pfsense { background: #FDE8E8; border: 1px solid var(--danger); color: var(--danger); }
+    .vm-chip.windows { background: #E8F0FE; border: 1px solid #1A56DB; color: #1A56DB; }
+    .vm-chip.monitor { background: #FEF8EC; border: 1px solid var(--warn); color: var(--warn); }
+    .vm-svc { font-size: 8px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+    .zone-admin .zone-header { background: #EEF1F8; color: var(--navy); }
+    .zone-users .zone-header { background: #E8F0FE; color: #1A56DB; }
+    .zone-dmz   .zone-header { background: #FDE8E8; color: var(--danger); }
+    .zone-svcs  .zone-header { background: #EBF7F1; color: var(--success); }
+    .zone-data  .zone-header { background: #FDF8EC; color: var(--warn); }
+    .zone-mgmt  .zone-header { background: #F3E8FE; color: #7E22CE; }
+    .zone-esxi  .zone-header { background: #E8F4FD; color: #0369A1; }
+
+    /* ── TRAFFIC FLOW TABLE ── */
+    .flow-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 9.5px; }
+    .flow-table th { background: var(--navy); color: var(--white); padding: 8px 12px; font-family: 'Montserrat', sans-serif; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; text-align: left; }
+    .flow-table td { padding: 7px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    .flow-table tr:nth-child(even) { background: #F0F4FA; }
+    .allow { color: var(--success); font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: 8.5px; }
+    .deny  { color: var(--danger);  font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: 8.5px; }
+    .cond  { color: var(--warn);    font-weight: 700; font-family: 'Montserrat', sans-serif; font-size: 8.5px; }
+
+    /* ── SIGNATURE ── */
+    .signature-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin: 32px 0 20px; }
+    .sig-box { text-align: center; }
+    .sig-line { border-top: 1px solid var(--navy); margin-bottom: 6px; margin-top: 40px; }
+    .sig-name { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; color: var(--navy); }
+    .sig-role { font-size: 9px; color: var(--muted); }
+
+    /* ── FOOTER ── */
+    .doc-footer { background: var(--navy); padding: 16px 64px; display: flex; justify-content: space-between; align-items: center; }
+    .doc-footer span { font-size: 9px; color: rgba(255,255,255,.45); font-family: 'Montserrat', sans-serif; letter-spacing: .5px; }
+    .doc-footer .confidential { background: rgba(200,169,81,.15); border: 1px solid rgba(200,169,81,.3); color: var(--gold); padding: 3px 10px; border-radius: 4px; font-size: 8.5px; font-weight: 700; letter-spacing: 1px; }
+
+    @media print { body { background: white; } .page { box-shadow: none; max-width: 100%; } }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ═══════════════ COVER ═══════════════ -->
+  <div class="cover">
+    <div class="cover-logo-row">
+      <div class="logo-badge">U</div>
+      <div class="logo-text">
+        <div class="univ">UNIVERSIDAD PERUANA UNIÓN — UPEU</div>
+        <div class="school">Escuela Profesional de Ingeniería de Sistemas</div>
+      </div>
+    </div>
+    <div class="cover-code">CE0312 &nbsp;·&nbsp; Entregable 1 &nbsp;·&nbsp; Semestre I – 2026</div>
+    <h1>Diseño de Topología<br>Lógica y Física</h1>
+    <div class="cover-subtitle">Proyecto de Fin de Carrera — Área de Infraestructura Tecnológica (ITI)</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta-grid">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Empresa cliente</div>
+        <div class="cover-meta-value">Franco's SAC</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Competencia evaluada</div>
+        <div class="cover-meta-value">CE031 — Conectividad</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Etapa CDIO</div>
+        <div class="cover-meta-value">Conceive / Design</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Estándares aplicados</div>
+        <div class="cover-meta-value">TIA/EIA-568 · IEEE 802.x · ISO/IEC 11801</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Rol del autor</div>
+        <div class="cover-meta-value">Director del Proyecto / Jefe de Infraestructura y Seguridad de TI</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Fecha de emisión</div>
+        <div class="cover-meta-value">Mayo 2026</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Versión</div>
+        <div class="cover-meta-value">v1.1 — Incorporación de Local 3</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Plataforma</div>
+        <div class="cover-meta-value">VMware ESXi 8.0 U3 — Labs Cisco UPeU</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERSION BAR -->
+  <div class="version-bar">
+    <span class="vbadge">v1.1</span>
+    <span class="vsep">|</span>
+    <span>Incorporación de Local 3 · Mayo 2026</span>
+    <span class="vsep">|</span>
+    <span>CE0312 · Entregable 1 · Línea ITI</span>
+    <span class="vsep">|</span>
+    <span>Proyecto de Fin de Carrera — UPeU</span>
+  </div>
+
+  <!-- ═══════════════ BODY ═══════════════ -->
+  <div class="doc-body">
+
+    <!-- CONTROL DE VERSIONES -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">📋</div>
+        <div>
+          <div class="section-title">Control de Versiones</div>
+          <div class="section-subtitle">Historial de revisiones del documento</div>
+        </div>
+      </div>
+      <table class="formal-table">
+        <thead><tr><th>Versión</th><th>Fecha</th><th>Descripción</th><th>Autor</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>v1.0</strong></td>
+            <td>Mayo 2026</td>
+            <td>Elaboración inicial: topologías física y lógica, vSwitches, inventario de VMs, esquema IP y flujos de tráfico para Franco's SAC (2 locales)</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-navy">Revisado</span></td>
+          </tr>
+          <tr>
+            <td><strong>v1.1</strong></td>
+            <td>Mayo 2026</td>
+            <td>Incorporación de Local 3 (Segunda Planta de Producción): ESXi Host 3 (TBD), VLANs 10.30.x.x (VLAN10/20/60/99), VPN mesh completo (L1↔L2, L1↔L3, L2↔L3), actualización de topologías y tablas IP</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-gold">Borrador</span></td>
+          </tr>
+          <tr>
+            <td>v2.0</td>
+            <td>—</td>
+            <td>Versión final aprobada para sustentación</td>
+            <td>—</td>
+            <td><span class="badge badge-low">Pendiente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <div class="toc-title">Tabla de Contenidos</div>
+      <ol>
+        <li><span>Introducción y Propósito</span><span class="toc-dots"></span><span class="toc-pg">§1</span></li>
+        <li><span>Inventario de Dispositivos Físicos</span><span class="toc-dots"></span><span class="toc-pg">§2</span></li>
+        <li><span>Topología Física — Visión Global (3 Locales)</span><span class="toc-dots"></span><span class="toc-pg">§3</span></li>
+        <li><span>Topología Física — Local 1 (Producción)</span><span class="toc-dots"></span><span class="toc-pg">§4</span></li>
+        <li><span>Topología Física — Local 2 (Ventas / Administración)</span><span class="toc-dots"></span><span class="toc-pg">§5</span></li>
+        <li><span>Topología Física — Local 3 (Segunda Planta de Producción)</span><span class="toc-dots"></span><span class="toc-pg">§5b</span></li>
+        <li><span>Arquitectura de vSwitches y Port Groups — ESXi Host 1</span><span class="toc-dots"></span><span class="toc-pg">§6</span></li>
+        <li><span>Arquitectura de vSwitches y Port Groups — ESXi Host 2</span><span class="toc-dots"></span><span class="toc-pg">§7</span></li>
+        <li><span>Arquitectura de vSwitches y Port Groups — ESXi Host 3</span><span class="toc-dots"></span><span class="toc-pg">§7b</span></li>
+        <li><span>Inventario de Máquinas Virtuales</span><span class="toc-dots"></span><span class="toc-pg">§8</span></li>
+        <li><span>Topología Lógica — Local 1 (Producción)</span><span class="toc-dots"></span><span class="toc-pg">§9</span></li>
+        <li><span>Topología Lógica — Local 2 (Ventas / Administración)</span><span class="toc-dots"></span><span class="toc-pg">§10</span></li>
+        <li><span>Topología Lógica — Local 3 (Segunda Planta de Producción)</span><span class="toc-dots"></span><span class="toc-pg">§10b</span></li>
+        <li><span>Conectividad Inter-Local — VPN Mesh IPSec (3 Túneles)</span><span class="toc-dots"></span><span class="toc-pg">§11</span></li>
+        <li><span>Esquema de Direccionamiento IP</span><span class="toc-dots"></span><span class="toc-pg">§12</span></li>
+        <li><span>Flujos de Tráfico por Zona</span><span class="toc-dots"></span><span class="toc-pg">§13</span></li>
+        <li><span>Alineación con Estándares Internacionales</span><span class="toc-dots"></span><span class="toc-pg">§14</span></li>
+        <li><span>Conclusiones</span><span class="toc-dots"></span><span class="toc-pg">§15</span></li>
+        <li><span>Firmas y Aprobaciones</span><span class="toc-dots"></span><span class="toc-pg">§16</span></li>
+      </ol>
+    </div>
+
+    <!-- ── S1: INTRODUCCIÓN ── -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div>
+          <div class="section-title">Introducción y Propósito</div>
+          <div class="section-subtitle">Alcance y justificación del diseño topológico</div>
+        </div>
+      </div>
+      <p>El presente documento corresponde al entregable <strong>CE0312 — Diseño de Topología Lógica y Física</strong>, parte del Entregable 1 de la línea <strong>ITI (Infraestructura Tecnológica)</strong> del Proyecto de Fin de Carrera en la Escuela de Ingeniería de Sistemas de la UPeU.</p>
+      <p>Su propósito es documentar de forma técnica y visual la arquitectura de red diseñada para Franco's SAC, abarcando la topología física (dispositivos, conexiones y medios de transmisión) y la topología lógica (segmentación virtual, asignación de VMs por zona y flujos de tráfico). El diseño contempla la simulación de <strong>3 locales</strong> sobre la plataforma VMware ESXi 8.0 U3 disponible en los laboratorios Cisco de la UPeU, interconectados mediante VPN mesh completo.</p>
+      <div class="info-box gold">
+        <div class="info-icon">📌</div>
+        <div class="info-content">
+          <div class="info-label">Relación con la arquitectura de desarrollo</div>
+          <div class="info-text">El diseño de red está alineado con el stack ERP del área de Desarrollo: <strong>Angular 20</strong> (Frontend) + <strong>NestJS 11</strong> (API Gateway) + <strong>NATS Server</strong> (mensajería) + microservicios (<em>auth-ms, person-ms, sales-invent-ms, strategic-ms</em>) + <strong>PostgreSQL</strong> (bases de datos independientes por servicio). La segmentación en VLANs 30/40/50 responde directamente a las capas de este stack.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── S2: INVENTARIO FÍSICO ── -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div>
+          <div class="section-title">Inventario de Dispositivos Físicos</div>
+          <div class="section-subtitle">Hardware real disponible en los laboratorios UPeU</div>
+        </div>
+      </div>
+      <table class="formal-table">
+        <thead>
+          <tr><th>#</th><th>Dispositivo</th><th>Modelo / Versión</th><th>Rol en el proyecto</th><th>Local</th><th>Notas</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>D-01</td>
+            <td><strong>Hipervisor ESXi Host 1</strong></td>
+            <td>Dell Precision 7920 Tower<br>ESXi 8.0 Update 3<br>6C Xeon Bronze 3204 · 31.65 GB · 348 GB</td>
+            <td>Servidor principal. Aloja todas las VMs del stack ERP y la infraestructura del Local 1</td>
+            <td><span class="badge badge-navy">Local 1</span></td>
+            <td>vmk0: 172.17.25.7 · 3 NICs físicas (vmnic0/1/2)</td>
+          </tr>
+          <tr>
+            <td>D-02</td>
+            <td><strong>Hipervisor ESXi Host 2</strong></td>
+            <td>Lab UPeU (TBD)<br>ESXi (versión lab)<br>≥ 16 GB RAM · ≥ 500 GB disco</td>
+            <td>Simulación del Local 2 (Ventas/Admin). Aloja pfSense-L2 y workstations virtuales</td>
+            <td><span class="badge badge-blue">Local 2</span></td>
+            <td>Specs definitivas a confirmar con el coordinador del lab</td>
+          </tr>
+          <tr>
+            <td>D-02b</td>
+            <td><strong>Hipervisor ESXi Host 3</strong></td>
+            <td>Lab UPeU (TBD)<br>ESXi (versión lab)<br>≥ 16 GB RAM · ≥ 500 GB disco</td>
+            <td>Simulación del Local 3 (Segunda Planta de Producción). Aloja pfSense-L3 y VMs de producción básicas</td>
+            <td><span class="badge badge-gold">Local 3</span></td>
+            <td>Specs TBD — pendiente de confirmación con coordinador del lab</td>
+          </tr>
+          <tr>
+            <td>D-03</td>
+            <td><strong>Cisco Lab Router</strong></td>
+            <td>Router Cisco (modelo lab)<br>Gateway: 172.17.25.121</td>
+            <td>ISP1 — Enlace WAN primario para ambos locales. Provee acceso a internet del laboratorio</td>
+            <td><span class="badge badge-navy">Compartido</span></td>
+            <td>Red del lab: 172.17.25.0/24</td>
+          </tr>
+          <tr>
+            <td>D-04</td>
+            <td><strong>FortiGate 40F</strong></td>
+            <td>FortiGate 40F (sin licencia)<br>5× GE RJ45</td>
+            <td>ISP2 — Simulación de segundo proveedor WAN para Local 1. vmnic1 → FortiGate LAN. Enrutamiento básico / NAT</td>
+            <td><span class="badge badge-navy">Local 1</span></td>
+            <td>Sin licencia activa. Solo routing básico y NAT. LAN: 192.168.100.1/24</td>
+          </tr>
+          <tr>
+            <td>D-05</td>
+            <td><strong>Cisco Switch (Lab)</strong></td>
+            <td>Cisco (modelo lab)<br>IEEE 802.1Q</td>
+            <td>Conmutación física entre hipervisores y router del lab. Puerto trunk 802.1Q hacia vmnic2 de cada ESXi host</td>
+            <td><span class="badge badge-navy">Compartido</span></td>
+            <td>Configurado con puertos trunk para transportar VLANs 10,20,30,40,50,60,99</td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="6">Fuente: Inventario de laboratorio Cisco UPeU — Mayo 2026 · (*) Specs definitivas de Host 2 y Host 3 a confirmar con coordinador de lab</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- ── S3: TOPOLOGÍA FÍSICA GLOBAL ── -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div>
+          <div class="section-title">Topología Física — Visión Global</div>
+          <div class="section-subtitle">Diagrama de tres locales e interconexión WAN mesh</div>
+        </div>
+      </div>
+      <p>El siguiente diagrama muestra la vista física de alto nivel del proyecto, representando los 3 locales de Franco's SAC simulados sobre la infraestructura del laboratorio UPeU, con sus respectivos enlaces WAN y la conectividad VPN mesh inter-local (3 túneles IPSec).</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 3.1 — Topología Física Global — Franco's SAC (3 Locales · VPN Mesh)</div>
+        <pre>
+                              ╔═══════════════════╗
+                              ║     INTERNET      ║
+                              ╚═══╤═══════╤═══════╝
+                                  │       │       │
+              ┌───────────────────┘       │       └───────────────────┐
+              │                           │                           │
+    ┌─────────┴─────────┐       ┌─────────┴─────────┐      ┌─────────┴─────────┐
+    │  RED LAB UPeU     │       │  RED LAB UPeU     │      │  RED LAB UPeU     │
+    │  172.17.25.0/24   │       │  (segmento lab)   │      │  (segmento lab)   │
+    └─────────┬─────────┘       └─────────┬─────────┘      └─────────┬─────────┘
+              │                           │                           │
+    ┌─────────┴─────────┐       ┌─────────┴─────────┐      ┌─────────┴─────────┐
+    │  Cisco Lab Router │       │  ISP3 (Local 2)   │      │  ISP5 (Local 3)   │
+    │  GW:172.17.25.121 │       │  router simulado  │      │  router simulado  │
+    └─────────┬─────────┘       └─────────┬─────────┘      └─────────┬─────────┘
+              │                           │                           │
+    ┌─────────┴─────────┐
+    │  FortiGate 40F    │
+    │  ISP2 (simulado)  │
+    │  192.168.100.1    │
+    └─────────┬─────────┘
+         vmnic0+vmnic1             vmnic0+vmnic1               vmnic0+vmnic1
+    ┌──────────┴──────────┐  ┌──────────┴──────────┐  ┌──────────┴──────────┐
+    │    ESXi HOST 1      │  │    ESXi HOST 2      │  │    ESXi HOST 3      │
+    │ Dell Precision 7920 ├──┤   Lab UPeU (TBD)   ├──┤   Lab UPeU (TBD)   │
+    │   172.17.25.7       │  │                     │  │                     │
+    └──────────┬──────────┘  └──────────┬──────────┘  └──────────┬──────────┘
+          vmnic2 (trunk)          vmnic2 (trunk)           vmnic2 (trunk)
+    ┌──────────┴──────────┐  ┌──────────┴──────────┐  ┌──────────┴──────────┐
+    │    Cisco Switch     │  │    Cisco Switch     │  │    Cisco Switch     │
+    │    IEEE 802.1Q      │  │    IEEE 802.1Q      │  │    IEEE 802.1Q      │
+    └─────────────────────┘  └─────────────────────┘  └─────────────────────┘
+
+    ◄── IPSec VPN Mesh ──►  L1↔L2  ·  L1↔L3  ·  L2↔L3  (3 túneles IPSec IKEv2 AES-256-GCM)
+
+    LOCAL 1 — PRODUCCIÓN       LOCAL 2 — VENTAS/ADMIN     LOCAL 3 — 2ª PLANTA (TBD)
+    VLANs 10,20,30,40,50,60,99   VLANs 10,20,60,99          VLANs 10,20,60,99</pre>
+      </div>
+    </div>
+
+    <!-- ── S4: TOPOLOGÍA FÍSICA LOCAL 1 ── -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div>
+          <div class="section-title">Topología Física — Local 1 (Producción)</div>
+          <div class="section-subtitle">Conexiones físicas y distribución de NICs en ESXi Host 1</div>
+        </div>
+      </div>
+      <p>El Local 1 representa la sede de producción de Franco's SAC. Aloja el núcleo de la infraestructura: el servidor principal (ESXi Host 1) con 3 NICs físicas distribuidas en 3 funciones independientes, conectado al switch del laboratorio mediante troncal 802.1Q.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 4.1 — Topología Física Local 1 (Producción) — Detalle de conexiones</div>
+        <pre>
+         ┌────────────── INTERNET ──────────────────────┐
+         │                                              │
+  ┌──────┴──────────┐                    ┌─────────────┴──────────┐
+  │ Cisco Lab Router │                    │    FortiGate 40F        │
+  │   ISP1 / WAN1    │                    │    ISP2 / WAN2          │
+  │ GW:172.17.25.121 │                    │    LAN: 192.168.100.1   │
+  │ Red: 172.17.25/24│                    │    (sin licencia)       │
+  └──────┬──────────┘                    └─────────────┬──────────┘
+         │                                              │
+      vmnic0 (100 Mbps · ne1000)                    vmnic1 (igbn)
+         │                                              │
+  ┌──────┴──────────────────────────────────────────────┴──────┐
+  │                    Cisco Switch  (Lab UPeU)                  │
+  │                    Soporte IEEE 802.1Q                        │
+  │     Puerto acceso: vmnic0/vmnic1    Puerto trunk: vmnic2       │
+  └───────────────────────────────┬─────────────────────────────┘
+                                   │
+                                vmnic2 (igbn)
+                             Trunk 802.1Q
+                        (VLANs 10,20,30,40,50,60,99)
+                   ┌───────────────┴──────────────────┐
+                   │          ESXi HOST 1              │
+                   │      Dell Precision 7920 Tower    │
+                   │   IP gestión: 172.17.25.7 (vmk0)  │
+                   │   CPU: 6C Intel Xeon Bronze 3204   │
+                   │   RAM: 31.65 GB                    │
+                   │   Disco: 348.75 GB (VMFS6)         │
+                   │   ESXi: 8.0 Update 3               │
+                   └───────────────────────────────────┘</pre>
+      </div>
+
+      <div class="info-box navy">
+        <div class="info-icon">ℹ️</div>
+        <div class="info-content">
+          <div class="info-label">Distribución de NICs físicas — ESXi Host 1</div>
+          <div class="info-text"><strong>vmnic0 (ne1000 · 100Mbps · activa):</strong> Conectada al Cisco lab router. Uplink ISP1 y management ESXi.<br><strong>vmnic1 (igbn · inactiva):</strong> Se conectará al puerto LAN del FortiGate 40F. Uplink ISP2 para WAN2 de pfSense.<br><strong>vmnic2 (igbn · inactiva):</strong> Se conectará al puerto trunk 802.1Q del Cisco switch. Transportará todas las VLANs internas.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── S5: TOPOLOGÍA FÍSICA LOCAL 2 ── -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <div>
+          <div class="section-title">Topología Física — Local 2 (Ventas / Administración)</div>
+          <div class="section-subtitle">Conexiones físicas del segundo hipervisor del laboratorio</div>
+        </div>
+      </div>
+      <p>El Local 2 simula la sede de ventas y administración de Franco's SAC. Se implementará en un segundo hipervisor ESXi del laboratorio UPeU, con configuración de NICs similar al Host 1, pero con VMs más ligeras (workstations virtuales y pfSense-L2).</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 5.1 — Topología Física Local 2 (Ventas/Admin)</div>
+        <pre>
+         ┌──────────── INTERNET ────────────────┐
+         │                                      │
+  ┌──────┴──────────┐                ┌──────────┴────────┐
+  │ Cisco Lab Router │                │  FortiGate (*) o  │
+  │   ISP3 / WAN1    │                │  router simulado  │
+  │ (segmento lab)   │                │  ISP4 / WAN2      │
+  └──────┬──────────┘                └──────────┬────────┘
+         │                                       │
+      vmnic0                                 vmnic1
+         └──────────────┬──────────────────────┘
+                        │
+              ┌─────────┴──────────┐
+              │   Cisco Switch     │
+              │   IEEE 802.1Q      │
+              └─────────┬──────────┘
+                     vmnic2 (trunk)
+              ┌─────────┴──────────┐
+              │    ESXi HOST 2     │
+              │    Lab UPeU        │
+              │  (specs a conf.)   │
+              │  ≥ 16 GB RAM       │
+              │  ≥ 500 GB disco    │
+              └────────────────────┘
+
+  (*) Según disponibilidad del lab; puede ser un
+      segundo FortiGate o router virtual.</pre>
+      </div>
+    </div>
+
+    <!-- ── S5b: TOPOLOGÍA FÍSICA LOCAL 3 ── -->
+    <div class="section" id="s5b">
+      <div class="section-header">
+        <div class="section-number">5b</div>
+        <div>
+          <div class="section-title">Topología Física — Local 3 (Segunda Planta de Producción)</div>
+          <div class="section-subtitle">Conexiones físicas del tercer hipervisor del laboratorio — ESXi Host 3</div>
+        </div>
+      </div>
+      <p>El Local 3 simula la segunda planta de producción de Franco's SAC. Se implementará en un tercer hipervisor ESXi (Host 3) del laboratorio UPeU, con arquitectura de NICs y vSwitches similar al Host 2, con VLANs reducidas orientadas a producción y administración básica (VLAN10, VLAN20, VLAN60, VLAN99).</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 5b.1 — Topología Física Local 3 (Segunda Planta de Producción)</div>
+        <pre>
+         ┌──────────── INTERNET ────────────────┐
+         │                                      │
+  ┌──────┴──────────┐                ┌──────────┴────────┐
+  │  ISP5 / WAN1    │                │  ISP6 / WAN2      │
+  │ (segmento lab)  │                │  (router simulado)│
+  └──────┬──────────┘                └──────────┬────────┘
+         │                                       │
+      vmnic0                                 vmnic1
+         └──────────────┬──────────────────────┘
+                        │
+              ┌─────────┴──────────┐
+              │   Cisco Switch     │
+              │   IEEE 802.1Q      │
+              └─────────┬──────────┘
+                     vmnic2 (trunk)
+              ┌─────────┴──────────┐
+              │    ESXi HOST 3     │
+              │    Lab UPeU        │
+              │  (specs TBD)       │
+              │  ≥ 16 GB RAM       │
+              │  ≥ 500 GB disco    │
+              └────────────────────┘
+              VLANs: 10, 20, 60, 99
+              Rango IP: 10.30.x.x
+  (*) Specs y disponibilidad TBD — confirmar con coordinador del lab</pre>
+      </div>
+    </div>
+
+    <!-- ── S6: vSWITCHES HOST 1 ── -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <div>
+          <div class="section-title">Arquitectura vSwitches — ESXi Host 1</div>
+          <div class="section-subtitle">Conmutadores virtuales, uplinks y grupos de puertos</div>
+        </div>
+      </div>
+      <p>VMware ESXi utiliza conmutadores virtuales (vSwitches) para conectar las VMs a la red física. El Host 1 tendrá 3 vSwitches correspondientes a las 3 NICs físicas disponibles, cada uno con un rol diferenciado.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 6.1 — Arquitectura vSwitches ESXi Host 1</div>
+        <pre>
+ ╔══════════════════════════════════════════════════════════════════════════╗
+ ║          ESXi HOST 1 — ARQUITECTURA DE CONMUTADORES VIRTUALES            ║
+ ╠═══════════════════╦═════════════════════╦════════════════════════════════╣
+ ║    vSwitch0        ║    vSwitchWAN2       ║         vSwitchLAN             ║
+ ║    Uplink: vmnic0  ║    Uplink: vmnic1    ║         Uplink: vmnic2         ║
+ ╠═══════════════════╬═════════════════════╬════════════════════════════════╣
+ ║  PG-MGMT-ESXi     ║  PG-WAN2-ISP2        ║  PG-TRUNK          ID: 4095   ║
+ ║  (VMkernel mgmt)  ║  (FortiGate 40F)     ║  PG-VLAN10-ADMIN   ID:   10   ║
+ ║  PG-WAN1-ISP1     ║                      ║  PG-VLAN20-USUARIOS ID:  20   ║
+ ║  (pfSense WAN1)   ║                      ║  PG-VLAN30-DMZ     ID:   30   ║
+ ║                   ║                      ║  PG-VLAN40-SVCS    ID:   40   ║
+ ║                   ║                      ║  PG-VLAN50-DATOS   ID:   50   ║
+ ║                   ║                      ║  PG-VLAN60-GESTION ID:   60   ║
+ ║                   ║                      ║  PG-VLAN99-MGMT    ID:   99   ║
+ ╠═══════════════════╩═════════════════════╩════════════════════════════════╣
+ ║  Físico: Cisco Router     Físico: FortiGate 40F   Físico: Cisco Switch    ║
+ ║  172.17.25.121             192.168.100.1           Trunk 802.1Q           ║
+ ╚══════════════════════════════════════════════════════════════════════════╝</pre>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Tabla de Port Groups — ESXi Host 1</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>Port Group</th><th>vSwitch</th><th>VLAN ID</th><th>Tipo</th><th>VMs conectadas</th><th>Propósito</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>PG-MGMT-ESXi</strong></td><td>vSwitch0</td><td>—</td><td><span class="badge badge-navy">VMkernel</span></td><td>ESXi host</td><td>Gestión del hipervisor (SSH, Web UI)</td></tr>
+            <tr><td><strong>PG-WAN1-ISP1</strong></td><td>vSwitch0</td><td>—</td><td><span class="badge badge-high">VM</span></td><td>VM-PFSENSE-L1</td><td>pfSense WAN1 → Cisco Router ISP1</td></tr>
+            <tr><td><strong>PG-WAN2-ISP2</strong></td><td>vSwitchWAN2</td><td>—</td><td><span class="badge badge-high">VM</span></td><td>VM-PFSENSE-L1</td><td>pfSense WAN2 → FortiGate 40F ISP2</td></tr>
+            <tr><td><strong>PG-TRUNK</strong></td><td>vSwitchLAN</td><td>4095</td><td><span class="badge badge-gold">Trunk</span></td><td>VM-PFSENSE-L1</td><td>pfSense LAN (trunk, sub-interfaces por VLAN)</td></tr>
+            <tr><td><strong>PG-VLAN10-ADMIN</strong></td><td>vSwitchLAN</td><td>10</td><td><span class="badge badge-high">VM</span></td><td>VM-AD-DNS</td><td>VLAN Administración — AD/DNS</td></tr>
+            <tr><td><strong>PG-VLAN20-USUARIOS</strong></td><td>vSwitchLAN</td><td>20</td><td><span class="badge badge-high">VM</span></td><td>Workstations</td><td>VLAN Usuarios — workstations de área</td></tr>
+            <tr><td><strong>PG-VLAN30-DMZ</strong></td><td>vSwitchLAN</td><td>30</td><td><span class="badge badge-high">VM</span></td><td>VM-DOCKER-APP</td><td>VLAN DMZ — API Gateway + Frontend Angular</td></tr>
+            <tr><td><strong>PG-VLAN40-SVCS</strong></td><td>vSwitchLAN</td><td>40</td><td><span class="badge badge-high">VM</span></td><td>VM-DOCKER-APP, VM-DOCKER-SVC</td><td>VLAN Servicios — NATS + microservicios</td></tr>
+            <tr><td><strong>PG-VLAN50-DATOS</strong></td><td>vSwitchLAN</td><td>50</td><td><span class="badge badge-high">VM</span></td><td>VM-DOCKER-DB</td><td>VLAN Datos — PostgreSQL (4 instancias)</td></tr>
+            <tr><td><strong>PG-VLAN60-GESTION</strong></td><td>vSwitchLAN</td><td>60</td><td><span class="badge badge-high">VM</span></td><td>VM-MONITOR</td><td>VLAN Gestión — Zabbix + Grafana</td></tr>
+            <tr><td><strong>PG-VLAN99-MGMT</strong></td><td>vSwitchLAN</td><td>99</td><td><span class="badge badge-navy">VMkernel</span></td><td>ESXi VMkernel</td><td>Gestión interna ESXi vía VLAN dedicada</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="6">VLAN ID 4095 en ESXi = trunk completo (todas las VLANs pasan sin filtrar, pfSense las segmenta internamente)</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── S7: vSWITCHES HOST 2 ── -->
+    <div class="section" id="s7">
+      <div class="section-header">
+        <div class="section-number">7</div>
+        <div>
+          <div class="section-title">Arquitectura vSwitches — ESXi Host 2</div>
+          <div class="section-subtitle">Configuración del segundo hipervisor — Local 2</div>
+        </div>
+      </div>
+      <p>El Host 2 replica la arquitectura de vSwitches del Host 1 en su parte WAN, pero con menos VLANs internas al ser el local de usuarios. Se mantiene la misma convención de nombres para facilitar la documentación y replicabilidad.</p>
+      <table class="formal-table">
+        <thead>
+          <tr><th>Port Group</th><th>vSwitch</th><th>VLAN ID</th><th>VMs conectadas</th><th>Propósito</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>PG-MGMT-ESXi</strong></td><td>vSwitch0</td><td>—</td><td>ESXi Host 2</td><td>Gestión del hipervisor</td></tr>
+          <tr><td><strong>PG-WAN1-ISP3</strong></td><td>vSwitch0</td><td>—</td><td>VM-PFSENSE-L2</td><td>pfSense-L2 WAN1 → ISP Lab</td></tr>
+          <tr><td><strong>PG-WAN2-ISP4</strong></td><td>vSwitchWAN2</td><td>—</td><td>VM-PFSENSE-L2</td><td>pfSense-L2 WAN2 → ISP simulado</td></tr>
+          <tr><td><strong>PG-TRUNK</strong></td><td>vSwitchLAN</td><td>4095</td><td>VM-PFSENSE-L2</td><td>Trunk LAN a pfSense-L2</td></tr>
+          <tr><td><strong>PG-VLAN10-ADMIN</strong></td><td>vSwitchLAN</td><td>10</td><td>—</td><td>Administración Local 2</td></tr>
+          <tr><td><strong>PG-VLAN20-USUARIOS</strong></td><td>vSwitchLAN</td><td>20</td><td>VM-PC-VENTAS, VM-PC-ADMIN</td><td>Workstations de Ventas y Admin</td></tr>
+          <tr><td><strong>PG-VLAN60-GESTION</strong></td><td>vSwitchLAN</td><td>60</td><td>—</td><td>Agente Zabbix Local 2</td></tr>
+          <tr><td><strong>PG-VLAN99-MGMT</strong></td><td>vSwitchLAN</td><td>99</td><td>ESXi VMkernel</td><td>Gestión interna ESXi</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── S7b: vSWITCHES HOST 3 ── -->
+    <div class="section" id="s7b">
+      <div class="section-header">
+        <div class="section-number">7b</div>
+        <div>
+          <div class="section-title">Arquitectura vSwitches — ESXi Host 3</div>
+          <div class="section-subtitle">Configuración del tercer hipervisor — Local 3</div>
+        </div>
+      </div>
+      <p>El Host 3 replica la arquitectura de vSwitches del Host 2 al ser también un local con VLANs reducidas. Aloja pfSense-L3 como firewall local y punto de terminación de los dos túneles VPN del mesh (L3↔L1 y L3↔L2).</p>
+      <table class="formal-table">
+        <thead>
+          <tr><th>Port Group</th><th>vSwitch</th><th>VLAN ID</th><th>VMs conectadas</th><th>Propósito</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>PG-MGMT-ESXi</strong></td><td>vSwitch0</td><td>—</td><td>ESXi Host 3</td><td>Gestión del hipervisor</td></tr>
+          <tr><td><strong>PG-WAN1-ISP5</strong></td><td>vSwitch0</td><td>—</td><td>VM-PFSENSE-L3</td><td>pfSense-L3 WAN1 → ISP Lab</td></tr>
+          <tr><td><strong>PG-WAN2-ISP6</strong></td><td>vSwitchWAN2</td><td>—</td><td>VM-PFSENSE-L3</td><td>pfSense-L3 WAN2 → ISP simulado</td></tr>
+          <tr><td><strong>PG-TRUNK</strong></td><td>vSwitchLAN</td><td>4095</td><td>VM-PFSENSE-L3</td><td>Trunk LAN a pfSense-L3</td></tr>
+          <tr><td><strong>PG-VLAN10-ADMIN</strong></td><td>vSwitchLAN</td><td>10</td><td>—</td><td>Administración Local 3</td></tr>
+          <tr><td><strong>PG-VLAN20-USUARIOS</strong></td><td>vSwitchLAN</td><td>20</td><td>VM-PC-PROD-L3</td><td>Workstations de producción L3</td></tr>
+          <tr><td><strong>PG-VLAN60-GESTION</strong></td><td>vSwitchLAN</td><td>60</td><td>—</td><td>Agente Zabbix Local 3</td></tr>
+          <tr><td><strong>PG-VLAN99-MGMT</strong></td><td>vSwitchLAN</td><td>99</td><td>ESXi VMkernel</td><td>Gestión interna ESXi</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── S8: INVENTARIO VMs ── -->
+    <div class="section" id="s8">
+      <div class="section-header">
+        <div class="section-number">8</div>
+        <div>
+          <div class="section-title">Inventario de Máquinas Virtuales</div>
+          <div class="section-subtitle">Especificaciones y asignación de recursos de todas las VMs del proyecto</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">ESXi Host 1 — Local 1 (Producción)</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>VM</th><th>Sistema operativo</th><th>vCPU</th><th>RAM</th><th>Disco</th><th>NIC(s) / VLAN</th><th>Servicios alojados</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>VM-PFSENSE-L1</strong></td>
+              <td>pfSense 2.7 CE</td>
+              <td>2</td><td>2 GB</td><td>20 GB</td>
+              <td>PG-WAN1, PG-WAN2, PG-TRUNK</td>
+              <td>Firewall, router, DHCP, DNS, failover WAN, IPSec VPN, NAT, ACLs inter-VLAN</td>
+            </tr>
+            <tr>
+              <td><strong>VM-AD-DNS</strong></td>
+              <td>Windows Server 2022 Core</td>
+              <td>2</td><td>4 GB</td><td>40 GB</td>
+              <td>PG-VLAN10-ADMIN</td>
+              <td>Active Directory Domain Services, DNS Server, autenticación centralizada</td>
+            </tr>
+            <tr>
+              <td><strong>VM-DOCKER-APP</strong></td>
+              <td>Ubuntu Server 24.04 LTS</td>
+              <td>2</td><td>6 GB</td><td>40 GB</td>
+              <td>PG-VLAN30-DMZ, PG-VLAN40-SVCS</td>
+              <td>Docker Engine · contenedores: API Gateway (NestJS 11), Frontend Angular 20 (nginx), NATS Server</td>
+            </tr>
+            <tr>
+              <td><strong>VM-DOCKER-SVC</strong></td>
+              <td>Ubuntu Server 24.04 LTS</td>
+              <td>2</td><td>4 GB</td><td>30 GB</td>
+              <td>PG-VLAN40-SVCS</td>
+              <td>Docker Engine · contenedores: auth-ms, person-ms, sales-invent-ms, strategic-ms</td>
+            </tr>
+            <tr>
+              <td><strong>VM-DOCKER-DB</strong></td>
+              <td>Ubuntu Server 24.04 LTS</td>
+              <td>2</td><td>6 GB</td><td>50 GB</td>
+              <td>PG-VLAN50-DATOS</td>
+              <td>Docker Engine · contenedores: PostgreSQL person-db, sales-invent-db, strategic-db, auth-db</td>
+            </tr>
+            <tr>
+              <td><strong>VM-MONITOR</strong></td>
+              <td>Ubuntu Server 24.04 LTS</td>
+              <td>1</td><td>2 GB</td><td>20 GB</td>
+              <td>PG-VLAN60-GESTION</td>
+              <td>Zabbix Server 6.x, Grafana, monitoreo SNMP/ICMP de toda la infraestructura</td>
+            </tr>
+          </tbody>
+          <tfoot><tr><td colspan="7">Total Host 1: 11 vCPUs · 24 GB RAM · 200 GB disco (dentro de los 31.65 GB RAM y 54 GB libres + gestión de storage)</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">ESXi Host 2 — Local 2 (Ventas / Administración)</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>VM</th><th>Sistema operativo</th><th>vCPU</th><th>RAM</th><th>Disco</th><th>NIC(s) / VLAN</th><th>Servicios alojados</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>VM-PFSENSE-L2</strong></td>
+              <td>pfSense 2.7 CE</td>
+              <td>2</td><td>2 GB</td><td>20 GB</td>
+              <td>PG-WAN1, PG-WAN2, PG-TRUNK</td>
+              <td>Firewall Local 2, IPSec VPN hacia pfSense-L1, DHCP Local 2, inter-VLAN routing</td>
+            </tr>
+            <tr>
+              <td><strong>VM-PC-VENTAS</strong></td>
+              <td>Windows 11 Pro</td>
+              <td>2</td><td>4 GB</td><td>60 GB</td>
+              <td>PG-VLAN20-USUARIOS</td>
+              <td>Workstation simulada: acceso al ERP (Angular frontend), cliente AD, navegador</td>
+            </tr>
+            <tr>
+              <td><strong>VM-PC-ADMIN</strong></td>
+              <td>Windows 11 Pro</td>
+              <td>2</td><td>4 GB</td><td>60 GB</td>
+              <td>PG-VLAN20-USUARIOS</td>
+              <td>Workstation simulada: acceso al ERP, cliente AD, gestión administrativa</td>
+            </tr>
+          </tbody>
+          <tfoot><tr><td colspan="7">Total Host 2: 6 vCPUs · 10 GB RAM · 140 GB disco</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">ESXi Host 3 — Local 3 (Segunda Planta de Producción)</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>VM</th><th>Sistema operativo</th><th>vCPU</th><th>RAM</th><th>Disco</th><th>NIC(s) / VLAN</th><th>Servicios alojados</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>VM-PFSENSE-L3</strong></td>
+              <td>pfSense 2.7 CE</td>
+              <td>2</td><td>2 GB</td><td>20 GB</td>
+              <td>PG-WAN1, PG-WAN2, PG-TRUNK</td>
+              <td>Firewall Local 3, IPSec VPN mesh (↔L1 y ↔L2), DHCP Local 3, inter-VLAN routing</td>
+            </tr>
+            <tr>
+              <td><strong>VM-PC-PROD-L3</strong></td>
+              <td>Windows 11 Pro</td>
+              <td>2</td><td>4 GB</td><td>60 GB</td>
+              <td>PG-VLAN20-USUARIOS</td>
+              <td>Workstation simulada planta 3: acceso al ERP vía VPN, operaciones de producción</td>
+            </tr>
+          </tbody>
+          <tfoot><tr><td colspan="7">Total Host 3 (estimado): 4 vCPUs · 6 GB RAM · 80 GB disco — specs definitivas TBD</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── S9: TOPOLOGÍA LÓGICA LOCAL 1 ── -->
+    <div class="section" id="s9">
+      <div class="section-header">
+        <div class="section-number">9</div>
+        <div>
+          <div class="section-title">Topología Lógica — Local 1 (Producción)</div>
+          <div class="section-subtitle">Segmentación virtual, VMs y flujo de datos interno</div>
+        </div>
+      </div>
+      <p>La topología lógica del Local 1 muestra cómo pfSense-L1 centraliza el enrutamiento inter-VLAN y la seguridad perimetral, distribuyendo el tráfico hacia las 6 zonas virtuales que albergan el stack completo de la infraestructura ERP.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 9.1 — Topología Lógica Local 1 — Zonas y VMs</div>
+        <pre>
+ ┌─────────────────────────── ESXi HOST 1 — LOCAL 1 (PRODUCCIÓN) ──────────────────────────────┐
+ │                                                                                               │
+ │  INTERNET─ISP1──►  WAN1 ┐                                                                    │
+ │  INTERNET─ISP2──►  WAN2 ├──► VM-PFSENSE-L1 (pfSense 2.7)                                   │
+ │  IPSec VPN L2 ──►  VPN  ┘    GW todas las VLANs: 10.10.x.1                                  │
+ │                               Failover WAN · Firewall · NAT · IPSec                           │
+ │                                          │                                                    │
+ │    ┌─────────────────────────────────────┼────────────────────────────────────┐              │
+ │    │              │              │       │         │              │            │              │
+ │ ┌──▼──────────┐ ┌─▼──────────┐ ┌▼───────▼──┐ ┌───▼──────────┐ ┌▼──────────┐ ┌▼──────────┐ │
+ │ │ VLAN 10     │ │ VLAN 20    │ │  VLAN 30  │ │  VLAN 40     │ │ VLAN 50   │ │ VLAN 60   │ │
+ │ │ ADMIN       │ │ USUARIOS   │ │  DMZ      │ │  SERVICIOS   │ │ DATOS     │ │ GESTIÓN   │ │
+ │ │10.10.10/24  │ │10.10.20/24 │ │10.10.30/28│ │ 10.10.40/24  │ │10.10.50/28│ │10.10.60/28│ │
+ │ │─────────────│ │────────────│ │───────────│ │──────────────│ │───────────│ │───────────│ │
+ │ │ VM-AD-DNS   │ │(vacío L1   │ │VM-DOCKER  │ │VM-DOCKER-APP │ │VM-DOCKER  │ │VM-MONITOR │ │
+ │ │ Win Srv2022 │ │ usuarios   │ │-APP       │ │ └─NATS Server│ │-DB        │ │ Ubuntu 24 │ │
+ │ │ AD DS + DNS │ │ via VPN    │ │ └─API GW  │ │VM-DOCKER-SVC │ │ └─person  │ │ └─Zabbix  │ │
+ │ │             │ │ desde L2)  │ │   NestJS  │ │ └─auth-ms    │ │   -db     │ │   Server  │ │
+ │ │             │ │            │ │ └─Frontend│ │ └─person-ms  │ │ └─sales   │ │ └─Grafana │ │
+ │ │             │ │            │ │   Angular │ │ └─sales-ms   │ │   -db     │ │           │ │
+ │ └─────────────┘ └────────────┘ └───────────┘ │ └─strateg-ms │ │ └─strat   │ └───────────┘ │
+ │                                               └──────────────┘ │   -db     │               │
+ │                                                                 │ └─auth-db │               │
+ │                                                                 └───────────┘               │
+ │                                                                                               │
+ │   ┌─────────────────────────────────────────────────────────────────────────────────────┐    │
+ │   │                            VLAN 99 — MGMT ESXi                                      │    │
+ │   │                           10.10.99.0/28  ·  VMkernel ESXi                           │    │
+ │   └─────────────────────────────────────────────────────────────────────────────────────┘    │
+ └───────────────────────────────────────────────────────────────────────────────────────────────┘</pre>
+      </div>
+
+      <div class="subsection" style="margin-top:24px;">
+        <div class="subsection-title">Vista de zonas por VLAN — Local 1</div>
+        <div class="zone-grid">
+          <div class="zone-block zone-admin">
+            <div class="zone-header">VLAN 10 — Administración</div>
+            <div class="zone-body">
+              <div class="zone-vlan">ID: 10</div>
+              <div class="zone-subnet">10.10.10.0/24</div>
+              <span class="vm-chip windows">VM-AD-DNS</span>
+              <div class="vm-svc">Active Directory DS<br>DNS Server (primario)<br>Autenticación corporativa</div>
+            </div>
+          </div>
+          <div class="zone-block zone-users">
+            <div class="zone-header">VLAN 20 — Usuarios</div>
+            <div class="zone-body">
+              <div class="zone-vlan">ID: 20</div>
+              <div class="zone-subnet">10.10.20.0/24</div>
+              <span class="vm-chip windows">(Vacío L1)</span>
+              <div class="vm-svc">Usuarios de producción<br>acceden vía VPN desde L2<br>o APs físicos (futuro)</div>
+            </div>
+          </div>
+          <div class="zone-block zone-dmz">
+            <div class="zone-header">VLAN 30 — DMZ</div>
+            <div class="zone-body">
+              <div class="zone-vlan">ID: 30</div>
+              <div class="zone-subnet">10.10.30.0/28</div>
+              <span class="vm-chip ubuntu">VM-DOCKER-APP</span>
+              <div class="vm-svc">API Gateway (NestJS 11)<br>Frontend Angular 20 (nginx)<br>Única zona expuesta a internet</div>
+            </div>
+          </div>
+          <div class="zone-block zone-svcs">
+            <div class="zone-header">VLAN 40 — Servicios</div>
+            <div class="zone-body">
+              <div class="zone-vlan">ID: 40</div>
+              <div class="zone-subnet">10.10.40.0/24</div>
+              <span class="vm-chip ubuntu">VM-DOCKER-APP</span>
+              <span class="vm-chip ubuntu">VM-DOCKER-SVC</span>
+              <div class="vm-svc">NATS Server (mensajería)<br>auth-ms · person-ms<br>sales-invent-ms · strategic-ms</div>
+            </div>
+          </div>
+          <div class="zone-block zone-data">
+            <div class="zone-header">VLAN 50 — Datos</div>
+            <div class="zone-body">
+              <div class="zone-vlan">ID: 50</div>
+              <div class="zone-subnet">10.10.50.0/28</div>
+              <span class="vm-chip ubuntu">VM-DOCKER-DB</span>
+              <div class="vm-svc">PostgreSQL: person-db<br>PostgreSQL: sales-invent-db<br>PostgreSQL: strategic-db · auth-db</div>
+            </div>
+          </div>
+          <div class="zone-block zone-mgmt">
+            <div class="zone-header">VLAN 60 — Gestión</div>
+            <div class="zone-body">
+              <div class="zone-vlan">ID: 60</div>
+              <div class="zone-subnet">10.10.60.0/28</div>
+              <span class="vm-chip monitor">VM-MONITOR</span>
+              <div class="vm-svc">Zabbix Server 6.x<br>Grafana dashboards<br>SNMP polling toda la infra</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── S10: TOPOLOGÍA LÓGICA LOCAL 2 ── -->
+    <div class="section" id="s10">
+      <div class="section-header">
+        <div class="section-number">10</div>
+        <div>
+          <div class="section-title">Topología Lógica — Local 2 (Ventas / Administración)</div>
+          <div class="section-subtitle">Segmentación y VMs del segundo local</div>
+        </div>
+      </div>
+      <p>El Local 2 es más liviano: dos workstations virtuales Windows 11 acceden al stack ERP alojado en el Local 1 a través del túnel IPSec, con pfSense-L2 como firewall local y punto de terminación VPN.</p>
+
+      <div class="zone-grid-2" style="margin-top:16px;">
+        <div class="zone-block zone-users">
+          <div class="zone-header">VLAN 20 — Usuarios L2</div>
+          <div class="zone-body">
+            <div class="zone-vlan">ID: 20</div>
+            <div class="zone-subnet">10.20.20.0/24</div>
+            <span class="vm-chip windows">VM-PC-VENTAS</span>
+            <span class="vm-chip windows">VM-PC-ADMIN</span>
+            <div class="vm-svc">Acceso al ERP vía VPN IPSec<br>Dominio AD del Local 1 (10.10.10.x)<br>Navegador → API GW 10.10.30.x</div>
+          </div>
+        </div>
+        <div class="zone-block zone-admin">
+          <div class="zone-header">VLAN 10 — Admin L2</div>
+          <div class="zone-body">
+            <div class="zone-vlan">ID: 10</div>
+            <div class="zone-subnet">10.20.10.0/24</div>
+            <span class="vm-chip pfsense">VM-PFSENSE-L2</span>
+            <div class="vm-svc">pfSense Local 2<br>Firewall perimetral<br>VPN IPSec → pfSense-L1<br>DHCP para VLANs L2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── S10b: TOPOLOGÍA LÓGICA LOCAL 3 ── -->
+    <div class="section" id="s10b">
+      <div class="section-header">
+        <div class="section-number">10b</div>
+        <div>
+          <div class="section-title">Topología Lógica — Local 3 (Segunda Planta de Producción)</div>
+          <div class="section-subtitle">Segmentación virtual y flujo de datos — ESXi Host 3</div>
+        </div>
+      </div>
+      <p>El Local 3 replica la arquitectura reducida del Local 2 al ser también un local con VLANs de soporte (VLAN10, VLAN20, VLAN60, VLAN99). pfSense-L3 actúa como firewall local y termina dos túneles VPN del mesh: uno hacia L1 y otro hacia L2. Los usuarios de producción acceden al ERP alojado en L1 a través del túnel VPN correspondiente.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 10b.1 — Topología Lógica Local 3 — Zonas y VMs</div>
+        <pre>
+ ┌──────────────── ESXi HOST 3 — LOCAL 3 (SEGUNDA PLANTA) ─────────────────┐
+ │                                                                           │
+ │  INTERNET─WAN1──►  WAN1 ┐                                                │
+ │  INTERNET─WAN2──►  WAN2 ├──► VM-PFSENSE-L3 (pfSense 2.7)               │
+ │  VPN ↔ L1  ·  ↔ L2 ─►  VPN  ┘   GW VLANs: 10.30.x.1                   │
+ │                                   Firewall · DHCP · NAT · IPSec mesh     │
+ │                                        │                                  │
+ │    ┌────────────────────┬──────────────┼──────────────────┐              │
+ │    │                    │              │                  │              │
+ │ ┌──▼──────────┐ ┌───────▼────┐ ┌──────▼──────┐ ┌────────▼──┐           │
+ │ │  VLAN 10    │ │  VLAN 20   │ │  VLAN 60    │ │  VLAN 99  │           │
+ │ │  ADMIN      │ │  USUARIOS  │ │  GESTIÓN    │ │  MGMT     │           │
+ │ │ 10.30.10/24 │ │10.30.20/24 │ │10.30.60/28  │ │10.30.99/28│           │
+ │ │─────────────│ │────────────│ │─────────────│ │───────────│           │
+ │ │ (vacío L3)  │ │VM-PC-PROD  │ │ Agente      │ │ VMkernel  │           │
+ │ │             │ │-L3         │ │ Zabbix L3   │ │ ESXi mgmt │           │
+ │ │             │ │Win11 Pro   │ │             │ │           │           │
+ │ │             │ │Acceso ERP  │ │             │ │           │           │
+ │ │             │ │ vía VPN→L1 │ │             │ │           │           │
+ │ └─────────────┘ └────────────┘ └─────────────┘ └───────────┘           │
+ └───────────────────────────────────────────────────────────────────────────┘</pre>
+      </div>
+    </div>
+
+    <!-- ── S11: VPN INTER-LOCAL ── -->
+    <div class="section" id="s11">
+      <div class="section-header">
+        <div class="section-number">11</div>
+        <div>
+          <div class="section-title">Conectividad Inter-Local — VPN Mesh IPSec (3 Túneles)</div>
+          <div class="section-subtitle">Arquitectura mesh completa: L1↔L2, L1↔L3, L2↔L3</div>
+        </div>
+      </div>
+      <p>La comunicación entre los tres locales de Franco's SAC se establece mediante una topología VPN mesh con 3 túneles IPSec site-to-site independientes entre las instancias pfSense de cada local. Todos los túneles atraviesan la red del laboratorio UPeU (172.17.25.x) y garantizan cifrado extremo-a-extremo conforme a los requerimientos de seguridad del proyecto.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 11.1 — VPN Mesh IPSec — 3 Túneles Site-to-Site</div>
+        <pre>
+    LOCAL 1 — PRODUCCIÓN           LOCAL 2 — VENTAS/ADMIN       LOCAL 3 — 2ª PLANTA
+    ESXi Host 1 · 172.17.25.7      ESXi Host 2                  ESXi Host 3
+  ┌──────────────────────────┐  ┌────────────────────────┐  ┌────────────────────────┐
+  │     VM-PFSENSE-L1        │  │    VM-PFSENSE-L2       │  │    VM-PFSENSE-L3       │
+  │  WAN1: 172.17.25.x       │  │  WAN1: (IP lab)        │  │  WAN1: (IP lab)        │
+  │  WAN2: 192.168.100.x     │  │  WAN2: (ISP4 sim.)     │  │  WAN2: (ISP6 sim.)     │
+  │  LAN trunk: 10.10.x.1    │  │  LAN trunk: 10.20.x.1  │  │  LAN trunk: 10.30.x.1  │
+  └────────┬─────────────────┘  └──────┬─────────────────┘  └───────┬────────────────┘
+           │                           │                             │
+           ├───────── IPSec L1↔L2 ─────┤                             │
+           │   Tunnel: 172.16.0.0/30   │                             │
+           │   L1: 172.16.0.1          │                             │
+           │   L2: 172.16.0.2          │                             │
+           │                                                         │
+           ├───────────────────── IPSec L1↔L3 ──────────────────────┤
+           │           Tunnel: 172.16.1.0/30                        │
+           │           L1: 172.16.1.1  ·  L3: 172.16.1.2           │
+           │                           │                             │
+                       └──────── IPSec L2↔L3 ──────────────────────┘
+                                 Tunnel: 172.16.2.0/30
+                                 L2: 172.16.2.1  ·  L3: 172.16.2.2
+
+  Parámetros comunes: IKEv2 · AES-256-GCM · SHA-256 · DH Group 14 (2048-bit) · DPD habilitado</pre>
+      </div>
+
+      <table class="formal-table" style="margin-top:16px;">
+        <thead>
+          <tr><th>Parámetro</th><th>Valor configurado</th><th>Justificación</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Protocolo VPN</strong></td><td>IPSec IKEv2</td><td>Estándar de la industria, soportado nativamente en pfSense. Mayor seguridad y rendimiento que IKEv1</td></tr>
+          <tr><td><strong>Cifrado</strong></td><td>AES-256-GCM</td><td>Cifrado autenticado de alta seguridad. Recomendado por NIST SP 800-38D</td></tr>
+          <tr><td><strong>Autenticación</strong></td><td>Pre-Shared Key (PSK) + SHA-256</td><td>Suficiente para entorno de laboratorio académico. En producción real se recomendaría PKI</td></tr>
+          <tr><td><strong>Subred del túnel</strong></td><td>172.16.0.0/30</td><td>Subred mínima (/30 = 2 hosts) para los endpoints del túnel</td></tr>
+          <tr><td><strong>Failover VPN</strong></td><td>DPD (Dead Peer Detection) habilitado</td><td>Reconexión automática del túnel ante pérdida de conectividad</td></tr>
+          <tr><td><strong>NAT Traversal</strong></td><td>Habilitado</td><td>Permite el túnel cuando los endpoints están detrás de NAT (contexto de laboratorio)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── S12: ESQUEMA IP ── -->
+    <div class="section" id="s12">
+      <div class="section-header">
+        <div class="section-number">12</div>
+        <div>
+          <div class="section-title">Esquema de Direccionamiento IP</div>
+          <div class="section-subtitle">Tabla completa de subredes, rangos y gateways</div>
+        </div>
+      </div>
+      <div class="info-box navy">
+        <div class="info-icon">📐</div>
+        <div class="info-content">
+          <div class="info-label">Convención de direccionamiento</div>
+          <div class="info-text"><strong>10.10.x.x</strong> = Local 1 (Producción) · <strong>10.20.x.x</strong> = Local 2 (Ventas/Admin) · <strong>10.30.x.x</strong> = Local 3 (2ª Planta) · <strong>172.16.0–2.0/30</strong> = Túneles VPN mesh (L1↔L2, L1↔L3, L2↔L3) · <strong>172.17.25.x</strong> = Red del laboratorio UPeU (WAN). El segundo octeto identifica la sede; el tercer octeto identifica la VLAN.</div>
+        </div>
+      </div>
+      <table class="formal-table">
+        <thead>
+          <tr><th>Sede</th><th>VLAN</th><th>Nombre</th><th>Subred</th><th>Máscara</th><th>Gateway (pfSense)</th><th>Rango hosts</th><th>Hosts máx.</th></tr>
+        </thead>
+        <tbody>
+          <tr><td rowspan="7"><strong>Local 1</strong></td><td>10</td><td>Admin</td><td>10.10.10.0/24</td><td>255.255.255.0</td><td>10.10.10.1</td><td>10.10.10.2 – .254</td><td>253</td></tr>
+          <tr><td>20</td><td>Usuarios</td><td>10.10.20.0/24</td><td>255.255.255.0</td><td>10.10.20.1</td><td>10.10.20.2 – .254</td><td>253</td></tr>
+          <tr><td>30</td><td>DMZ</td><td>10.10.30.0/28</td><td>255.255.255.240</td><td>10.10.30.1</td><td>10.10.30.2 – .14</td><td>13</td></tr>
+          <tr><td>40</td><td>Servicios</td><td>10.10.40.0/24</td><td>255.255.255.0</td><td>10.10.40.1</td><td>10.10.40.2 – .254</td><td>253</td></tr>
+          <tr><td>50</td><td>Datos</td><td>10.10.50.0/28</td><td>255.255.255.240</td><td>10.10.50.1</td><td>10.10.50.2 – .14</td><td>13</td></tr>
+          <tr><td>60</td><td>Gestión</td><td>10.10.60.0/28</td><td>255.255.255.240</td><td>10.10.60.1</td><td>10.10.60.2 – .14</td><td>13</td></tr>
+          <tr><td>99</td><td>Mgmt ESXi</td><td>10.10.99.0/28</td><td>255.255.255.240</td><td>10.10.99.1</td><td>10.10.99.2 – .14</td><td>13</td></tr>
+          <tr><td rowspan="4"><strong>Local 2</strong></td><td>10</td><td>Admin</td><td>10.20.10.0/24</td><td>255.255.255.0</td><td>10.20.10.1</td><td>10.20.10.2 – .254</td><td>253</td></tr>
+          <tr><td>20</td><td>Usuarios</td><td>10.20.20.0/24</td><td>255.255.255.0</td><td>10.20.20.1</td><td>10.20.20.2 – .254</td><td>253</td></tr>
+          <tr><td>60</td><td>Gestión</td><td>10.20.60.0/28</td><td>255.255.255.240</td><td>10.20.60.1</td><td>10.20.60.2 – .14</td><td>13</td></tr>
+          <tr><td>99</td><td>Mgmt ESXi</td><td>10.20.99.0/28</td><td>255.255.255.240</td><td>10.20.99.1</td><td>10.20.99.2 – .14</td><td>13</td></tr>
+          <tr><td rowspan="4"><strong>Local 3</strong></td><td>10</td><td>Admin</td><td>10.30.10.0/24</td><td>255.255.255.0</td><td>10.30.10.1</td><td>10.30.10.2 – .254</td><td>253</td></tr>
+          <tr><td>20</td><td>Usuarios</td><td>10.30.20.0/24</td><td>255.255.255.0</td><td>10.30.20.1</td><td>10.30.20.2 – .254</td><td>253</td></tr>
+          <tr><td>60</td><td>Gestión</td><td>10.30.60.0/28</td><td>255.255.255.240</td><td>10.30.60.1</td><td>10.30.60.2 – .14</td><td>13</td></tr>
+          <tr><td>99</td><td>Mgmt ESXi</td><td>10.30.99.0/28</td><td>255.255.255.240</td><td>10.30.99.1</td><td>10.30.99.2 – .14</td><td>13</td></tr>
+          <tr><td><strong>VPN L1↔L2</strong></td><td>—</td><td>Túnel IPSec</td><td>172.16.0.0/30</td><td>255.255.255.252</td><td>—</td><td>172.16.0.1 – .2</td><td>2</td></tr>
+          <tr><td><strong>VPN L1↔L3</strong></td><td>—</td><td>Túnel IPSec</td><td>172.16.1.0/30</td><td>255.255.255.252</td><td>—</td><td>172.16.1.1 – .2</td><td>2</td></tr>
+          <tr><td><strong>VPN L2↔L3</strong></td><td>—</td><td>Túnel IPSec</td><td>172.16.2.0/30</td><td>255.255.255.252</td><td>—</td><td>172.16.2.1 – .2</td><td>2</td></tr>
+          <tr><td><strong>WAN L1</strong></td><td>—</td><td>ISP1 (Cisco)</td><td>172.17.25.0/24</td><td>255.255.255.0</td><td>172.17.25.121</td><td>DHCP/estático lab</td><td>—</td></tr>
+          <tr><td><strong>WAN L1</strong></td><td>—</td><td>ISP2 (FortiGate)</td><td>192.168.100.0/24</td><td>255.255.255.0</td><td>192.168.100.1</td><td>192.168.100.2 – .254</td><td>—</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="8">Los rangos /28 en DMZ (VLAN 30), Datos (VLAN 50) y Gestión (VLAN 60) limitan deliberadamente el número de hosts por principio de mínima superficie de ataque.</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- ── S13: FLUJOS DE TRÁFICO ── -->
+    <div class="section" id="s13">
+      <div class="section-header">
+        <div class="section-number">13</div>
+        <div>
+          <div class="section-title">Flujos de Tráfico por Zona</div>
+          <div class="section-subtitle">Matriz de comunicación permitida / denegada entre VLANs</div>
+        </div>
+      </div>
+      <p>pfSense gestiona el tráfico inter-VLAN mediante reglas de firewall que aplican el principio de <strong>mínimo privilegio</strong>. Solo se permiten los flujos estrictamente necesarios para el funcionamiento del stack ERP.</p>
+      <table class="flow-table">
+        <thead>
+          <tr><th>Origen</th><th>Destino</th><th>Puerto / Protocolo</th><th>Estado</th><th>Justificación</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>INTERNET</td><td>VLAN 30 (DMZ)</td><td>TCP 80/443</td><td><span class="allow">PERMITIDO</span></td><td>Acceso al Frontend Angular y API Gateway desde internet</td></tr>
+          <tr><td>INTERNET</td><td>VLAN 10/20/40/50/60</td><td>Cualquiera</td><td><span class="deny">DENEGADO</span></td><td>Solo la DMZ es pública. Las demás zonas son privadas</td></tr>
+          <tr><td>VLAN 20 (Usuarios)</td><td>VLAN 30 (DMZ)</td><td>TCP 80/443</td><td><span class="allow">PERMITIDO</span></td><td>Usuarios acceden al frontend del ERP vía navegador</td></tr>
+          <tr><td>VLAN 20 (Usuarios)</td><td>VLAN 10 (Admin)</td><td>TCP 389/636 (LDAP)</td><td><span class="allow">PERMITIDO</span></td><td>Autenticación de usuarios contra Active Directory</td></tr>
+          <tr><td>VLAN 20 (Usuarios)</td><td>VLAN 40/50</td><td>Cualquiera</td><td><span class="deny">DENEGADO</span></td><td>Usuarios no tienen acceso directo a microservicios ni DBs</td></tr>
+          <tr><td>VLAN 30 (DMZ)</td><td>VLAN 40 (Servicios)</td><td>TCP 4222 (NATS)</td><td><span class="allow">PERMITIDO</span></td><td>API Gateway comunica con NATS para enrutar a microservicios</td></tr>
+          <tr><td>VLAN 30 (DMZ)</td><td>VLAN 50 (Datos)</td><td>Cualquiera</td><td><span class="deny">DENEGADO</span></td><td>La DMZ nunca accede directamente a la base de datos</td></tr>
+          <tr><td>VLAN 40 (Servicios)</td><td>VLAN 50 (Datos)</td><td>TCP 5432 (PostgreSQL)</td><td><span class="allow">PERMITIDO</span></td><td>Microservicios acceden a sus DBs PostgreSQL dedicadas</td></tr>
+          <tr><td>VLAN 40 (Servicios)</td><td>VLAN 10 (Admin)</td><td>TCP 389/636 (LDAP)</td><td><span class="cond">CONDICIONAL</span></td><td>auth-ms puede consultar AD para validación de identidades</td></tr>
+          <tr><td>VLAN 60 (Gestión)</td><td>Todas las VLANs</td><td>UDP 161 (SNMP), ICMP</td><td><span class="allow">PERMITIDO</span></td><td>Zabbix monitorea todos los dispositivos y VMs</td></tr>
+          <tr><td>VLAN 10 (Admin)</td><td>Todas las VLANs</td><td>RDP/SSH 22/3389</td><td><span class="cond">CONDICIONAL</span></td><td>Administradores pueden gestionar servicios vía credenciales AD</td></tr>
+          <tr><td>Local 2 (via VPN)</td><td>VLAN 30 (DMZ)</td><td>TCP 80/443</td><td><span class="allow">PERMITIDO</span></td><td>Workstations de ventas/admin acceden al ERP desde L2</td></tr>
+          <tr><td>Local 2 (via VPN)</td><td>VLAN 50 (Datos)</td><td>Cualquiera</td><td><span class="deny">DENEGADO</span></td><td>El Local 2 no tiene acceso directo a las bases de datos</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── S14: ESTÁNDARES ── -->
+    <div class="section" id="s14">
+      <div class="section-header">
+        <div class="section-number">14</div>
+        <div>
+          <div class="section-title">Alineación con Estándares Internacionales</div>
+          <div class="section-subtitle">Justificación normativa del diseño topológico</div>
+        </div>
+      </div>
+      <table class="formal-table">
+        <thead>
+          <tr><th>Estándar</th><th>Elemento del diseño aplicado</th><th>Referencia específica</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IEEE 802.1Q</strong></td>
+            <td>Etiquetado VLAN en todos los trunk ports del switch Cisco y en los vSwitches ESXi (port groups con VLAN ID específico). VLAN ID 4095 para trunk completo hacia pfSense</td>
+            <td>IEEE 802.1Q-2018 — Virtual Bridged Local Area Networks</td>
+          </tr>
+          <tr>
+            <td><strong>IEEE 802.3</strong></td>
+            <td>vmnic0 opera a 100 Mbps full-duplex (Fast Ethernet) en negociación automática. vmnic1 y vmnic2 en modo igbn (Gigabit) disponibles para activación</td>
+            <td>IEEE 802.3u (100BASE-TX) · IEEE 802.3ab (1000BASE-T)</td>
+          </tr>
+          <tr>
+            <td><strong>TIA/EIA-568</strong></td>
+            <td>La arquitectura define topología estrella jerárquica (switch core → hypervisor → VMs), alineada al modelo de cableado estructurado horizontal. La segmentación física por NIC refleja la separación de horizontes de cable por función</td>
+            <td>TIA/EIA-568-C.0 — Generic Telecommunications Cabling</td>
+          </tr>
+          <tr>
+            <td><strong>ISO/IEC 11801</strong></td>
+            <td>El diseño separa la red de gestión (VLAN 99 / vmnic dedicado) de las redes de datos, conforme al principio de separación funcional de canales definido en la norma. Se contempla redundancia de uplinks (vmnic0 activo, vmnic1/2 disponibles)</td>
+            <td>ISO/IEC 11801:2017 — Information technology — Generic cabling for customer premises</td>
+          </tr>
+          <tr>
+            <td><strong>NIST SP 800-53</strong></td>
+            <td>La segmentación en DMZ, zona de servicios y zona de datos implementa los controles SC-7 (Boundary Protection) y SC-32 (Information System Partitioning). La VPN IPSec IKEv2/AES-256 cumple SC-8 (Transmission Confidentiality)</td>
+            <td>NIST SP 800-53 Rev. 5 — Security and Privacy Controls</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── S15: CONCLUSIONES ── -->
+    <div class="section" id="s15">
+      <div class="section-header">
+        <div class="section-number">15</div>
+        <div>
+          <div class="section-title">Conclusiones</div>
+          <div class="section-subtitle">Síntesis del diseño topológico</div>
+        </div>
+      </div>
+      <div class="info-box navy">
+        <div class="info-icon">💡</div>
+        <div class="info-content">
+          <div class="info-label">Conclusión principal</div>
+          <div class="info-text">El diseño topológico lógico y físico de Franco's SAC garantiza la correcta alineación entre la arquitectura de red (infraestructura) y el stack ERP de microservicios (desarrollo). La separación en VLANs funcionales por local, la doble redundancia WAN y la VPN mesh IPSec entre los 3 locales proveen una base técnica sólida para las fases de segmentación (CE0313), redundancia (CE0314) e implementación (Semestre 2).</div>
+        </div>
+      </div>
+      <p>El diseño cumple los siguientes objetivos establecidos en el CE0311:</p>
+      <div class="two-col">
+        <div class="stat-card"><div class="stat-label">Locales simulados</div><div class="stat-value">3</div><div class="stat-desc">L1 Producción · L2 Admin/Ventas · L3 2ª Planta</div></div>
+        <div class="stat-card"><div class="stat-label">VMs del proyecto</div><div class="stat-value">11</div><div class="stat-desc">6 en Host 1 · 3 en Host 2 · 2 en Host 3</div></div>
+        <div class="stat-card"><div class="stat-label">Redundancia WAN</div><div class="stat-value">Dual-ISP</div><div class="stat-desc">Cisco Router (ISP1) + FortiGate 40F (ISP2) · L1</div></div>
+        <div class="stat-card"><div class="stat-label">VPN Mesh inter-local</div><div class="stat-value">3 túneles</div><div class="stat-desc">IPSec IKEv2 · AES-256-GCM · L1↔L2 · L1↔L3 · L2↔L3</div></div>
+      </div>
+      <p>El presente documento constituye la base para los entregables <strong>CE0313 (Segmentación de Red)</strong> y <strong>CE0314 (Plan de Redundancia y Alta Disponibilidad)</strong>, completando así la documentación técnica del Entregable 1.</p>
+    </div>
+
+    <!-- ── S16: FIRMAS ── -->
+    <div class="section" id="s16">
+      <div class="section-header">
+        <div class="section-number">16</div>
+        <div>
+          <div class="section-title">Firmas y Aprobaciones</div>
+          <div class="section-subtitle">Validación formal del documento</div>
+        </div>
+      </div>
+      <div class="signature-grid">
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">Ruben Mark Salazar</div>
+          <div class="sig-role">Director del Proyecto<br>Jefe de Infraestructura y Seguridad de TI</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Nombre del asesor]</div>
+          <div class="sig-role">Asesor del Proyecto<br>Docente — Escuela de Ing. de Sistemas</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Coordinador de área]</div>
+          <div class="sig-role">Coordinador de Línea ITI<br>Universidad Peruana Unión</div>
+        </div>
+      </div>
+      <div class="info-box gold" style="margin-top:24px;">
+        <div class="info-icon">📝</div>
+        <div class="info-content">
+          <div class="info-label">Declaración ética — Código ACM</div>
+          <div class="info-text">El diseño topológico documentado en el presente entregable ha sido elaborado con responsabilidad profesional, basado en los requerimientos reales de Franco's SAC y las capacidades técnicas del laboratorio UPeU. Se declara que la información es técnicamente veraz y cumple los principios éticos del <strong>Código de Ética de la ACM</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /doc-body -->
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>CE0312 · Topología Lógica y Física · Franco's SAC · UPeU 2026</span>
+    <span class="confidential">USO ACADÉMICO RESTRINGIDO</span>
+    <span>Línea ITI · Ingeniería de Sistemas</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>

@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Acta de Conformidad — Proyecto de Fin de Carrera</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap');
+
+    :root {
+      --navy:   #1B2A4A;
+      --blue:   #2E5090;
+      --gold:   #C8A951;
+      --gold-lt:#F0DFA0;
+      --bg:     #F4F6FA;
+      --white:  #FFFFFF;
+      --text:   #1E1E2E;
+      --muted:  #6B7280;
+      --border: #D1D9E6;
+      --success:#1A7A4A;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 10.5pt;
+      line-height: 1.7;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--white);
+      box-shadow: 0 4px 32px rgba(27,42,74,.15);
+    }
+
+    /* ── HEADER INSTITUCIONAL ── */
+    .inst-header {
+      background: var(--navy);
+      padding: 0;
+      display: flex;
+      align-items: stretch;
+    }
+    .inst-header .gold-bar {
+      width: 8px;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+    .inst-header .inst-info {
+      flex: 1;
+      padding: 22px 32px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .inst-logo {
+      width: 52px; height: 52px;
+      border-radius: 10px;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--navy);
+      flex-shrink: 0;
+    }
+    .inst-texts { flex: 1; }
+    .inst-texts .univ {
+      font-size: 10px;
+      color: rgba(255,255,255,.55);
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+    .inst-texts .school {
+      font-size: 13.5px;
+      color: var(--white);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+    .inst-texts .program {
+      font-size: 10px;
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      letter-spacing: .5px;
+    }
+    .inst-header .doc-ref {
+      text-align: right;
+      padding: 22px 32px;
+    }
+    .inst-header .doc-ref .ref-label {
+      font-size: 8.5px;
+      color: rgba(255,255,255,.4);
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .inst-header .doc-ref .ref-code {
+      font-size: 13px;
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .inst-header .doc-ref .ref-date {
+      font-size: 9.5px;
+      color: rgba(255,255,255,.5);
+    }
+
+    /* ── TITLE BAND ── */
+    .title-band {
+      background: linear-gradient(90deg, #2E5090 0%, #1B2A4A 100%);
+      padding: 28px 48px;
+      text-align: center;
+      border-bottom: 4px solid var(--gold);
+    }
+    .title-band .acta-label {
+      font-size: 10px;
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .title-band h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: .3px;
+      margin-bottom: 6px;
+    }
+    .title-band .subtitle {
+      font-size: 11.5px;
+      color: rgba(255,255,255,.65);
+    }
+
+    /* ── BODY ── */
+    .body { padding: 40px 48px; }
+
+    /* ── SECTION ── */
+    .sec { margin-bottom: 32px; }
+
+    .sec-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--navy);
+      padding: 7px 16px;
+      border-radius: 4px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .sec-title .num {
+      background: var(--gold);
+      color: var(--navy);
+      width: 20px; height: 20px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* ── DATA TABLE ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+    .data-table tr { border-bottom: 1px solid var(--border); }
+    .data-table tr:last-child { border-bottom: 2px solid var(--navy); }
+    .data-table td {
+      padding: 9px 14px;
+      vertical-align: top;
+    }
+    .data-table td.lbl {
+      width: 34%;
+      background: #F0F4FA;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 9.5px;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      border-right: 2px solid var(--border);
+    }
+    .data-table td.val {
+      background: var(--white);
+      color: var(--text);
+    }
+    .data-table td.val.fill {
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── TEAM TABLE ── */
+    .team-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+    .team-table thead tr {
+      background: var(--navy);
+      color: var(--white);
+    }
+    .team-table thead th {
+      padding: 9px 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 9px;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      text-align: left;
+    }
+    .team-table tbody tr:nth-child(even) { background: #F0F4FA; }
+    .team-table tbody tr:nth-child(odd)  { background: var(--white); }
+    .team-table tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .role-badge {
+      display: inline-block;
+      background: #EEF1F8;
+      color: var(--navy);
+      border: 1px solid var(--border);
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 8.5px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+    .role-badge.gold {
+      background: var(--gold-lt);
+      color: #7A6010;
+      border-color: var(--gold);
+    }
+
+    /* ── TEXT BLOCK ── */
+    .text-block {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 18px;
+      font-size: 10.5px;
+      line-height: 1.75;
+    }
+    .fill-line {
+      border-bottom: 1px dashed var(--muted);
+      min-height: 22px;
+      margin: 6px 0;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 10px;
+      padding: 2px 4px;
+    }
+    .fill-line::placeholder { color: var(--muted); }
+
+    /* ── SCOPE LIST ── */
+    .scope-list {
+      list-style: none;
+      padding: 0;
+    }
+    .scope-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+    }
+    .scope-list li:last-child { border-bottom: none; }
+    .scope-list li::before {
+      content: '✓';
+      color: var(--success);
+      font-weight: 800;
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── HITOS ── */
+    .hitos-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .hito-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-top: 3px solid var(--navy);
+      border-radius: 0 0 6px 6px;
+      padding: 12px 10px;
+      text-align: center;
+    }
+    .hito-card.active { border-top-color: var(--gold); }
+    .hito-n {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .hito-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+    .hito-week {
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    /* ── COMMITMENT TEXT ── */
+    .commitment {
+      background: #EEF1F8;
+      border: 1px solid var(--blue);
+      border-left: 4px solid var(--navy);
+      border-radius: 0 6px 6px 0;
+      padding: 16px 20px;
+      font-size: 10px;
+      line-height: 1.75;
+      margin: 8px 0;
+    }
+
+    /* ── SIGNATURE SECTION ── */
+    .sig-section {
+      margin-top: 8px;
+    }
+    .sig-grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .sig-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 20px;
+    }
+    .sig-box { text-align: center; }
+    .sig-space {
+      height: 52px;
+      border-bottom: 1px solid var(--navy);
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .sig-space .fingerprint {
+      position: absolute;
+      bottom: 4px;
+      right: 8px;
+      font-size: 18px;
+      color: var(--border);
+    }
+    .sig-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10.5px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+    .sig-role {
+      font-size: 9px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .sig-dni {
+      font-size: 8.5px;
+      color: var(--border);
+      font-family: 'Montserrat', sans-serif;
+      margin-top: 4px;
+    }
+
+    /* ── APPROVAL STAMP ── */
+    .approval-row {
+      display: flex;
+      gap: 20px;
+      align-items: stretch;
+      margin-top: 28px;
+    }
+    .stamp-box {
+      flex: 1;
+      border: 2px dashed var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .stamp-box .stamp-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .stamp-box .stamp-icon { font-size: 28px; }
+    .stamp-box.approved {
+      border-color: var(--success);
+      background: #EBF7F1;
+    }
+    .stamp-box.approved .stamp-label { color: var(--success); }
+
+    .obs-box {
+      flex: 2;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+    .obs-box .obs-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .obs-lines { }
+    .obs-line {
+      border-bottom: 1px dashed var(--border);
+      height: 22px;
+      margin-bottom: 4px;
+    }
+
+    /* ── INFO BOX ── */
+    .info-box {
+      border-radius: 6px;
+      padding: 13px 18px;
+      margin: 12px 0;
+      display: flex;
+      gap: 12px;
+      font-size: 10px;
+    }
+    .info-box.gold { background: #FDF8EC; border-left: 4px solid var(--gold); }
+    .info-box.danger { background: #FDEEEE; border-left: 4px solid #C0392B; }
+    .info-label-sm {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px; font-weight: 800;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+    .info-box.gold .info-label-sm { color: #B7770D; }
+    .info-box.danger .info-label-sm { color: #C0392B; }
+
+    /* ── FOOTER ── */
+    .footer {
+      background: var(--navy);
+      padding: 13px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer span {
+      font-size: 8.5px;
+      color: rgba(255,255,255,.4);
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: .5px;
+    }
+    .footer .f-badge {
+      background: rgba(200,169,81,.15);
+      border: 1px solid rgba(200,169,81,.3);
+      color: var(--gold);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ══ HEADER INSTITUCIONAL ══ -->
+  <div class="inst-header">
+    <div class="gold-bar"></div>
+    <div class="inst-info">
+      <div class="inst-logo">U</div>
+      <div class="inst-texts">
+        <div class="univ">Universidad Peruana Unión — UPeU</div>
+        <div class="school">Escuela Profesional de Ingeniería de Sistemas</div>
+        <div class="program">Proyecto de Fin de Carrera · Línea de Infraestructura Tecnológica (ITI)</div>
+      </div>
+    </div>
+    <div class="doc-ref">
+      <div class="ref-label">N.° Documento</div>
+      <div class="ref-code">ACTA-ITI-001</div>
+      <div class="ref-date">Mayo 2026 · Semestre I</div>
+    </div>
+  </div>
+
+  <!-- ══ TITLE BAND ══ -->
+  <div class="title-band">
+    <div class="acta-label">Documento Oficial · Hito 1 · Semana 3</div>
+    <h1>Acta de Conformidad</h1>
+    <div class="subtitle">Aprobación de Propuesta de Proyecto de Fin de Carrera — Área ITI</div>
+  </div>
+
+  <!-- ══ BODY ══ -->
+  <div class="body">
+
+    <!-- §1 DATOS DEL PROYECTO -->
+    <div class="sec">
+      <div class="sec-title"><span class="num">1</span>Datos Generales del Proyecto</div>
+      <table class="data-table">
+        <tr>
+          <td class="lbl">Título del proyecto</td>
+          <td class="val">Diseño e Implementación de Infraestructura Tecnológica Híbrida para la Transformación Digital de Franco's SAC</td>
+        </tr>
+        <tr>
+          <td class="lbl">Área curricular</td>
+          <td class="val">Infraestructura Tecnológica (ITI) · Competencia CE03</td>
+        </tr>
+        <tr>
+          <td class="lbl">Línea de especialidad</td>
+          <td class="val">Conectividad · Seguridad de la Información · Centro de Datos</td>
+        </tr>
+        <tr>
+          <td class="lbl">Ciclo académico</td>
+          <td class="val">Semestre I – 2026</td>
+        </tr>
+        <tr>
+          <td class="lbl">Fecha de presentación</td>
+          <td class="val fill">_______ / _______ / 2026 &nbsp;&nbsp;(Semana 3)</td>
+        </tr>
+        <tr>
+          <td class="lbl">Código de grupo</td>
+          <td class="val fill">________________________________</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- §2 EMPRESA CLIENTE -->
+    <div class="sec">
+      <div class="sec-title"><span class="num">2</span>Datos de la Empresa Cliente</div>
+      <table class="data-table">
+        <tr>
+          <td class="lbl">Razón social</td>
+          <td class="val"><strong>Franco's SAC</strong></td>
+        </tr>
+        <tr>
+          <td class="lbl">Sector</td>
+          <td class="val">Agroindustria alimentaria — Fabricación y venta de snacks naturales</td>
+        </tr>
+        <tr>
+          <td class="lbl">Tipo de empresa</td>
+          <td class="val">PYME peruana</td>
+        </tr>
+        <tr>
+          <td class="lbl">N.° de colaboradores</td>
+          <td class="val">30 – 40+ trabajadores distribuidos en 3 locales</td>
+        </tr>
+        <tr>
+          <td class="lbl">Locales operativos</td>
+          <td class="val">Local 1: Planta de Producción &nbsp;|&nbsp; Local 2: Administración y Ventas &nbsp;|&nbsp; Local 3: Segunda Planta de Producción (TBD)</td>
+        </tr>
+        <tr>
+          <td class="lbl">Contacto de la empresa</td>
+          <td class="val"><strong>CHAVARRI CENTENO, Jorge Andrés</strong></td>
+        </tr>
+        <tr>
+          <td class="lbl">Cargo del contacto</td>
+          <td class="val fill">________________________________</td>
+        </tr>
+        <tr>
+          <td class="lbl">Teléfono / correo</td>
+          <td class="val fill">________________________________</td>
+        </tr>
+        <tr>
+          <td class="lbl">Dirección</td>
+          <td class="val fill">________________________________</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- §3 EQUIPO DE PROYECTO -->
+    <div class="sec">
+      <div class="sec-title"><span class="num">3</span>Equipo de Proyecto</div>
+      <table class="team-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Apellidos y Nombres</th>
+            <th>Código de estudiante</th>
+            <th>Rol en el proyecto</th>
+            <th>Correo institucional</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>01</strong></td>
+            <td><strong>SALAZAR [apellido], Ruben Mark</strong></td>
+            <td style="color:var(--muted);font-style:italic;">______________</td>
+            <td>
+              <span class="role-badge gold">Director del Proyecto</span><br>
+              <span style="font-size:8.5px;color:var(--muted);">Jefe de Infraestructura y Seguridad de TI</span>
+            </td>
+            <td style="color:var(--muted);font-style:italic;">______________@upeu.edu.pe</td>
+          </tr>
+          <tr>
+            <td><strong>02</strong></td>
+            <td><strong>SAUÑE [apellido], Uziel</strong></td>
+            <td style="color:var(--muted);font-style:italic;">______________</td>
+            <td>
+              <span class="role-badge">Apoyo Técnico</span><br>
+              <span style="font-size:8.5px;color:var(--muted);">Ingeniero de Infraestructura</span>
+            </td>
+            <td style="color:var(--muted);font-style:italic;">______________@upeu.edu.pe</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="info-box gold" style="margin-top:12px;">
+        <div>📝</div>
+        <div>
+          <div class="info-label-sm">Nota</div>
+          Completar el segundo apellido, código de estudiante y correo institucional de cada integrante antes de presentar el acta al coordinador.
+        </div>
+      </div>
+    </div>
+
+    <!-- §4 DESCRIPCIÓN DEL PROYECTO -->
+    <div class="sec">
+      <div class="sec-title"><span class="num">4</span>Descripción del Proyecto</div>
+      <div class="text-block">
+        El presente proyecto tiene como propósito diseñar e implementar una <strong>infraestructura tecnológica híbrida y segura</strong> para Franco's SAC, empresa del sector agroindustria alimentaria, que permita soportar su proceso de transformación digital mediante la adopción de un sistema ERP y una red corporativa estructurada.
+        <br><br>
+        Franco's SAC opera actualmente sin servidores, con una red WiFi no segmentada y sin sistemas de gestión integrados, lo que limita su capacidad operativa y su crecimiento. El proyecto abordará el diseño de una red segmentada (VLANs), la planificación del sistema de gestión de seguridad de la información (SGSI) y el diseño del centro de datos virtualizado, para su posterior implementación en los laboratorios Cisco de la Universidad Peruana Unión.
+        <br><br>
+        La solución integrará conectividad redundante entre los 3 locales de la empresa, servicios de directorio activo, DNS, ERP (Odoo Community), base de datos y monitoreo de infraestructura, todo bajo estándares internacionales <strong>ISO 27001, TIA/EIA-568, IEEE 802.x, ISO/IEC 11801, NIST CSF y Uptime Institute</strong>.
+      </div>
+    </div>
+
+    <!-- §5 ALCANCE -->
+    <div class="sec">
+      <div class="sec-title"><span class="num">5</span>Alcance del Proyecto</div>
+
+      <p style="font-size:10px;margin-bottom:10px;"><strong>Incluye:</strong></p>
+      <ul class="scope-list">
+        <li>Diseño de topología de red lógica y física para los 3 locales de Franco's SAC</li>
+        <li>Segmentación de red mediante VLANs por área (Administración, Ventas, Inventario, Producción, DMZ)</li>
+        <li>Planificación del Sistema de Gestión de Seguridad de la Información (SGSI) bajo ISO 27001</li>
+        <li>Diseño del centro de datos virtualizado (Tier I–II, Uptime Institute)</li>
+        <li>Implementación y testing de red en laboratorios Cisco de la UPeU (Semestre 2)</li>
+        <li>Implementación de controles de seguridad: firewall, IAM, backup, monitoreo</li>
+        <li>Implementación de servicios de centro de datos: AD, DNS, ERP (Odoo), base de datos</li>
+        <li>Documentación técnica formal bajo estándares internacionales</li>
+        <li>Declaración de cumplimiento ético conforme al Código ACM</li>
+      </ul>
+
+      <p style="font-size:10px;margin:12px 0 8px;"><strong>No incluye:</strong></p>
+      <ul class="scope-list" style="background:#FEF8EC;border-radius:6px;">
+        <li style="color:var(--muted);">Adquisición e instalación de hardware físico en las instalaciones de Franco's SAC</li>
+        <li style="color:var(--muted);">Desarrollo de módulos personalizados para el sistema ERP</li>
+        <li style="color:var(--muted);">Migración de datos históricos de la empresa al nuevo sistema</li>
+        <li style="color:var(--muted);">Capacitación al personal de Franco's SAC</li>
+      </ul>
+    </div>
+
+    <!-- §6 HITOS -->
+    <div class="sec">
+      <div class="sec-title"><span class="num">6</span>Cronograma de Hitos</div>
+      <div class="hitos-grid">
+        <div class="hito-card active">
+          <div class="hito-n">Hito 1</div>
+          <div class="hito-name">Aprobación de propuesta</div>
+          <div class="hito-week">📍 Semana 3</div>
+        </div>
+        <div class="hito-card">
+          <div class="hito-n">Hito 2</div>
+          <div class="hito-name">Revisión de avance 1</div>
+          <div class="hito-week">Semanas 5 – 6<br><span style="font-size:8px;color:var(--muted);">E1, E2, E3 ≥ 60%</span></div>
+        </div>
+        <div class="hito-card">
+          <div class="hito-n">Hito 3</div>
+          <div class="hito-name">Revisión de avance 2</div>
+          <div class="hito-week">Semanas 11 – 12<br><span style="font-size:8px;color:var(--muted);">E4, E5, E6 ≥ 60%</span></div>
+        </div>
+        <div class="hito-card">
+          <div class="hito-n">Hito 4</div>
+          <div class="hito-name">Sustentación Final</div>
+          <div class="hito-week">Semana 16<br><span style="font-size:8px;color:var(--muted);">100% · Defensa oral</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §7 COMPROMISO -->
+    <div class="sec">
+      <div class="sec-title"><span class="num">7</span>Declaración de Compromiso</div>
+      <div class="commitment">
+        Los estudiantes abajo firmantes declaran conocer y aceptar los términos, condiciones y cronograma del Proyecto de Fin de Carrera en la línea de <strong>Infraestructura Tecnológica (ITI)</strong>, comprometiéndose a:
+        <br><br>
+        (i) Desarrollar los seis entregables requeridos conforme a las rúbricas y estándares establecidos en la Guía de Evaluación del Proyecto de Fin de Carrera de la Escuela Profesional de Ingeniería de Sistemas de la UPeU;<br>
+        (ii) Cumplir con los hitos y fechas del cronograma académico aprobado;<br>
+        (iii) Actuar con responsabilidad ética profesional en todo momento, conforme al <strong>Código de Ética de la ACM</strong>;<br>
+        (iv) Informar oportunamente al asesor y coordinador sobre cualquier cambio en el alcance o condiciones del proyecto.
+        <br><br>
+        Asimismo, el contacto de la empresa <strong>Franco's SAC</strong> declara conocer el alcance del proyecto, autorizar el uso de la información proporcionada con fines académicos y comprometerse a brindar las facilidades necesarias para el levantamiento de requerimientos.
+      </div>
+    </div>
+
+    <!-- §8 FIRMAS -->
+    <div class="sec sig-section">
+      <div class="sec-title"><span class="num">8</span>Firmas y Aprobaciones</div>
+
+      <!-- Equipo -->
+      <p style="font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">Equipo de Proyecto</p>
+      <div class="sig-grid-2">
+        <div class="sig-box">
+          <div class="sig-space"><span class="fingerprint">✍</span></div>
+          <div class="sig-name">SALAZAR [apellido], Ruben Mark</div>
+          <div class="sig-role">Director del Proyecto<br>Jefe de Infraestructura y Seguridad de TI</div>
+          <div class="sig-dni">DNI: ___________________</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-space"><span class="fingerprint">✍</span></div>
+          <div class="sig-name">SAUÑE [apellido], Uziel</div>
+          <div class="sig-role">Apoyo Técnico<br>Ingeniero de Infraestructura</div>
+          <div class="sig-dni">DNI: ___________________</div>
+        </div>
+      </div>
+
+      <!-- Empresa -->
+      <p style="font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;margin-top:24px;">Representante de la Empresa Cliente</p>
+      <div class="sig-grid-2">
+        <div class="sig-box">
+          <div class="sig-space"><span class="fingerprint">✍</span></div>
+          <div class="sig-name">CHAVARRI CENTENO, Jorge Andrés</div>
+          <div class="sig-role">Contacto de la empresa<br>Franco's SAC</div>
+          <div class="sig-dni">DNI: ___________________</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-space"></div>
+          <div class="sig-name" style="color:var(--muted);">[Sello de la empresa]</div>
+          <div class="sig-role">Franco's SAC</div>
+        </div>
+      </div>
+
+      <!-- Académico -->
+      <p style="font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;margin-top:24px;">Validación Académica</p>
+      <div class="sig-grid-3">
+        <div class="sig-box">
+          <div class="sig-space"><span class="fingerprint">✍</span></div>
+          <div class="sig-name">[Nombre del asesor]</div>
+          <div class="sig-role">Asesor del Proyecto<br>Docente — Ing. de Sistemas · UPeU</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-space"><span class="fingerprint">✍</span></div>
+          <div class="sig-name">[Coordinador de línea ITI]</div>
+          <div class="sig-role">Coordinador de Área ITI<br>Escuela de Ing. de Sistemas · UPeU</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-space"><span class="fingerprint">✍</span></div>
+          <div class="sig-name">[Director de Escuela]</div>
+          <div class="sig-role">Director de Escuela<br>Ing. de Sistemas · UPeU</div>
+        </div>
+      </div>
+
+      <!-- Aprobación + Observaciones -->
+      <div class="approval-row">
+        <div class="stamp-box">
+          <div class="stamp-icon">🔖</div>
+          <div class="stamp-label">Estado del Acta</div>
+          <div style="font-size:9.5px;color:var(--muted);margin-top:4px;">Pendiente de aprobación</div>
+        </div>
+        <div class="stamp-box">
+          <div class="stamp-icon">📅</div>
+          <div class="stamp-label">Fecha de aprobación</div>
+          <div style="font-size:10px;color:var(--muted);margin-top:6px;">_______ / _______ / 2026</div>
+        </div>
+        <div class="obs-box">
+          <div class="obs-label">Observaciones del coordinador</div>
+          <div class="obs-line"></div>
+          <div class="obs-line"></div>
+          <div class="obs-line"></div>
+          <div class="obs-line"></div>
+        </div>
+      </div>
+
+      <div class="info-box danger" style="margin-top:16px;">
+        <div>⚠️</div>
+        <div>
+          <div class="info-label-sm">Importante</div>
+          Sin la aprobación y firma del coordinador en este documento, el equipo no podrá continuar con el desarrollo de los entregables del proyecto. La aprobación debe obtenerse a más tardar en la <strong>Semana 3</strong> del semestre académico.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /body -->
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span>ACTA-ITI-001 · Proyecto de Fin de Carrera · Franco's SAC · UPeU 2026</span>
+    <span class="f-badge">DOCUMENTO OFICIAL</span>
+    <span>Hito 1 · Semana 3 · Línea ITI</span>
+  </div>
+
+</div>
+</body>
+</html>

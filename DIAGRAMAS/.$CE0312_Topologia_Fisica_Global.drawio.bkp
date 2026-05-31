@@ -1,0 +1,282 @@
+<mxfile host="app.diagrams.net" modified="2026-05-06" agent="Claude Code - Franco's SAC ITI" version="24.5.0" type="device">
+  <diagram id="topologia-fisica-global" name="Topología Física — Visión Global">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ══════════════════════════════════════════
+             TÍTULO DEL DIAGRAMA
+        ══════════════════════════════════════════ -->
+        <mxCell id="2" value="&lt;b style='font-size:16px;'&gt;Franco&apos;s SAC — Topología Física Global&lt;/b&gt;&lt;br&gt;&lt;span style='font-size:11px;color:#666;'&gt;CE0312 · Entregable 1 · Línea ITI · UPeU 2026&lt;/span&gt;"
+          style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;"
+          vertex="1" parent="1">
+          <mxGeometry x="340" y="20" width="640" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             INTERNET CLOUD
+        ══════════════════════════════════════════ -->
+        <mxCell id="10" value="&lt;b style='font-size:13px;'&gt;INTERNET&lt;/b&gt;"
+          style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;fontSize=13;fontStyle=1;verticalAlign=middle;shadow=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="510" y="90" width="300" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             ZONA LOCAL 1 — PRODUCCIÓN (fondo)
+        ══════════════════════════════════════════ -->
+        <mxCell id="20" value=""
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f4fa;strokeColor=#1B2A4A;strokeWidth=3;fontColor=#1B2A4A;fontSize=13;fontStyle=1;verticalAlign=bottom;arcSize=2;opacity=50;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="170" width="590" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="20b" value="&lt;b style='font-size:13px;color:#1B2A4A;'&gt;LOCAL 1 — PRODUCCIÓN&lt;/b&gt;"
+          style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="820" width="590" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             ZONA LOCAL 2 — VENTAS/ADMIN (fondo)
+        ══════════════════════════════════════════ -->
+        <mxCell id="21" value=""
+          style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eef1f8;strokeColor=#2E5090;strokeWidth=3;fontColor=#2E5090;fontSize=13;fontStyle=1;verticalAlign=bottom;arcSize=2;opacity=50;"
+          vertex="1" parent="1">
+          <mxGeometry x="700" y="170" width="590" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="21b" value="&lt;b style='font-size:13px;color:#2E5090;'&gt;LOCAL 2 — VENTAS / ADMINISTRACIÓN&lt;/b&gt;"
+          style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;"
+          vertex="1" parent="1">
+          <mxGeometry x="700" y="820" width="590" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             LOCAL 1 — DISPOSITIVOS
+        ══════════════════════════════════════════ -->
+
+        <!-- ISP1: Cisco Lab Router -->
+        <mxCell id="30" value="&lt;b&gt;Cisco Lab Router&lt;/b&gt;&lt;br&gt;ISP1 / WAN1&lt;br&gt;&lt;font color='#0066CC'&gt;GW: 172.17.25.121&lt;/font&gt;&lt;br&gt;&lt;font color='#666'&gt;Red: 172.17.25.0/24&lt;/font&gt;"
+          style="shape=mxgraph.cisco.routers.router;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#036897;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="100" y="270" width="80" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ISP2: FortiGate 40F -->
+        <mxCell id="31" value="&lt;b&gt;FortiGate 40F&lt;/b&gt;&lt;br&gt;ISP2 / WAN2&lt;br&gt;&lt;font color='#CC3300'&gt;LAN: 192.168.100.1&lt;/font&gt;&lt;br&gt;&lt;font color='#999'&gt;Sin licencia activa&lt;/font&gt;"
+          style="shape=mxgraph.cisco.firewalls.firewall;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#d79b00;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="440" y="270" width="80" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ESXi Host 1 -->
+        <mxCell id="40" value="&lt;b style='font-size:12px;'&gt;ESXi HOST 1&lt;/b&gt;&lt;br&gt;&lt;font color='#444'&gt;Dell Precision 7920 Tower&lt;/br&gt;ESXi 8.0 Update 3&lt;/font&gt;&lt;br&gt;&lt;font color='#0066CC'&gt;172.17.25.7 (vmk0)&lt;/font&gt;&lt;br&gt;&lt;font color='#444'&gt;6C Xeon · 31.65 GB · 348 GB&lt;/font&gt;&lt;br&gt;&lt;font color='#1A7A4A'&gt;&lt;b&gt;vmnic0 | vmnic1 | vmnic2&lt;/b&gt;&lt;/font&gt;"
+          style="shape=mxgraph.cisco.servers.standard_server;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#1A7A4A;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="265" y="480" width="90" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Cisco Switch L1 -->
+        <mxCell id="50" value="&lt;b&gt;Cisco Switch&lt;/b&gt;&lt;br&gt;&lt;font color='#444'&gt;Laboratorio UPeU&lt;/font&gt;&lt;br&gt;&lt;font color='#0066CC'&gt;IEEE 802.1Q Trunk&lt;/font&gt;&lt;br&gt;&lt;font color='#666'&gt;VLANs: 10,20,30,40,50,60,99&lt;/font&gt;"
+          style="shape=mxgraph.cisco.switches.workgroup_switch;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#036897;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="270" y="700" width="80" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             LOCAL 2 — DISPOSITIVOS
+        ══════════════════════════════════════════ -->
+
+        <!-- ISP3: Cisco Lab Router L2 -->
+        <mxCell id="32" value="&lt;b&gt;Cisco Lab Router&lt;/b&gt;&lt;br&gt;ISP3 / WAN1&lt;br&gt;&lt;font color='#0066CC'&gt;Lab segment&lt;/font&gt;&lt;br&gt;&lt;font color='#666'&gt;(a confirmar)&lt;/font&gt;"
+          style="shape=mxgraph.cisco.routers.router;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#036897;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="870" y="270" width="80" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ISP4: FortiGate / Router simulado L2 (opcional) -->
+        <mxCell id="33" value="&lt;b&gt;FortiGate / Router&lt;/b&gt;&lt;br&gt;ISP4 / WAN2&lt;br&gt;&lt;font color='#999'&gt;(simulado / TBD)&lt;/font&gt;"
+          style="shape=mxgraph.cisco.firewalls.firewall;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#d79b00;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;opacity=60;"
+          vertex="1" parent="1">
+          <mxGeometry x="1110" y="270" width="80" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ESXi Host 2 -->
+        <mxCell id="41" value="&lt;b style='font-size:12px;'&gt;ESXi HOST 2&lt;/b&gt;&lt;br&gt;&lt;font color='#444'&gt;Laboratorio UPeU&lt;/font&gt;&lt;br&gt;&lt;font color='#444'&gt;≥ 16 GB RAM · ≥ 500 GB&lt;/font&gt;&lt;br&gt;&lt;font color='#2E5090'&gt;&lt;b&gt;vmnic0 | vmnic1 | vmnic2&lt;/b&gt;&lt;/font&gt;"
+          style="shape=mxgraph.cisco.servers.standard_server;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#2E5090;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="935" y="480" width="90" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Cisco Switch L2 -->
+        <mxCell id="51" value="&lt;b&gt;Cisco Switch&lt;/b&gt;&lt;br&gt;&lt;font color='#444'&gt;Laboratorio UPeU&lt;/font&gt;&lt;br&gt;&lt;font color='#0066CC'&gt;IEEE 802.1Q Trunk&lt;/font&gt;&lt;br&gt;&lt;font color='#666'&gt;VLANs: 10,20,60,99&lt;/font&gt;"
+          style="shape=mxgraph.cisco.switches.workgroup_switch;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#036897;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;"
+          vertex="1" parent="1">
+          <mxGeometry x="940" y="700" width="80" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             CONEXIONES — INTERNET → ROUTERS
+        ══════════════════════════════════════════ -->
+
+        <!-- Internet → ISP1 Cisco Router L1 -->
+        <mxCell id="60" value=""
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.2;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6c8ebf;strokeWidth=2;"
+          edge="1" source="10" target="30" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Internet → ISP2 FortiGate L1 -->
+        <mxCell id="61" value=""
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.4;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6c8ebf;strokeWidth=2;"
+          edge="1" source="10" target="31" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Internet → ISP3 Cisco Router L2 -->
+        <mxCell id="62" value=""
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.8;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6c8ebf;strokeWidth=2;"
+          edge="1" source="10" target="32" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Internet → ISP4 FortiGate L2 -->
+        <mxCell id="63" value=""
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6c8ebf;strokeWidth=2;dashed=1;opacity=60;"
+          edge="1" source="10" target="33" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             CONEXIONES — ROUTERS → ESXi HOST 1
+        ══════════════════════════════════════════ -->
+
+        <!-- ISP1 Router → ESXi Host 1 (vmnic0) -->
+        <mxCell id="64" value="&lt;b&gt;vmnic0&lt;/b&gt;&lt;br&gt;100 Mbps"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;strokeColor=#1A7A4A;strokeWidth=2;fontStyle=1;fontSize=9;fillColor=#EBF7F1;"
+          edge="1" source="30" target="40" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ISP2 FortiGate → ESXi Host 1 (vmnic1) -->
+        <mxCell id="65" value="&lt;b&gt;vmnic1&lt;/b&gt;"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;strokeColor=#d79b00;strokeWidth=2;fontStyle=1;fontSize=9;fillColor=#fff2cc;"
+          edge="1" source="31" target="40" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ESXi Host 1 → Cisco Switch L1 (vmnic2 trunk) -->
+        <mxCell id="66" value="&lt;b&gt;vmnic2&lt;/b&gt;&lt;br&gt;Trunk 802.1Q"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#1A7A4A;strokeWidth=2;fontStyle=1;fontSize=9;fillColor=#EBF7F1;"
+          edge="1" source="40" target="50" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             CONEXIONES — ROUTERS → ESXi HOST 2
+        ══════════════════════════════════════════ -->
+
+        <!-- ISP3 Router → ESXi Host 2 (vmnic0) -->
+        <mxCell id="67" value="&lt;b&gt;vmnic0&lt;/b&gt;"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;strokeColor=#2E5090;strokeWidth=2;fontStyle=1;fontSize=9;fillColor=#E8F0FE;"
+          edge="1" source="32" target="41" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ISP4 FortiGate L2 → ESXi Host 2 (vmnic1) -->
+        <mxCell id="68" value="&lt;b&gt;vmnic1&lt;/b&gt;"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.3;entryDx=0;entryDy=0;strokeColor=#d79b00;strokeWidth=2;fontStyle=1;fontSize=9;fillColor=#fff2cc;dashed=1;opacity=60;"
+          edge="1" source="33" target="41" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ESXi Host 2 → Cisco Switch L2 (vmnic2 trunk) -->
+        <mxCell id="69" value="&lt;b&gt;vmnic2&lt;/b&gt;&lt;br&gt;Trunk 802.1Q"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#2E5090;strokeWidth=2;fontStyle=1;fontSize=9;fillColor=#E8F0FE;"
+          edge="1" source="41" target="51" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             VPN IPSEC — INTER-LOCAL
+        ══════════════════════════════════════════ -->
+        <mxCell id="70" value="&lt;b style='font-size:10px;color:#C0392B;'&gt;IPSec VPN Site-to-Site&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px;'&gt;IKEv2 · AES-256-GCM · SHA-256&lt;/font&gt;&lt;br&gt;&lt;font style='font-size:9px;'&gt;pfSense-L1 ↔ pfSense-L2&lt;/font&gt;&lt;br&gt;&lt;font style='font-size:9px;color:#0066CC;'&gt;Túnel: 172.16.0.0/30&lt;/font&gt;"
+          style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#C0392B;strokeWidth=3;dashed=1;dashPattern=10 5;fillColor=#f8cecc;fontStyle=0;fontSize=9;endArrow=block;startArrow=block;startFill=1;endFill=1;"
+          edge="1" source="40" target="41" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="630" y="535" />
+              <mxPoint x="670" y="535" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ══════════════════════════════════════════
+             LEYENDA
+        ══════════════════════════════════════════ -->
+        <mxCell id="80" value="&lt;b&gt;Leyenda&lt;/b&gt;"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;fontStyle=1;fontSize=11;"
+          vertex="1" parent="1">
+          <mxGeometry x="30" y="880" width="100" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="81" value=""
+          style="endArrow=none;startArrow=none;strokeColor=#6c8ebf;strokeWidth=2;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="920" as="sourcePoint" />
+            <mxPoint x="80" y="920" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="81b" value="Enlace ISP / Internet"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;"
+          vertex="1" parent="1">
+          <mxGeometry x="85" y="910" width="150" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="82" value=""
+          style="endArrow=none;startArrow=none;strokeColor=#1A7A4A;strokeWidth=2;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="945" as="sourcePoint" />
+            <mxPoint x="80" y="945" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="82b" value="vmnic0 / vmnic2 (Local 1)"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;"
+          vertex="1" parent="1">
+          <mxGeometry x="85" y="935" width="180" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="83" value=""
+          style="endArrow=none;startArrow=none;strokeColor=#d79b00;strokeWidth=2;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="970" as="sourcePoint" />
+            <mxPoint x="80" y="970" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="83b" value="vmnic1 → FortiGate 40F (ISP2)"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;"
+          vertex="1" parent="1">
+          <mxGeometry x="85" y="960" width="200" height="20" as="geometry" />
+        </mxCell>
+
+        <mxCell id="84" value=""
+          style="endArrow=block;startArrow=block;startFill=1;endFill=1;strokeColor=#C0392B;strokeWidth=3;dashed=1;dashPattern=10 5;"
+          edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="30" y="995" as="sourcePoint" />
+            <mxPoint x="80" y="995" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="84b" value="IPSec VPN Site-to-Site"
+          style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=9;"
+          vertex="1" parent="1">
+          <mxGeometry x="85" y="985" width="180" height="20" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

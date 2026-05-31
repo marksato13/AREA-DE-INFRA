@@ -1,0 +1,43 @@
+<mxfile host="app.diagrams.net" modified="2026-05-06" agent="Claude Code - Franco's SAC ITI" version="24.5.0">
+  <diagram id="topologia-local2" name="Topología Física — Local 2 (Ventas/Admin)">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="950" pageHeight="830" math="0" shadow="1">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="internet" value="&lt;b style='font-size:14px'&gt;INTERNET&lt;/b&gt;" style="ellipse;shape=cloud;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=3;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="225" y="30" width="460" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="router2" value="&lt;b&gt;Cisco Lab Router&lt;/b&gt;&lt;br&gt;ISP3 / WAN1&lt;br&gt;(segmento lab)" style="shape=mxgraph.cisco.routers.router;html=1;dashed=0;fillColor=#036897;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="65" y="215" width="78" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="forti2" value="&lt;b&gt;FortiGate (*) /&lt;/b&gt;&lt;br&gt;&lt;b&gt;Router simulado&lt;/b&gt;&lt;br&gt;ISP4 / WAN2&lt;br&gt;&lt;font color='#888'&gt;Según disponibilidad lab&lt;/font&gt;" style="shape=mxgraph.cisco.firewalls.firewall;html=1;dashed=0;fillColor=#d79b00;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;fontSize=11;opacity=65;" vertex="1" parent="1">
+          <mxGeometry x="767" y="215" width="78" height="78" as="geometry"/>
+        </mxCell>
+        <mxCell id="switch2" value="&lt;b&gt;Cisco Switch — Lab UPeU&lt;/b&gt;&lt;br&gt;Soporte IEEE 802.1Q&lt;br&gt;Puerto acceso: vmnic0, vmnic1 &amp;nbsp;·&amp;nbsp; Puerto trunk: vmnic2" style="shape=mxgraph.cisco.switches.workgroup_switch;html=1;dashed=0;fillColor=#036897;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="416" y="460" width="78" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="esxi2" value="&lt;b style='font-size:13px'&gt;ESXi HOST 2&lt;/b&gt;&lt;br&gt;Laboratorio UPeU&lt;br&gt;&lt;font color='#888'&gt;(specs a confirmar)&lt;/font&gt;&lt;br&gt;RAM: ≥ 16 GB&lt;br&gt;Disco: ≥ 500 GB" style="shape=mxgraph.cisco.servers.standard_server;html=1;dashed=0;fillColor=#2E5090;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="408" y="650" width="94" height="108" as="geometry"/>
+        </mxCell>
+        <mxCell id="nota" value="&lt;font style='font-size:10px;color:#888'&gt;&lt;i&gt;(*) Según disponibilidad del lab: puede ser un segundo FortiGate 40F o un router virtual simulado.&lt;/i&gt;&lt;/font&gt;" style="text;html=1;strokeColor=#C8A951;fillColor=#fffde7;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;arcSize=5;strokeWidth=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="810" width="510" height="35" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_i_r2" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;strokeWidth=2;rounded=1;" edge="1" source="internet" target="router2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_i_fg2" value="" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#6c8ebf;strokeWidth=2;rounded=1;dashed=1;opacity=65;" edge="1" source="internet" target="forti2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_r2_sw" value="vmnic0" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2E5090;strokeWidth=2.5;rounded=1;fontStyle=1;fontSize=10;fillColor=#E8F0FE;labelBackgroundColor=#E8F0FE;labelBorderColor=none;" edge="1" source="router2" target="switch2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_fg2_sw" value="vmnic1" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#d79b00;strokeWidth=2.5;rounded=1;fontStyle=1;fontSize=10;fillColor=#fff2cc;labelBackgroundColor=#fff2cc;labelBorderColor=none;dashed=1;opacity=65;" edge="1" source="forti2" target="switch2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e_sw_e2" value="vmnic2 (trunk) · VLANs: 10, 20, 60, 99" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#2E5090;strokeWidth=2.5;rounded=1;fontStyle=1;fontSize=10;fillColor=#E8F0FE;labelBackgroundColor=#E8F0FE;labelBorderColor=none;" edge="1" source="switch2" target="esxi2" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

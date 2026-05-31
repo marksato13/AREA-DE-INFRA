@@ -1,0 +1,142 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.0 Safari/537.36" version="29.6.1">
+  <diagram id="topo-logica-l1-l2" name="Topología Lógica — Local 1 y Local 2">
+    <mxGraphModel dx="2056" dy="1224" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1750" pageHeight="1050" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="bg_l1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f4fa;strokeColor=#1B2A4A;strokeWidth=3;arcSize=2;opacity=55;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="700" width="1710" x="20" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="ttl_l1" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;" value="&lt;b style=&quot;color: rgb(27, 42, 74);&quot;&gt;ESXi HOST 1 — LOCAL 1 (PRODUCCIÓN)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="28" width="1710" x="20" y="22" as="geometry" />
+        </mxCell>
+        <mxCell id="pf_bg" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B2A4A;strokeColor=#2E5090;strokeWidth=2;arcSize=5;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="108" width="1690" x="30" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="pf_in" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;fontSize=15;" value="&lt;font color=&quot;#7ee787&quot;&gt;&lt;b&gt;INTERNET-ISP1&lt;/b&gt; → WAN1&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#ffa657&quot;&gt;&lt;b&gt;INTERNET-ISP2&lt;/b&gt; → WAN2&lt;/font&gt;&lt;br&gt;&lt;font color=&quot;#ff7b72&quot;&gt;&lt;b&gt;IPSec VPN L2&lt;/b&gt; → VPN&lt;/font&gt;" vertex="1">
+          <mxGeometry height="96" width="260" x="50" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pf_vm" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C0392B;strokeColor=#f8cecc;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" value="&lt;b&gt;VM-PFSENSE-L1&lt;/b&gt; &lt;font&gt;(pfSense 2.7)&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(240, 223, 160);&quot;&gt;GW todas las VLANs: 10.10.x.1&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(213, 232, 212);&quot;&gt;Failover WAN · Firewall · NAT · IPSec&lt;/font&gt;" vertex="1">
+          <mxGeometry height="94" width="410" x="655" y="63" as="geometry" />
+        </mxCell>
+        <mxCell id="dist_bar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#2E5090;strokeColor=none;opacity=50;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="8" width="1690" x="30" y="166" as="geometry" />
+        </mxCell>
+        <mxCell id="z10" parent="1" style="swimlane;startSize=42;fillColor=#1B2A4A;fontColor=#ffffff;strokeColor=#1B2A4A;strokeWidth=2;fontSize=15;fontStyle=1;rounded=1;arcSize=4;align=center;shadow=1;" value="VLAN 10 — ADMIN" vertex="1">
+          <mxGeometry height="375" width="275" x="30" y="182" as="geometry" />
+        </mxCell>
+        <mxCell id="z10_sub" parent="z10" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#1B2A4A;" value="ID: 10 · 10.10.10.0/24" vertex="1">
+          <mxGeometry height="22" width="255" x="10" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="z10_vm1" parent="z10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A56DB;strokeColor=#dae8fc;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" value="&lt;b&gt;VM-AD-DNS&lt;/b&gt;" vertex="1">
+          <mxGeometry height="30" width="175" x="10" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="z10_svc" parent="z10" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=15;fontColor=#333;" value="Win Server 2022 Core&lt;br&gt;Active Directory DS&lt;br&gt;DNS Server (primario)&lt;br&gt;Autenticación corporativa" vertex="1">
+          <mxGeometry height="85" width="255" x="10" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="z20" parent="1" style="swimlane;startSize=42;fillColor=#2E5090;fontColor=#ffffff;strokeColor=#2E5090;strokeWidth=2;fontSize=15;fontStyle=1;rounded=1;arcSize=4;align=center;shadow=1;" value="VLAN 20 — USUARIOS" vertex="1">
+          <mxGeometry height="375" width="275" x="313" y="182" as="geometry" />
+        </mxCell>
+        <mxCell id="z20_sub" parent="z20" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#2E5090;" value="ID: 20 · 10.10.20.0/24" vertex="1">
+          <mxGeometry height="22" width="255" x="10" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="z20_vm1" parent="z20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#6B7280;strokeColor=#cccccc;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" value="&lt;b&gt;(Vacío L1)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="30" width="140" x="10" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="z20_svc" parent="z20" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=15;fontColor=#333;" value="Usuarios de producción&lt;br&gt;acceden vía VPN desde L2&lt;br&gt;o APs físicos (futuro)&lt;br&gt;&lt;br&gt;DHCP: pfSense-L1" vertex="1">
+          <mxGeometry height="85" width="255" x="10" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="z30" parent="1" style="swimlane;startSize=42;fillColor=#C0392B;fontColor=#ffffff;strokeColor=#C0392B;strokeWidth=2;fontSize=15;fontStyle=1;rounded=1;arcSize=4;align=center;shadow=1;" value="VLAN 30 — DMZ" vertex="1">
+          <mxGeometry height="375" width="275" x="596" y="182" as="geometry" />
+        </mxCell>
+        <mxCell id="z30_sub" parent="z30" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#C0392B;" value="ID: 30 · 10.10.30.0/28" vertex="1">
+          <mxGeometry height="22" width="255" x="10" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="z30_vm1" parent="z30" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7A4A;strokeColor=#d5e8d4;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" value="&lt;b&gt;VM-DOCKER-APP&lt;/b&gt;" vertex="1">
+          <mxGeometry height="30" width="200" x="10" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="z30_svc" parent="z30" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=15;fontColor=#333;" value="API Gateway (NestJS 11)&lt;br&gt;Frontend Angular 20 (nginx)&lt;br&gt;&lt;br&gt;Única zona expuesta a internet&lt;br&gt;Puertos: 80/443" vertex="1">
+          <mxGeometry height="90" width="255" x="10" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="z40" parent="1" style="swimlane;startSize=42;fillColor=#1A7A4A;fontColor=#ffffff;strokeColor=#1A7A4A;strokeWidth=2;fontSize=15;fontStyle=1;rounded=1;arcSize=4;align=center;shadow=1;" value="VLAN 40 — SERVICIOS" vertex="1">
+          <mxGeometry height="375" width="275" x="879" y="182" as="geometry" />
+        </mxCell>
+        <mxCell id="z40_sub" parent="z40" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#1A7A4A;" value="ID: 40 · 10.10.40.0/24" vertex="1">
+          <mxGeometry height="22" width="255" x="10" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="z40_vm1" parent="z40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7A4A;strokeColor=#d5e8d4;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;" value="&lt;b&gt;VM-DOCKER-APP&lt;/b&gt;" vertex="1">
+          <mxGeometry height="28" width="200" x="10" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="z40_vm2" parent="z40" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7A4A;strokeColor=#d5e8d4;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;" value="&lt;b&gt;VM-DOCKER-SVC&lt;/b&gt;" vertex="1">
+          <mxGeometry height="28" width="200" x="10" y="118" as="geometry" />
+        </mxCell>
+        <mxCell id="z40_svc" parent="z40" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=15;fontColor=#333;" value="NATS Server (mensajería)&lt;br&gt;auth-ms · person-ms&lt;br&gt;sales-invent-ms · strategic-ms&lt;br&gt;&lt;br&gt;TCP 4222 (NATS interno)" vertex="1">
+          <mxGeometry height="85" width="255" x="10" y="155" as="geometry" />
+        </mxCell>
+        <mxCell id="z50" parent="1" style="swimlane;startSize=42;fillColor=#B7770D;fontColor=#ffffff;strokeColor=#B7770D;strokeWidth=2;fontSize=15;fontStyle=1;rounded=1;arcSize=4;align=center;shadow=1;" value="VLAN 50 — DATOS" vertex="1">
+          <mxGeometry height="375" width="275" x="1162" y="182" as="geometry" />
+        </mxCell>
+        <mxCell id="z50_sub" parent="z50" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#B7770D;" value="ID: 50 · 10.10.50.0/28" vertex="1">
+          <mxGeometry height="22" width="255" x="10" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="z50_vm1" parent="z50" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B7770D;strokeColor=#ffe6cc;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;" value="&lt;b&gt;VM-DOCKER-DB&lt;/b&gt;" vertex="1">
+          <mxGeometry height="30" width="185" x="10" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="z50_svc" parent="z50" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=15;fontColor=#333;" value="PostgreSQL: person-db&lt;br&gt;PostgreSQL: sales-invent-db&lt;br&gt;PostgreSQL: strategic-db&lt;br&gt;PostgreSQL: auth-db&lt;br&gt;&lt;br&gt;TCP 5432 (solo VLAN 40)" vertex="1">
+          <mxGeometry height="105" width="255" x="10" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="z60" parent="1" style="swimlane;startSize=42;fillColor=#7E22CE;fontColor=#ffffff;strokeColor=#7E22CE;strokeWidth=2;fontSize=15;fontStyle=1;rounded=1;arcSize=4;align=center;shadow=1;" value="VLAN 60 — GESTIÓN" vertex="1">
+          <mxGeometry height="375" width="275" x="1445" y="182" as="geometry" />
+        </mxCell>
+        <mxCell id="z60_sub" parent="z60" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontStyle=1;fontSize=15;fontColor=#7E22CE;" value="ID: 60 · 10.10.60.0/28" vertex="1">
+          <mxGeometry height="22" width="255" x="10" y="52" as="geometry" />
+        </mxCell>
+        <mxCell id="z60_vm1" parent="z60" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7E22CE;strokeColor=#e1d5e7;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;" value="&lt;b&gt;VM-MONITOR&lt;/b&gt;" vertex="1">
+          <mxGeometry height="30" width="165" x="10" y="82" as="geometry" />
+        </mxCell>
+        <mxCell id="z60_svc" parent="z60" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=15;fontColor=#333;" value="Ubuntu Server 24.04 LTS&lt;br&gt;Zabbix Server 6.x&lt;br&gt;Grafana dashboards&lt;br&gt;&lt;br&gt;SNMP polling · UDP 161&lt;br&gt;Monitorea toda la infra" vertex="1">
+          <mxGeometry height="100" width="255" x="10" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="v99" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#333;strokeColor=#999;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" value="&lt;b&gt;VLAN 99 — MGMT ESXi&lt;/b&gt; &amp;nbsp;·&amp;nbsp; 10.10.99.0/28 &amp;nbsp;·&amp;nbsp; VMkernel ESXi &amp;nbsp;·&amp;nbsp; Gestión del hipervisor (SSH, Web UI, vMotion)" vertex="1">
+          <mxGeometry height="52" width="1690" x="30" y="567" as="geometry" />
+        </mxCell>
+        <mxCell id="bg_l2" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eef1f8;strokeColor=#2E5090;strokeWidth=3;arcSize=2;opacity=55;fontSize=15;" value="" vertex="1">
+          <mxGeometry height="255" width="860" x="20" y="745" as="geometry" />
+        </mxCell>
+        <mxCell id="ttl_l2" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=15;" value="&lt;b style=&quot;color: rgb(46, 80, 144);&quot;&gt;ESXi HOST 2 — LOCAL 2 (VENTAS / ADMINISTRACIÓN)&lt;/b&gt;" vertex="1">
+          <mxGeometry height="28" width="860" x="20" y="748" as="geometry" />
+        </mxCell>
+        <mxCell id="zl2_20" parent="1" style="swimlane;startSize=42;fillColor=#2E5090;fontColor=#ffffff;strokeColor=#2E5090;strokeWidth=2;fontSize=15;fontStyle=1;rounded=1;arcSize=4;align=center;shadow=1;" value="VLAN 20 — USUARIOS L2" vertex="1">
+          <mxGeometry height="185" width="390" x="30" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="zl2_20_sub" parent="zl2_20" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=15;fontColor=#2E5090;verticalAlign=middle;" value="ID: 20 · 10.20.20.0/24" vertex="1">
+          <mxGeometry height="22" width="370" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="zl2_20_vm1" parent="zl2_20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A56DB;strokeColor=#dae8fc;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;" value="&lt;b&gt;VM-PC-VENTAS&lt;/b&gt;" vertex="1">
+          <mxGeometry height="28" width="175" x="10" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="zl2_20_vm2" parent="zl2_20" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A56DB;strokeColor=#dae8fc;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;" value="&lt;b&gt;VM-PC-ADMIN&lt;/b&gt;" vertex="1">
+          <mxGeometry height="28" width="175" x="195" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="zl2_20_svc" parent="zl2_20" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=15;fontColor=#333;" value="Windows 11 Pro · Acceso al ERP vía VPN IPSec&lt;br&gt;Dominio AD del Local 1 (10.10.10.x)&lt;br&gt;Navegador → API GW: 10.10.30.x" vertex="1">
+          <mxGeometry height="55" width="370" x="10" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="zl2_10" parent="1" style="swimlane;startSize=42;fillColor=#1B2A4A;fontColor=#ffffff;strokeColor=#1B2A4A;strokeWidth=2;fontSize=15;fontStyle=1;rounded=1;arcSize=4;align=center;shadow=1;" value="VLAN 10 — ADMIN L2" vertex="1">
+          <mxGeometry height="185" width="390" x="430" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="zl2_10_sub" parent="zl2_10" style="text;html=1;strokeColor=none;fillColor=none;align=center;fontStyle=1;fontSize=15;fontColor=#1B2A4A;verticalAlign=middle;" value="ID: 10 · 10.20.10.0/24" vertex="1">
+          <mxGeometry height="22" width="370" x="10" y="50" as="geometry" />
+        </mxCell>
+        <mxCell id="zl2_10_vm1" parent="zl2_10" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C0392B;strokeColor=#f8cecc;fontColor=#ffffff;fontSize=15;fontStyle=1;shadow=1;" value="&lt;b&gt;VM-PFSENSE-L2&lt;/b&gt;" vertex="1">
+          <mxGeometry height="28" width="195" x="10" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="zl2_10_svc" parent="zl2_10" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=15;fontColor=#333;" value="pfSense Local 2 · Firewall perimetral&lt;br&gt;VPN IPSec → pfSense-L1 · DHCP VLANs L2" vertex="1">
+          <mxGeometry height="55" width="370" x="10" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="vpn" edge="1" parent="1" source="pf_vm" style="edgeStyle=orthogonalEdgeStyle;strokeColor=#C0392B;strokeWidth=3;dashed=1;dashPattern=12 5;fillColor=#f8cecc;endArrow=block;startArrow=block;startFill=1;endFill=1;rounded=1;fontStyle=0;labelBackgroundColor=#f8cecc;labelBorderColor=none;fontSize=15;" target="zl2_10_vm1" value="IPSec VPN Site-to-Site">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

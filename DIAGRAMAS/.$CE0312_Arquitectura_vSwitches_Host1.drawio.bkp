@@ -1,0 +1,84 @@
+<mxfile host="app.diagrams.net" modified="2026-05-06" agent="Claude Code - Franco's SAC ITI" version="24.5.0">
+  <diagram id="vswitches-host1" name="Arquitectura vSwitches — ESXi Host 1">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="1200" pageHeight="720" math="0" shadow="1">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="esxi_host" value="&lt;b style='font-size:13px'&gt;ESXi HOST 1 — ARQUITECTURA DE CONMUTADORES VIRTUALES&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:10px;font-weight:normal'&gt;Dell Precision 7920 Tower · ESXi 8.0 Update 3 · 172.17.25.7&lt;/font&gt;" style="swimlane;startSize=50;fillColor=#1B2A4A;fontColor=#ffffff;strokeColor=#2E5090;strokeWidth=3;fontSize=13;fontStyle=1;align=center;shadow=1;arcSize=3;rounded=1;swimlaneLine=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="1160" height="660" as="geometry"/>
+        </mxCell>
+        <mxCell id="esxi_icon" value="" style="shape=mxgraph.vmware2.esxi;fillColor=#009AC7;strokeColor=#ffffff;strokeWidth=1.5;shadow=1;" vertex="1" parent="esxi_host">
+          <mxGeometry x="20" y="8" width="32" height="32" as="geometry"/>
+        </mxCell>
+        <mxCell id="vsw0" value="&lt;b style='font-size:12px'&gt;vSwitch0&lt;/b&gt;&lt;br&gt;Uplink: &lt;b&gt;vmnic0&lt;/b&gt; (ne1000 · 100 Mbps)" style="swimlane;startSize=55;fillColor=#005073;fontColor=#ffffff;strokeColor=#009AC7;strokeWidth=2;fontSize=11;fontStyle=0;align=center;shadow=1;rounded=1;arcSize=5;" vertex="1" parent="esxi_host">
+          <mxGeometry x="10" y="58" width="355" height="585" as="geometry"/>
+        </mxCell>
+        <mxCell id="vsw0_icon" value="" style="shape=mxgraph.vmware2.virtual_switch;fillColor=#ffffff;strokeColor=#009AC7;strokeWidth=1.5;" vertex="1" parent="vsw0">
+          <mxGeometry x="12" y="7" width="38" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_mgmt" value="&lt;b&gt;PG-MGMT-ESXi&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px'&gt;VMkernel · Management&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7A4A;strokeColor=#d5e8d4;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw0">
+          <mxGeometry x="10" y="68" width="335" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_wan1" value="&lt;b&gt;PG-WAN1-ISP1&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px'&gt;pfSense WAN1&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d79b00;strokeColor=#ffe6cc;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw0">
+          <mxGeometry x="10" y="138" width="335" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sep_vsw0" value="" style="line;strokeColor=#009AC7;fillColor=none;strokeWidth=1;dashed=1;" vertex="1" parent="vsw0">
+          <mxGeometry x="10" y="430" width="335" height="10" as="geometry"/>
+        </mxCell>
+        <mxCell id="phys_r1" value="&lt;b&gt;Cisco Lab Router&lt;/b&gt;&lt;br&gt;172.17.25.121" style="shape=mxgraph.cisco.routers.router;html=1;dashed=0;fillColor=#036897;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;fontSize=10;" vertex="1" parent="vsw0">
+          <mxGeometry x="137" y="450" width="60" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="vsw_wan2" value="&lt;b style='font-size:12px'&gt;vSwitchWAN2&lt;/b&gt;&lt;br&gt;Uplink: &lt;b&gt;vmnic1&lt;/b&gt; (igbn)" style="swimlane;startSize=55;fillColor=#005073;fontColor=#ffffff;strokeColor=#009AC7;strokeWidth=2;fontSize=11;fontStyle=0;align=center;shadow=1;rounded=1;arcSize=5;" vertex="1" parent="esxi_host">
+          <mxGeometry x="375" y="58" width="355" height="585" as="geometry"/>
+        </mxCell>
+        <mxCell id="vsw2_icon" value="" style="shape=mxgraph.vmware2.virtual_switch;fillColor=#ffffff;strokeColor=#009AC7;strokeWidth=1.5;" vertex="1" parent="vsw_wan2">
+          <mxGeometry x="12" y="7" width="38" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_wan2" value="&lt;b&gt;PG-WAN2-ISP2&lt;/b&gt;&lt;br&gt;&lt;font style='font-size:9px'&gt;FortiGate 40F · ISP2&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d79b00;strokeColor=#ffe6cc;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw_wan2">
+          <mxGeometry x="10" y="68" width="335" height="58" as="geometry"/>
+        </mxCell>
+        <mxCell id="sep_vsw2" value="" style="line;strokeColor=#009AC7;fillColor=none;strokeWidth=1;dashed=1;" vertex="1" parent="vsw_wan2">
+          <mxGeometry x="10" y="430" width="335" height="10" as="geometry"/>
+        </mxCell>
+        <mxCell id="phys_fg" value="&lt;b&gt;FortiGate 40F&lt;/b&gt;&lt;br&gt;192.168.100.1" style="shape=mxgraph.cisco.firewalls.firewall;html=1;dashed=0;fillColor=#d79b00;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;fontSize=10;" vertex="1" parent="vsw_wan2">
+          <mxGeometry x="137" y="450" width="60" height="60" as="geometry"/>
+        </mxCell>
+        <mxCell id="vsw_lan" value="&lt;b style='font-size:12px'&gt;vSwitchLAN&lt;/b&gt;&lt;br&gt;Uplink: &lt;b&gt;vmnic2&lt;/b&gt; (igbn) · Trunk 802.1Q" style="swimlane;startSize=55;fillColor=#005073;fontColor=#ffffff;strokeColor=#009AC7;strokeWidth=2;fontSize=11;fontStyle=0;align=center;shadow=1;rounded=1;arcSize=5;" vertex="1" parent="esxi_host">
+          <mxGeometry x="740" y="58" width="410" height="585" as="geometry"/>
+        </mxCell>
+        <mxCell id="vsw3_icon" value="" style="shape=mxgraph.vmware2.virtual_switch;fillColor=#ffffff;strokeColor=#009AC7;strokeWidth=1.5;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="12" y="7" width="38" height="38" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_trunk" value="&lt;b&gt;PG-TRUNK&lt;/b&gt; &amp;nbsp;·&amp;nbsp; ID: &lt;b&gt;4095&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#636363;strokeColor=#cccccc;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="10" y="66" width="390" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_v10" value="&lt;b&gt;PG-VLAN10-ADMIN&lt;/b&gt; &amp;nbsp;·&amp;nbsp; ID: &lt;b&gt;10&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1B2A4A;strokeColor=#d1d9e6;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="10" y="116" width="390" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_v20" value="&lt;b&gt;PG-VLAN20-USUARIOS&lt;/b&gt; &amp;nbsp;·&amp;nbsp; ID: &lt;b&gt;20&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2E5090;strokeColor=#dae8fc;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="10" y="166" width="390" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_v30" value="&lt;b&gt;PG-VLAN30-DMZ&lt;/b&gt; &amp;nbsp;·&amp;nbsp; ID: &lt;b&gt;30&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C0392B;strokeColor=#f8cecc;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="10" y="216" width="390" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_v40" value="&lt;b&gt;PG-VLAN40-SVCS&lt;/b&gt; &amp;nbsp;·&amp;nbsp; ID: &lt;b&gt;40&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1A7A4A;strokeColor=#d5e8d4;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="10" y="266" width="390" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_v50" value="&lt;b&gt;PG-VLAN50-DATOS&lt;/b&gt; &amp;nbsp;·&amp;nbsp; ID: &lt;b&gt;50&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#B7770D;strokeColor=#ffe6cc;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="10" y="316" width="390" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_v60" value="&lt;b&gt;PG-VLAN60-GESTION&lt;/b&gt; &amp;nbsp;·&amp;nbsp; ID: &lt;b&gt;60&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#7E22CE;strokeColor=#e1d5e7;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="10" y="366" width="390" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="pg_v99" value="&lt;b&gt;PG-VLAN99-MGMT&lt;/b&gt; &amp;nbsp;·&amp;nbsp; ID: &lt;b&gt;99&lt;/b&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#333;strokeColor=#999;fontColor=#ffffff;fontSize=11;fontStyle=1;shadow=1;align=center;verticalAlign=middle;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="10" y="416" width="390" height="40" as="geometry"/>
+        </mxCell>
+        <mxCell id="sep_vsw3" value="" style="line;strokeColor=#009AC7;fillColor=none;strokeWidth=1;dashed=1;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="10" y="462" width="390" height="10" as="geometry"/>
+        </mxCell>
+        <mxCell id="phys_sw" value="&lt;b&gt;Cisco Switch&lt;/b&gt;&lt;br&gt;Trunk 802.1Q" style="shape=mxgraph.cisco.switches.workgroup_switch;html=1;dashed=0;fillColor=#036897;strokeColor=#ffffff;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;shadow=1;fontSize=10;" vertex="1" parent="vsw_lan">
+          <mxGeometry x="175" y="468" width="60" height="50" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

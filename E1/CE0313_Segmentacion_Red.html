@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CE0313 – Segmentación de Red (VLAN, DMZ, Subnetting)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap');
+
+    :root {
+      --navy:    #1B2A4A;
+      --blue:    #2E5090;
+      --gold:    #C8A951;
+      --gold-lt: #F0DFA0;
+      --bg:      #F4F6FA;
+      --white:   #FFFFFF;
+      --text:    #1E1E2E;
+      --muted:   #6B7280;
+      --border:  #D1D9E6;
+      --danger:  #C0392B;
+      --success: #1A7A4A;
+      --warn:    #B7770D;
+      --purple:  #6B3FA0;
+      --teal:    #0F7A6A;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 10.5pt; line-height: 1.7; }
+    .page { max-width: 920px; margin: 0 auto; background: var(--white); box-shadow: 0 4px 32px rgba(27,42,74,.15); }
+
+    /* COVER */
+    .cover { background: linear-gradient(160deg, var(--navy) 60%, var(--blue) 100%); color: var(--white); padding: 60px 64px 50px; position: relative; overflow: hidden; }
+    .cover::before { content: ''; position: absolute; top: -60px; right: -60px; width: 320px; height: 320px; border-radius: 50%; background: rgba(200,169,81,.08); }
+    .cover::after  { content: ''; position: absolute; bottom: -80px; left: -40px; width: 260px; height: 260px; border-radius: 50%; background: rgba(200,169,81,.05); }
+    .cover-logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 48px; }
+    .logo-badge { width: 48px; height: 48px; border-radius: 10px; background: var(--gold); display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 18px; color: var(--navy); flex-shrink: 0; }
+    .logo-text .univ   { font-size: 11px; color: rgba(255,255,255,.6); letter-spacing: .5px; font-family: 'Montserrat', sans-serif; }
+    .logo-text .school { font-size: 13px; font-weight: 700; color: var(--white); font-family: 'Montserrat', sans-serif; }
+    .cover-code { display: inline-block; background: rgba(200,169,81,.18); border: 1px solid var(--gold); color: var(--gold); font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 2px; padding: 5px 14px; border-radius: 4px; margin-bottom: 20px; text-transform: uppercase; }
+    .cover h1 { font-family: 'Montserrat', sans-serif; font-size: 26px; font-weight: 800; line-height: 1.25; margin-bottom: 10px; color: var(--white); }
+    .cover-subtitle { font-size: 13px; color: rgba(255,255,255,.65); margin-bottom: 40px; }
+    .cover-divider { width: 56px; height: 4px; background: var(--gold); border-radius: 2px; margin-bottom: 36px; }
+    .cover-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 32px; }
+    .cover-meta-label { font-size: 9.5px; font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold); margin-bottom: 3px; }
+    .cover-meta-value { font-size: 11.5px; color: var(--white); font-weight: 600; }
+
+    /* VERSION BAR */
+    .version-bar { background: var(--navy); padding: 14px 64px; display: flex; align-items: center; gap: 8px; }
+    .version-bar span { font-size: 9.5px; font-family: 'Montserrat', sans-serif; font-weight: 600; letter-spacing: 1px; color: rgba(255,255,255,.5); text-transform: uppercase; }
+    .version-bar .vbadge { background: var(--gold); color: var(--navy); padding: 2px 10px; border-radius: 20px; font-size: 9px; font-weight: 800; }
+    .version-bar .vsep { color: rgba(255,255,255,.2); }
+
+    /* BODY */
+    .doc-body { padding: 52px 64px; }
+
+    /* TOC */
+    .toc { background: var(--bg); border-left: 4px solid var(--gold); border-radius: 0 8px 8px 0; padding: 24px 28px; margin-bottom: 48px; }
+    .toc-title { font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--navy); margin-bottom: 14px; }
+    .toc ol { list-style: none; counter-reset: toc-counter; padding-left: 0; }
+    .toc ol li { counter-increment: toc-counter; display: flex; align-items: baseline; gap: 8px; padding: 4px 0; font-size: 10.5px; color: var(--blue); border-bottom: 1px dashed var(--border); }
+    .toc ol li:last-child { border-bottom: none; }
+    .toc ol li::before { content: counter(toc-counter) "."; font-family: 'Montserrat', sans-serif; font-weight: 700; color: var(--gold); min-width: 18px; }
+    .toc ol li .toc-dots { flex: 1; border-bottom: 1px dotted var(--border); height: 1px; margin: 0 4px; position: relative; top: -4px; }
+    .toc ol li .toc-pg { font-weight: 700; color: var(--navy); font-size: 10px; }
+
+    /* SECTIONS */
+    .section { margin-bottom: 44px; }
+    .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+    .section-number { width: 38px; height: 38px; background: var(--navy); color: var(--white); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 15px; flex-shrink: 0; }
+    .section-title { font-family: 'Montserrat', sans-serif; font-size: 15px; font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: .5px; }
+    .section-subtitle { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+    .subsection { margin-bottom: 28px; }
+    .subsection-title { font-family: 'Montserrat', sans-serif; font-size: 11.5px; font-weight: 700; color: var(--blue); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .subsection-title::before { content: ''; width: 3px; height: 14px; background: var(--gold); border-radius: 2px; flex-shrink: 0; }
+    p { margin-bottom: 12px; text-align: justify; }
+
+    /* TABLES */
+    .formal-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 10px; }
+    .formal-table thead tr { background: var(--navy); color: var(--white); }
+    .formal-table thead th { padding: 10px 14px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 9.5px; letter-spacing: .5px; text-align: left; text-transform: uppercase; }
+    .formal-table tbody tr:nth-child(even) { background: #F0F4FA; }
+    .formal-table tbody tr:nth-child(odd)  { background: var(--white); }
+    .formal-table tbody tr:hover           { background: var(--gold-lt); }
+    .formal-table tbody td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+    .formal-table tfoot td { padding: 8px 14px; font-style: italic; font-size: 9px; color: var(--muted); border-top: 2px solid var(--border); }
+
+    /* BADGES */
+    .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 8.5px; font-family: 'Montserrat', sans-serif; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; }
+    .badge-high   { background: #FDE8E8; color: var(--danger); }
+    .badge-med    { background: #FEF8EC; color: var(--warn); }
+    .badge-low    { background: #EBF7F1; color: var(--success); }
+    .badge-navy   { background: #EEF1F8; color: var(--navy); }
+    .badge-gold   { background: var(--gold-lt); color: #7A6010; }
+    .badge-blue   { background: #E8EEF8; color: var(--blue); }
+    .badge-purple { background: #F3EDFB; color: var(--purple); }
+    .badge-teal   { background: #E6F4F1; color: var(--teal); }
+
+    /* VLAN COLOR BANDS */
+    .vlan-row-admin   { border-left: 4px solid #2E5090 !important; }
+    .vlan-row-users   { border-left: 4px solid #1A7A4A !important; }
+    .vlan-row-dmz     { border-left: 4px solid #C0392B !important; }
+    .vlan-row-svcs    { border-left: 4px solid #B7770D !important; }
+    .vlan-row-data    { border-left: 4px solid #6B3FA0 !important; }
+    .vlan-row-mgmt    { border-left: 4px solid #0F7A6A !important; }
+    .vlan-row-esximgmt{ border-left: 4px solid #6B7280 !important; }
+
+    /* INFO BOXES */
+    .info-box { border-radius: 8px; padding: 16px 20px; margin: 16px 0; display: flex; gap: 14px; align-items: flex-start; }
+    .info-box.navy    { background: #EEF1F8; border-left: 4px solid var(--navy); }
+    .info-box.gold    { background: #FDF8EC; border-left: 4px solid var(--gold); }
+    .info-box.danger  { background: #FDEEEE; border-left: 4px solid var(--danger); }
+    .info-box.success { background: #EBF7F1; border-left: 4px solid var(--success); }
+    .info-box.warn    { background: #FEF8EC; border-left: 4px solid var(--warn); }
+    .info-icon { font-size: 17px; line-height: 1; padding-top: 2px; }
+    .info-content { flex: 1; }
+    .info-label { font-family: 'Montserrat', sans-serif; font-size: 9.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+    .info-box.navy    .info-label { color: var(--navy); }
+    .info-box.gold    .info-label { color: var(--warn); }
+    .info-box.danger  .info-label { color: var(--danger); }
+    .info-box.success .info-label { color: var(--success); }
+    .info-box.warn    .info-label { color: var(--warn); }
+    .info-text { font-size: 10px; color: var(--text); }
+
+    /* DIAGRAM */
+    .diagram { background: #0D1117; border-radius: 8px; padding: 20px 24px; margin: 16px 0; overflow-x: auto; }
+    .diagram-title { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 14px; }
+    .diagram pre { font-family: 'Courier New', monospace; font-size: 10.5px; color: #E6EDF3; line-height: 1.55; white-space: pre; }
+
+    /* STATS GRID */
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+    .stat-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px 14px; text-align: center; }
+    .stat-card .stat-label { font-family: 'Montserrat', sans-serif; font-size: 8.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+    .stat-card .stat-value { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 800; color: var(--navy); }
+    .stat-card .stat-desc { font-size: 9px; color: var(--muted); margin-top: 3px; }
+
+    /* LOCAL HEADERS */
+    .local-header { display: flex; align-items: center; gap: 12px; background: var(--navy); color: var(--white); padding: 10px 18px; border-radius: 6px; margin: 20px 0 12px; }
+    .local-header .local-badge { background: var(--gold); color: var(--navy); font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11px; padding: 4px 12px; border-radius: 4px; }
+    .local-header .local-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 12px; }
+    .local-header .local-range { font-size: 10px; color: rgba(255,255,255,.6); margin-left: auto; font-family: 'Montserrat', sans-serif; }
+
+    /* SIGNATURES */
+    .signature-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin: 32px 0 20px; }
+    .sig-box { text-align: center; }
+    .sig-line { border-top: 1px solid var(--navy); margin-bottom: 6px; margin-top: 40px; }
+    .sig-name { font-family: 'Montserrat', sans-serif; font-size: 10px; font-weight: 700; color: var(--navy); }
+    .sig-role { font-size: 9px; color: var(--muted); }
+
+    /* FOOTER */
+    .doc-footer { background: var(--navy); padding: 16px 64px; display: flex; justify-content: space-between; align-items: center; }
+    .doc-footer span { font-size: 9px; color: rgba(255,255,255,.45); font-family: 'Montserrat', sans-serif; letter-spacing: .5px; }
+    .doc-footer .confidential { background: rgba(200,169,81,.15); border: 1px solid rgba(200,169,81,.3); color: var(--gold); padding: 3px 10px; border-radius: 4px; font-size: 8.5px; font-weight: 700; letter-spacing: 1px; }
+
+    @media print { body { background: white; } .page { box-shadow: none; max-width: 100%; } }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-logo-row">
+      <div class="logo-badge">U</div>
+      <div class="logo-text">
+        <div class="univ">UNIVERSIDAD PERUANA UNIÓN — UPEU</div>
+        <div class="school">Escuela Profesional de Ingeniería de Sistemas</div>
+      </div>
+    </div>
+    <div class="cover-code">CE0313 &nbsp;·&nbsp; Entregable 1 &nbsp;·&nbsp; Semestre I – 2026</div>
+    <h1>Segmentación de Red<br>VLAN · DMZ · Subnetting</h1>
+    <div class="cover-subtitle">Proyecto de Fin de Carrera — Área de Infraestructura Tecnológica (ITI)</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta-grid">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Empresa cliente</div>
+        <div class="cover-meta-value">Franco's SAC</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Competencia evaluada</div>
+        <div class="cover-meta-value">CE031 — Conectividad</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Etapa CDIO</div>
+        <div class="cover-meta-value">Conceive / Design</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Estándares aplicados</div>
+        <div class="cover-meta-value">IEEE 802.1Q · TIA/EIA-568 · ISO/IEC 11801</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Rol del autor</div>
+        <div class="cover-meta-value">Director del Proyecto / Jefe de Infraestructura y Seguridad de TI</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Fecha de emisión</div>
+        <div class="cover-meta-value">Mayo 2026</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Versión</div>
+        <div class="cover-meta-value">v1.0 — Documento inicial</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Clasificación</div>
+        <div class="cover-meta-value">Uso académico restringido</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERSION BAR -->
+  <div class="version-bar">
+    <span class="vbadge">v1.0</span>
+    <span class="vsep">|</span>
+    <span>Documento inicial · Mayo 2026</span>
+    <span class="vsep">|</span>
+    <span>CE0313 · Entregable 1 · Línea ITI</span>
+    <span class="vsep">|</span>
+    <span>Proyecto de Fin de Carrera — UPeU</span>
+  </div>
+
+  <!-- BODY -->
+  <div class="doc-body">
+
+    <!-- CONTROL DE VERSIONES -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">📋</div>
+        <div>
+          <div class="section-title">Control de Versiones</div>
+          <div class="section-subtitle">Historial de revisiones del documento</div>
+        </div>
+      </div>
+      <table class="formal-table">
+        <thead><tr><th>Versión</th><th>Fecha</th><th>Descripción del cambio</th><th>Elaborado por</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>v1.0</strong></td>
+            <td>Mayo 2026</td>
+            <td>Elaboración inicial: diseño de VLANs para 3 locales, DMZ, cálculos de subnetting, esquema de inter-VLAN routing y configuración trunk 802.1Q</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-gold">Borrador</span></td>
+          </tr>
+          <tr>
+            <td>v2.0</td>
+            <td>—</td>
+            <td>Versión final aprobada para sustentación</td>
+            <td>—</td>
+            <td><span class="badge badge-low">Pendiente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <div class="toc-title">Tabla de Contenidos</div>
+      <ol>
+        <li><span>Introducción y Propósito</span><span class="toc-dots"></span><span class="toc-pg">§1</span></li>
+        <li><span>Resumen de Segmentación — 3 Locales</span><span class="toc-dots"></span><span class="toc-pg">§2</span></li>
+        <li><span>Diseño de VLANs — Local 1 (Producción)</span><span class="toc-dots"></span><span class="toc-pg">§3</span></li>
+        <li><span>Diseño de VLANs — Local 2 (Ventas / Administración)</span><span class="toc-dots"></span><span class="toc-pg">§4</span></li>
+        <li><span>Diseño de VLANs — Local 3 (Segunda Planta de Producción)</span><span class="toc-dots"></span><span class="toc-pg">§5</span></li>
+        <li><span>Diseño de la DMZ — VLAN 30 (Local 1)</span><span class="toc-dots"></span><span class="toc-pg">§6</span></li>
+        <li><span>Cálculos de Subnetting</span><span class="toc-dots"></span><span class="toc-pg">§7</span></li>
+        <li><span>Inter-VLAN Routing — pfSense como gateway centralizado</span><span class="toc-dots"></span><span class="toc-pg">§8</span></li>
+        <li><span>Configuración Trunk IEEE 802.1Q</span><span class="toc-dots"></span><span class="toc-pg">§9</span></li>
+        <li><span>Justificación del Diseño y Cumplimiento de Estándares</span><span class="toc-dots"></span><span class="toc-pg">§10</span></li>
+        <li><span>Conclusiones</span><span class="toc-dots"></span><span class="toc-pg">§11</span></li>
+        <li><span>Firmas y Aprobaciones</span><span class="toc-dots"></span><span class="toc-pg">§12</span></li>
+      </ol>
+    </div>
+
+    <!-- §1 INTRODUCCIÓN -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div>
+          <div class="section-title">Introducción y Propósito</div>
+          <div class="section-subtitle">Alcance y justificación del diseño de segmentación</div>
+        </div>
+      </div>
+      <p>El presente documento corresponde al entregable <strong>CE0313 — Segmentación de Red (VLAN, DMZ, Subnetting)</strong>, perteneciente al Entregable 1 del Proyecto de Fin de Carrera en la línea de <strong>Infraestructura Tecnológica (ITI)</strong>. Forma parte del conjunto de documentos CE0311–CE0316 que describen el diseño completo de la red para Franco's SAC.</p>
+      <p>La segmentación de red es el mecanismo por el cual una red física única se divide en múltiples redes lógicas independientes (VLANs), cada una con su propio dominio de broadcast, rango de direcciones IP y política de acceso. Este diseño es fundamental para garantizar seguridad, rendimiento y orden operativo en la infraestructura tecnológica de Franco's SAC.</p>
+      <div class="info-box gold">
+        <div class="info-icon">📌</div>
+        <div class="info-content">
+          <div class="info-label">Nota metodológica</div>
+          <div class="info-text">El diseño de segmentación se basa en los requerimientos identificados en <strong>CE0311</strong> (levantamiento) y las topologías documentadas en <strong>CE0312</strong>. Toda decisión de segmentación se alinea al estándar <strong>IEEE 802.1Q</strong> para VLANs, <strong>TIA/EIA-568</strong> para cableado estructurado e <strong>ISO/IEC 11801</strong> para instalaciones genéricas. El routing inter-VLAN se centraliza en <strong>pfSense 2.7</strong> por local, actuando como gateway y firewall.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §2 RESUMEN -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div>
+          <div class="section-title">Resumen de Segmentación — 3 Locales</div>
+          <div class="section-subtitle">Vista consolidada del esquema VLAN de Franco's SAC</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total VLANs</div>
+          <div class="stat-value">15</div>
+          <div class="stat-desc">7 L1 · 4 L2 · 4 L3</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Locales segmentados</div>
+          <div class="stat-value">3</div>
+          <div class="stat-desc">Producción · Admin/Ventas · 2ª Planta</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Zonas DMZ</div>
+          <div class="stat-value">1</div>
+          <div class="stat-desc">VLAN 30 — Solo Local 1</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Estándar VLAN</div>
+          <div class="stat-value">802.1Q</div>
+          <div class="stat-desc">IEEE — Trunk etiquetado</div>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 2.1 — Mapa de VLANs por Local — Franco's SAC</div>
+        <pre>
+  ┌─────────────────────────────────────────────────────────────────────────────────┐
+  │                    ESQUEMA DE SEGMENTACIÓN — FRANCO'S SAC                       │
+  ├───────────────────────┬───────────────────────┬────────────────────────────────┤
+  │   LOCAL 1 (10.10.x.x) │  LOCAL 2 (10.20.x.x)  │   LOCAL 3 (10.30.x.x)         │
+  │   Producción          │  Ventas / Admin        │   Segunda Planta               │
+  ├───────────────────────┼───────────────────────┼────────────────────────────────┤
+  │ VLAN10  Admin  /24    │ VLAN10  Admin  /24    │ VLAN10  Admin  /24             │
+  │ VLAN20  Usuarios /24  │ VLAN20  Usuarios /24  │ VLAN20  Usuarios /24           │
+  │ VLAN30  DMZ    /28 ★  │ VLAN60  Gestión /28   │ VLAN60  Gestión /28            │
+  │ VLAN40  Svcs   /24    │ VLAN99  Mgmt   /28    │ VLAN99  Mgmt   /28             │
+  │ VLAN50  Datos  /28    │                       │                                │
+  │ VLAN60  Gestión /28   │                       │                                │
+  │ VLAN99  Mgmt   /28    │                       │                                │
+  ├───────────────────────┴───────────────────────┴────────────────────────────────┤
+  │  ★ DMZ (VLAN30) exclusiva de Local 1 — Aloja API Gateway + Frontend Angular    │
+  │  Trunk IEEE 802.1Q en vmnic2 de cada ESXi Host hacia Cisco Switch del lab      │
+  │  pfSense-L1 / pfSense-L2 / pfSense-L3 → gateways inter-VLAN por local          │
+  └─────────────────────────────────────────────────────────────────────────────────┘</pre>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>VLAN ID</th><th>Nombre</th><th>Local 1</th><th>Local 2</th><th>Local 3</th><th>Propósito</th></tr>
+        </thead>
+        <tbody>
+          <tr class="vlan-row-admin">
+            <td><strong>VLAN 10</strong></td><td>Admin</td>
+            <td><span class="badge badge-navy">10.10.10.0/24</span></td>
+            <td><span class="badge badge-blue">10.20.10.0/24</span></td>
+            <td><span class="badge badge-gold">10.30.10.0/24</span></td>
+            <td>Administración, AD/DNS, dirección general</td>
+          </tr>
+          <tr class="vlan-row-users">
+            <td><strong>VLAN 20</strong></td><td>Usuarios</td>
+            <td><span class="badge badge-navy">10.10.20.0/24</span></td>
+            <td><span class="badge badge-blue">10.20.20.0/24</span></td>
+            <td><span class="badge badge-gold">10.30.20.0/24</span></td>
+            <td>Workstations de producción, ventas y operaciones</td>
+          </tr>
+          <tr class="vlan-row-dmz">
+            <td><strong>VLAN 30</strong></td><td>DMZ</td>
+            <td><span class="badge badge-high">10.10.30.0/28</span></td>
+            <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
+            <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
+            <td>Zona desmilitarizada: API Gateway NestJS + Frontend Angular</td>
+          </tr>
+          <tr class="vlan-row-svcs">
+            <td><strong>VLAN 40</strong></td><td>Servicios</td>
+            <td><span class="badge badge-navy">10.10.40.0/24</span></td>
+            <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
+            <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
+            <td>Microservicios: NATS, auth-ms, person-ms, sales-ms, strategic-ms</td>
+          </tr>
+          <tr class="vlan-row-data">
+            <td><strong>VLAN 50</strong></td><td>Datos</td>
+            <td><span class="badge badge-navy">10.10.50.0/28</span></td>
+            <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
+            <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
+            <td>Bases de datos PostgreSQL (4 instancias independientes)</td>
+          </tr>
+          <tr class="vlan-row-mgmt">
+            <td><strong>VLAN 60</strong></td><td>Gestión</td>
+            <td><span class="badge badge-navy">10.10.60.0/28</span></td>
+            <td><span class="badge badge-blue">10.20.60.0/28</span></td>
+            <td><span class="badge badge-gold">10.30.60.0/28</span></td>
+            <td>Monitoreo: Zabbix Server (L1), agentes Zabbix (L2/L3)</td>
+          </tr>
+          <tr class="vlan-row-esximgmt">
+            <td><strong>VLAN 99</strong></td><td>Mgmt ESXi</td>
+            <td><span class="badge badge-navy">10.10.99.0/28</span></td>
+            <td><span class="badge badge-blue">10.20.99.0/28</span></td>
+            <td><span class="badge badge-gold">10.30.99.0/28</span></td>
+            <td>Gestión interna del hipervisor ESXi (VMkernel, SSH, Web UI)</td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="6">— = VLAN no presente en ese local. Subredes /28 aplicadas en zonas de alta seguridad (DMZ, Datos, Gestión, Mgmt) por principio de mínima superficie de ataque.</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §3 LOCAL 1 -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div>
+          <div class="section-title">Diseño de VLANs — Local 1 (Producción)</div>
+          <div class="section-subtitle">ESXi Host 1 · Dell Precision 7920 · 7 VLANs · 10.10.x.x</div>
+        </div>
+      </div>
+
+      <p>El Local 1 es la sede principal de Franco's SAC y concentra el mayor número de VLANs (7) al alojar el stack completo de infraestructura: ERP, base de datos, monitoreo y la única DMZ del proyecto. Todas las VLANs son enrutadas por <strong>VM-PFSENSE-L1</strong> a través de sub-interfaces sobre vmnic2 en trunk 802.1Q.</p>
+
+      <div class="local-header">
+        <span class="local-badge">LOCAL 1</span>
+        <span class="local-name">Planta de Producción — ESXi Host 1</span>
+        <span class="local-range">Rango base: 10.10.0.0/16</span>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Máscara</th><th>Gateway (pfSense)</th><th>Broadcast</th><th>Hosts disponibles</th><th>VMs / Dispositivos</th></tr>
+        </thead>
+        <tbody>
+          <tr class="vlan-row-admin">
+            <td><strong>10</strong></td><td>Administración</td><td>10.10.10.0/24</td><td>255.255.255.0</td><td>10.10.10.1</td><td>10.10.10.255</td><td>253</td><td>VM-AD-DNS (10.10.10.10)</td>
+          </tr>
+          <tr class="vlan-row-users">
+            <td><strong>20</strong></td><td>Usuarios</td><td>10.10.20.0/24</td><td>255.255.255.0</td><td>10.10.20.1</td><td>10.10.20.255</td><td>253</td><td>APs futuros · usuarios producción</td>
+          </tr>
+          <tr class="vlan-row-dmz">
+            <td><strong>30</strong></td><td>DMZ</td><td>10.10.30.0/28</td><td>255.255.255.240</td><td>10.10.30.1</td><td>10.10.30.15</td><td>13</td><td>VM-DOCKER-APP (API GW + Frontend)</td>
+          </tr>
+          <tr class="vlan-row-svcs">
+            <td><strong>40</strong></td><td>Servicios</td><td>10.10.40.0/24</td><td>255.255.255.0</td><td>10.10.40.1</td><td>10.10.40.255</td><td>253</td><td>VM-DOCKER-APP (NATS) · VM-DOCKER-SVC (microservs.)</td>
+          </tr>
+          <tr class="vlan-row-data">
+            <td><strong>50</strong></td><td>Datos</td><td>10.10.50.0/28</td><td>255.255.255.240</td><td>10.10.50.1</td><td>10.10.50.15</td><td>13</td><td>VM-DOCKER-DB (4× PostgreSQL)</td>
+          </tr>
+          <tr class="vlan-row-mgmt">
+            <td><strong>60</strong></td><td>Gestión</td><td>10.10.60.0/28</td><td>255.255.255.240</td><td>10.10.60.1</td><td>10.10.60.15</td><td>13</td><td>VM-MONITOR (Zabbix Server + Grafana)</td>
+          </tr>
+          <tr class="vlan-row-esximgmt">
+            <td><strong>99</strong></td><td>Mgmt ESXi</td><td>10.10.99.0/28</td><td>255.255.255.240</td><td>10.10.99.1</td><td>10.10.99.15</td><td>13</td><td>VMkernel ESXi Host 1 (172.17.25.7)</td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="8">pfSense-L1 GW: sub-interfaces em2.10, em2.20, em2.30, em2.40, em2.50, em2.60, em2.99 sobre vmnic2 (trunk VLAN 4095)</td></tr></tfoot>
+      </table>
+
+      <div class="info-box navy">
+        <div class="info-icon">🔒</div>
+        <div class="info-content">
+          <div class="info-label">Justificación de subredes /28 en L1</div>
+          <div class="info-text">Las VLANs 30 (DMZ), 50 (Datos), 60 (Gestión) y 99 (MGMT) usan /28 (13 hosts disponibles) por el principio de <strong>mínima superficie de ataque</strong>: limitar el número máximo de hosts reduce el radio de impacto ante un compromiso. Las VLANs 10, 20 y 40 usan /24 (253 hosts) para permitir crecimiento de usuarios y contenedores de servicios. Alineado a <strong>NIST SP 800-53 SC-7</strong> (Boundary Protection).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §4 LOCAL 2 -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div>
+          <div class="section-title">Diseño de VLANs — Local 2 (Ventas / Administración)</div>
+          <div class="section-subtitle">ESXi Host 2 · Lab UPeU (TBD) · 4 VLANs · 10.20.x.x</div>
+        </div>
+      </div>
+
+      <p>El Local 2 es la sede de ventas y administración de Franco's SAC. Al no alojar el stack ERP completo (este reside en L1), requiere únicamente 4 VLANs orientadas a usuarios, administración, gestión y management del hipervisor. Los usuarios acceden al ERP del Local 1 a través del túnel VPN L1↔L2.</p>
+
+      <div class="local-header">
+        <span class="local-badge">LOCAL 2</span>
+        <span class="local-name">Ventas / Administración — ESXi Host 2</span>
+        <span class="local-range">Rango base: 10.20.0.0/16</span>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Máscara</th><th>Gateway (pfSense)</th><th>Broadcast</th><th>Hosts disponibles</th><th>VMs / Dispositivos</th></tr>
+        </thead>
+        <tbody>
+          <tr class="vlan-row-admin">
+            <td><strong>10</strong></td><td>Administración</td><td>10.20.10.0/24</td><td>255.255.255.0</td><td>10.20.10.1</td><td>10.20.10.255</td><td>253</td><td>Dispositivos de administración L2</td>
+          </tr>
+          <tr class="vlan-row-users">
+            <td><strong>20</strong></td><td>Usuarios</td><td>10.20.20.0/24</td><td>255.255.255.0</td><td>10.20.20.1</td><td>10.20.20.255</td><td>253</td><td>VM-PC-VENTAS · VM-PC-ADMIN · APs futuros</td>
+          </tr>
+          <tr class="vlan-row-mgmt">
+            <td><strong>60</strong></td><td>Gestión</td><td>10.20.60.0/28</td><td>255.255.255.240</td><td>10.20.60.1</td><td>10.20.60.15</td><td>13</td><td>Agente Zabbix L2 (reporta a Zabbix Server en L1)</td>
+          </tr>
+          <tr class="vlan-row-esximgmt">
+            <td><strong>99</strong></td><td>Mgmt ESXi</td><td>10.20.99.0/28</td><td>255.255.255.240</td><td>10.20.99.1</td><td>10.20.99.15</td><td>13</td><td>VMkernel ESXi Host 2</td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="8">pfSense-L2 GW: sub-interfaces em2.10, em2.20, em2.60, em2.99 sobre vmnic2 (trunk VLAN 4095) · VPN IPSec L1↔L2: 172.16.0.0/30</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §5 LOCAL 3 -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <div>
+          <div class="section-title">Diseño de VLANs — Local 3 (Segunda Planta de Producción)</div>
+          <div class="section-subtitle">ESXi Host 3 · Lab UPeU (TBD) · 4 VLANs · 10.30.x.x</div>
+        </div>
+      </div>
+
+      <p>El Local 3 representa la segunda planta de producción de Franco's SAC. Al igual que el Local 2, opera con un esquema de VLANs reducido (4 VLANs), orientado a las operaciones de producción y la conectividad con el resto de la infraestructura vía VPN mesh. Los datos y servicios centrales residen en Local 1.</p>
+
+      <div class="local-header">
+        <span class="local-badge">LOCAL 3</span>
+        <span class="local-name">Segunda Planta de Producción — ESXi Host 3</span>
+        <span class="local-range">Rango base: 10.30.0.0/16</span>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Máscara</th><th>Gateway (pfSense)</th><th>Broadcast</th><th>Hosts disponibles</th><th>VMs / Dispositivos</th></tr>
+        </thead>
+        <tbody>
+          <tr class="vlan-row-admin">
+            <td><strong>10</strong></td><td>Administración</td><td>10.30.10.0/24</td><td>255.255.255.0</td><td>10.30.10.1</td><td>10.30.10.255</td><td>253</td><td>Dispositivos de supervisión L3 (TBD)</td>
+          </tr>
+          <tr class="vlan-row-users">
+            <td><strong>20</strong></td><td>Usuarios</td><td>10.30.20.0/24</td><td>255.255.255.0</td><td>10.30.20.1</td><td>10.30.20.255</td><td>253</td><td>VM-PC-PROD-L3 · operarios de planta · APs futuros</td>
+          </tr>
+          <tr class="vlan-row-mgmt">
+            <td><strong>60</strong></td><td>Gestión</td><td>10.30.60.0/28</td><td>255.255.255.240</td><td>10.30.60.1</td><td>10.30.60.15</td><td>13</td><td>Agente Zabbix L3 (reporta a Zabbix Server en L1)</td>
+          </tr>
+          <tr class="vlan-row-esximgmt">
+            <td><strong>99</strong></td><td>Mgmt ESXi</td><td>10.30.99.0/28</td><td>255.255.255.240</td><td>10.30.99.1</td><td>10.30.99.15</td><td>13</td><td>VMkernel ESXi Host 3 (specs TBD)</td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="8">pfSense-L3 GW: sub-interfaces em2.10, em2.20, em2.60, em2.99 sobre vmnic2 (trunk VLAN 4095) · VPN IPSec L1↔L3: 172.16.1.0/30 · L2↔L3: 172.16.2.0/30</td></tr></tfoot>
+      </table>
+
+      <div class="info-box warn">
+        <div class="info-icon">⚠️</div>
+        <div class="info-content">
+          <div class="info-label">Datos TBD — Local 3</div>
+          <div class="info-text">Las especificaciones del ESXi Host 3 (RAM, disco, modelo) y el número definitivo de trabajadores en Local 3 están pendientes de confirmación con el coordinador del laboratorio UPeU. La arquitectura VLAN y el esquema IP descritos en este documento están definidos y no cambiarán; solo se completarán los valores TBD cuando estén disponibles.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §6 DMZ -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <div>
+          <div class="section-title">Diseño de la DMZ — VLAN 30 (Local 1)</div>
+          <div class="section-subtitle">Zona Desmilitarizada · 10.10.30.0/28 · Único punto de exposición controlada</div>
+        </div>
+      </div>
+
+      <p>La <strong>DMZ (Demilitarized Zone)</strong> es una zona de red intermediaria entre la red interna e Internet, diseñada para alojar servicios que deben ser accesibles desde el exterior sin exponer directamente las zonas internas. En Franco's SAC, la DMZ se implementa exclusivamente en el Local 1 y aloja el Frontend Angular y el API Gateway NestJS del ERP.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 6.1 — Arquitectura DMZ — VLAN 30 · Local 1</div>
+        <pre>
+                        ╔══════════════════╗
+                        ║    INTERNET      ║
+                        ╚════════╤═════════╝
+                                 │ TCP 80/443
+                        ┌────────▼─────────┐
+                        │  VM-PFSENSE-L1   │  ← WAN1 (172.17.25.x) + WAN2 (192.168.100.x)
+                        │  pfSense 2.7     │
+                        │  Firewall + NAT  │
+                        └────────┬─────────┘
+                                 │
+               ┌─────────────────┼──────────────────────┐
+               │                 │                      │
+     ┌─────────▼──────┐ ┌───────▼────────┐   ┌────────▼────────┐
+     │   VLAN 30      │ │   VLAN 10/20   │   │  VLAN 40/50     │
+     │   DMZ          │ │   Internas     │   │  Servicios/Datos │
+     │ 10.10.30.0/28  │ │  Protegidas   │   │  Protegidas     │
+     │────────────────│ │────────────────│   │─────────────────│
+     │ VM-DOCKER-APP  │ │  Solo acceso  │   │  SIN acceso     │
+     │ ┌──────────────┤ │  autenticado  │   │  desde DMZ      │
+     │ │API GW NestJS │ │  vía AD/DNS   │   │  (pfSense ACL)  │
+     │ │Frontend Ang. │ │               │   │                 │
+     │ └──────────────┤ └───────────────┘   └─────────────────┘
+     └────────────────┘
+      TCP 443: HTTPS        REGLAS pfSense:
+      TCP 80: HTTP (redir)  DMZ → VLAN40 (NATS/API): PERMITIDO puerto específico
+                            DMZ → VLAN50 (DB): DENEGADO (no acceso directo a BD)
+                            DMZ → VLAN10 (AD): PERMITIDO LDAP/DNS
+                            Internet → DMZ: PERMITIDO TCP 80/443 únicamente
+                            VLAN20 → DMZ: PERMITIDO (usuarios internos)</pre>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Parámetro</th><th>Valor</th><th>Justificación</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Red DMZ</strong></td><td>10.10.30.0/28</td><td>Subred /28 (13 hosts) — mínima superficie de ataque; suficiente para las VMs de la DMZ</td></tr>
+          <tr><td><strong>Gateway DMZ</strong></td><td>10.10.30.1 (pfSense-L1)</td><td>pfSense actúa como único punto de entrada/salida de la DMZ</td></tr>
+          <tr><td><strong>Servicios en DMZ</strong></td><td>API Gateway NestJS 11 · Frontend Angular 20</td><td>Únicos servicios que requieren exposición controlada hacia Internet</td></tr>
+          <tr><td><strong>Puertos permitidos entrada</strong></td><td>TCP 80 (redirige a 443) · TCP 443</td><td>Solo HTTPS en producción. HTTP redirigido para evitar tráfico en claro</td></tr>
+          <tr><td><strong>Acceso DMZ → VLAN 40</strong></td><td>PERMITIDO (puertos NestJS específicos)</td><td>API Gateway necesita comunicarse con microservicios y NATS en VLAN 40</td></tr>
+          <tr><td><strong>Acceso DMZ → VLAN 50</strong></td><td>DENEGADO</td><td>La DMZ no tiene acceso directo a las bases de datos — principio de mínimo privilegio</td></tr>
+          <tr><td><strong>Acceso DMZ → otras VLANs</strong></td><td>DENEGADO por defecto</td><td>Regla default-deny en pfSense; solo flujos explícitamente permitidos</td></tr>
+          <tr><td><strong>Estándar aplicado</strong></td><td>NIST SP 800-53 SC-7</td><td>Boundary Protection — separación de zonas de confianza diferenciada</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- §7 SUBNETTING -->
+    <div class="section" id="s7">
+      <div class="section-header">
+        <div class="section-number">7</div>
+        <div>
+          <div class="section-title">Cálculos de Subnetting</div>
+          <div class="section-subtitle">Verificación matemática de todas las subredes del proyecto</div>
+        </div>
+      </div>
+
+      <p>La siguiente tabla detalla los cálculos de subnetting para cada VLAN del proyecto, mostrando la justificación matemática del tamaño de subred seleccionado en función del número de hosts requeridos.</p>
+
+      <div class="subsection">
+        <div class="subsection-title">Local 1 — Producción (10.10.x.x)</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>VLAN</th><th>Subred</th><th>Prefijo</th><th>Hosts req.</th><th>Hosts disp.</th><th>Bits host</th><th>Primer host</th><th>Último host</th><th>Broadcast</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>VLAN 10</td><td>10.10.10.0</td><td>/24</td><td>≤ 50</td><td>253</td><td>8</td><td>10.10.10.2</td><td>10.10.10.254</td><td>10.10.10.255</td></tr>
+            <tr><td>VLAN 20</td><td>10.10.20.0</td><td>/24</td><td>≤ 100</td><td>253</td><td>8</td><td>10.10.20.2</td><td>10.10.20.254</td><td>10.10.20.255</td></tr>
+            <tr><td>VLAN 30</td><td>10.10.30.0</td><td>/28</td><td>≤ 5</td><td>13</td><td>4</td><td>10.10.30.2</td><td>10.10.30.14</td><td>10.10.30.15</td></tr>
+            <tr><td>VLAN 40</td><td>10.10.40.0</td><td>/24</td><td>≤ 30</td><td>253</td><td>8</td><td>10.10.40.2</td><td>10.10.40.254</td><td>10.10.40.255</td></tr>
+            <tr><td>VLAN 50</td><td>10.10.50.0</td><td>/28</td><td>≤ 5</td><td>13</td><td>4</td><td>10.10.50.2</td><td>10.10.50.14</td><td>10.10.50.15</td></tr>
+            <tr><td>VLAN 60</td><td>10.10.60.0</td><td>/28</td><td>≤ 3</td><td>13</td><td>4</td><td>10.10.60.2</td><td>10.10.60.14</td><td>10.10.60.15</td></tr>
+            <tr><td>VLAN 99</td><td>10.10.99.0</td><td>/28</td><td>≤ 3</td><td>13</td><td>4</td><td>10.10.99.2</td><td>10.10.99.14</td><td>10.10.99.15</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="9">GW en .1 reservado para pfSense-L1 · Host .10 convención para VMs fijas (VM-AD-DNS = 10.10.10.10)</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Local 2 — Ventas/Administración (10.20.x.x)</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>VLAN</th><th>Subred</th><th>Prefijo</th><th>Hosts req.</th><th>Hosts disp.</th><th>Bits host</th><th>Primer host</th><th>Último host</th><th>Broadcast</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>VLAN 10</td><td>10.20.10.0</td><td>/24</td><td>≤ 20</td><td>253</td><td>8</td><td>10.20.10.2</td><td>10.20.10.254</td><td>10.20.10.255</td></tr>
+            <tr><td>VLAN 20</td><td>10.20.20.0</td><td>/24</td><td>≤ 20</td><td>253</td><td>8</td><td>10.20.20.2</td><td>10.20.20.254</td><td>10.20.20.255</td></tr>
+            <tr><td>VLAN 60</td><td>10.20.60.0</td><td>/28</td><td>≤ 2</td><td>13</td><td>4</td><td>10.20.60.2</td><td>10.20.60.14</td><td>10.20.60.15</td></tr>
+            <tr><td>VLAN 99</td><td>10.20.99.0</td><td>/28</td><td>≤ 2</td><td>13</td><td>4</td><td>10.20.99.2</td><td>10.20.99.14</td><td>10.20.99.15</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Local 3 — Segunda Planta (10.30.x.x)</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>VLAN</th><th>Subred</th><th>Prefijo</th><th>Hosts req.</th><th>Hosts disp.</th><th>Bits host</th><th>Primer host</th><th>Último host</th><th>Broadcast</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>VLAN 10</td><td>10.30.10.0</td><td>/24</td><td>TBD</td><td>253</td><td>8</td><td>10.30.10.2</td><td>10.30.10.254</td><td>10.30.10.255</td></tr>
+            <tr><td>VLAN 20</td><td>10.30.20.0</td><td>/24</td><td>TBD</td><td>253</td><td>8</td><td>10.30.20.2</td><td>10.30.20.254</td><td>10.30.20.255</td></tr>
+            <tr><td>VLAN 60</td><td>10.30.60.0</td><td>/28</td><td>≤ 2</td><td>13</td><td>4</td><td>10.30.60.2</td><td>10.30.60.14</td><td>10.30.60.15</td></tr>
+            <tr><td>VLAN 99</td><td>10.30.99.0</td><td>/28</td><td>≤ 2</td><td>13</td><td>4</td><td>10.30.99.2</td><td>10.30.99.14</td><td>10.30.99.15</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="9">Hosts requeridos en VLAN 10 y 20 de L3 TBD — confirmar cuando se definan los trabajadores del Local 3</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Subredes VPN Mesh Inter-Local</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>Túnel</th><th>Subred</th><th>Prefijo</th><th>Endpoint A</th><th>Endpoint B</th><th>Hosts disp.</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>L1 ↔ L2</strong></td><td>172.16.0.0</td><td>/30</td><td>pfSense-L1: 172.16.0.1</td><td>pfSense-L2: 172.16.0.2</td><td>2</td></tr>
+            <tr><td><strong>L1 ↔ L3</strong></td><td>172.16.1.0</td><td>/30</td><td>pfSense-L1: 172.16.1.1</td><td>pfSense-L3: 172.16.1.2</td><td>2</td></tr>
+            <tr><td><strong>L2 ↔ L3</strong></td><td>172.16.2.0</td><td>/30</td><td>pfSense-L2: 172.16.2.1</td><td>pfSense-L3: 172.16.2.2</td><td>2</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="6">Subred /30 = 2 hosts útiles = mínimo necesario para un túnel punto a punto. Rango 172.16.x.x (RFC 1918 — privado).</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- §8 INTER-VLAN ROUTING -->
+    <div class="section" id="s8">
+      <div class="section-header">
+        <div class="section-number">8</div>
+        <div>
+          <div class="section-title">Inter-VLAN Routing — pfSense como Gateway Centralizado</div>
+          <div class="section-subtitle">Enrutamiento lógico entre zonas por local mediante sub-interfaces</div>
+        </div>
+      </div>
+
+      <p>El inter-VLAN routing permite la comunicación controlada entre VLANs distintas. En este proyecto, pfSense actúa como router virtual centralizado para cada local, utilizando la técnica <strong>Router-on-a-Stick</strong>: una única NIC física (vmnic2) transporta todas las VLANs en trunk 802.1Q, y pfSense crea sub-interfaces (em2.VLAN_ID) para actuar como gateway de cada VLAN.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 8.1 — Router-on-a-Stick · pfSense-L1 · Inter-VLAN Routing</div>
+        <pre>
+                      vmnic2 (trunk 802.1Q · VLAN 4095)
+                              │
+                    ┌─────────▼──────────┐
+                    │   VM-PFSENSE-L1    │
+                    │                    │
+                    │  em2.10  10.10.10.1│ ← GW VLAN 10 Admin
+                    │  em2.20  10.10.20.1│ ← GW VLAN 20 Usuarios
+                    │  em2.30  10.10.30.1│ ← GW VLAN 30 DMZ
+                    │  em2.40  10.10.40.1│ ← GW VLAN 40 Servicios
+                    │  em2.50  10.10.50.1│ ← GW VLAN 50 Datos
+                    │  em2.60  10.10.60.1│ ← GW VLAN 60 Gestión
+                    │  em2.99  10.10.99.1│ ← GW VLAN 99 Mgmt
+                    └────────────────────┘
+                    Firewall rules → controlan qué VLANs se hablan entre sí</pre>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Origen</th><th>Destino</th><th>Permiso</th><th>Puerto / Protocolo</th><th>Justificación</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>VLAN 20 (Usuarios)</td><td>VLAN 30 (DMZ)</td><td><span class="badge badge-low">PERMITIDO</span></td><td>TCP 80, 443</td><td>Usuarios acceden al frontend ERP vía navegador</td></tr>
+          <tr><td>VLAN 30 (DMZ)</td><td>VLAN 40 (Servicios)</td><td><span class="badge badge-low">PERMITIDO</span></td><td>TCP custom (NATS/API)</td><td>API Gateway se comunica con microservicios y NATS</td></tr>
+          <tr><td>VLAN 40 (Servicios)</td><td>VLAN 50 (Datos)</td><td><span class="badge badge-low">PERMITIDO</span></td><td>TCP 5432 (PostgreSQL)</td><td>Microservicios acceden a sus bases de datos</td></tr>
+          <tr><td>VLAN 20 (Usuarios)</td><td>VLAN 10 (Admin)</td><td><span class="badge badge-low">PERMITIDO</span></td><td>TCP 389/636 (LDAP)</td><td>Autenticación de usuarios contra Active Directory</td></tr>
+          <tr><td>VLAN 30 (DMZ)</td><td>VLAN 50 (Datos)</td><td><span class="badge badge-high">DENEGADO</span></td><td>Cualquiera</td><td>La DMZ no accede directamente a la BD — principio de mínimo privilegio</td></tr>
+          <tr><td>VLAN 20 (Usuarios)</td><td>VLAN 40 (Servicios)</td><td><span class="badge badge-high">DENEGADO</span></td><td>Cualquiera</td><td>Usuarios solo acceden a servicios vía API Gateway en DMZ</td></tr>
+          <tr><td>VLAN 60 (Gestión)</td><td>Todas las VLANs</td><td><span class="badge badge-low">PERMITIDO</span></td><td>ICMP, SNMP (161/162)</td><td>Zabbix necesita acceso de monitoreo a todos los segmentos</td></tr>
+          <tr><td>VLAN 99 (Mgmt)</td><td>Todas las VLANs</td><td><span class="badge badge-high">DENEGADO</span></td><td>Cualquiera</td><td>VLAN de gestión ESXi aislada — solo tráfico VMkernel</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">Política base pfSense: default-deny — solo el tráfico explícitamente permitido en las reglas pasa. Aplica a los 3 locales con reglas equivalentes en pfSense-L2 y pfSense-L3.</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §9 TRUNK 802.1Q -->
+    <div class="section" id="s9">
+      <div class="section-header">
+        <div class="section-number">9</div>
+        <div>
+          <div class="section-title">Configuración Trunk IEEE 802.1Q</div>
+          <div class="section-subtitle">Transporte de múltiples VLANs en un solo enlace físico</div>
+        </div>
+      </div>
+
+      <p>El estándar <strong>IEEE 802.1Q</strong> permite transportar tráfico de múltiples VLANs sobre un único enlace físico mediante el <em>etiquetado de tramas</em> (VLAN tagging). Cada trama Ethernet recibe un encabezado de 4 bytes (802.1Q tag) que indica la VLAN a la que pertenece, permitiendo que el switch y el hipervisor separen el tráfico correctamente.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">Figura 9.1 — Enlace Trunk 802.1Q · vmnic2 → Cisco Switch</div>
+        <pre>
+  ┌─────────────────────────────────────────────────────────────────┐
+  │               ESXi HOST 1 (o Host 2 / Host 3)                  │
+  │                                                                 │
+  │  vSwitchLAN ──────────────────────────────────────────────────► │
+  │   Port Group TRUNK (VLAN ID: 4095 = all VLANs)                │
+  │   Port Group VLAN10, VLAN20, VLAN30... (acceso individual)     │
+  └─────────────────────────┬───────────────────────────────────────┘
+                            │ vmnic2 (NIC física)
+                            │ ← IEEE 802.1Q frames →
+                            │
+              ┌─────────────▼────────────────┐
+              │        Cisco Switch           │
+              │        Puerto TRUNK           │
+              │   VLANs permitidas:           │
+              │   L1: 10,20,30,40,50,60,99   │
+              │   L2: 10,20,60,99             │
+              │   L3: 10,20,60,99             │
+              └──────────────────────────────┘
+
+  Formato trama 802.1Q:
+  ┌──────────┬────────┬──────────────────┬──────────┬──────────────┐
+  │ Dst MAC  │Src MAC │ 802.1Q Tag (4B)  │EtherType │   Payload    │
+  │  6 bytes │ 6 bytes│ TPID(2)+TCI(2)  │  2 bytes │   Variable   │
+  └──────────┴────────┴──────────────────┴──────────┴──────────────┘
+                        ↑ PCP(3b) + DEI(1b) + VID(12b → VLAN 1–4094)</pre>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Parámetro</th><th>Configuración</th><th>Descripción</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>VLAN ID ESXi Trunk</strong></td><td>4095</td><td>En VMware ESXi, VLAN ID 4095 en un Port Group habilita el trunk completo — todas las VLANs etiquetadas pasan sin filtrar hacia la VM (pfSense)</td></tr>
+          <tr><td><strong>Encapsulación</strong></td><td>IEEE 802.1Q</td><td>Protocolo estándar para etiquetado de VLANs. Único estándar compatible entre ESXi y switches Cisco</td></tr>
+          <tr><td><strong>Puerto Cisco Switch</strong></td><td>Trunk mode · allowed VLANs: 10,20,30,40,50,60,99</td><td>El puerto conectado a vmnic2 se configura en modo trunk con las VLANs del local correspondiente</td></tr>
+          <tr><td><strong>Native VLAN</strong></td><td>Sin configurar (no recomendado en entornos seguros)</td><td>Se evita la native VLAN para prevenir ataques de VLAN hopping</td></tr>
+          <tr><td><strong>Sub-interfaces pfSense</strong></td><td>em2.10, em2.20, em2.30... (por VLAN ID)</td><td>pfSense crea una sub-interfaz por VLAN sobre em2 (vmnic2), actuando como gateway de cada segmento</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- §10 ESTÁNDARES -->
+    <div class="section" id="s10">
+      <div class="section-header">
+        <div class="section-number">10</div>
+        <div>
+          <div class="section-title">Justificación del Diseño y Cumplimiento de Estándares</div>
+          <div class="section-subtitle">Alineación del diseño de segmentación con normas internacionales</div>
+        </div>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Estándar</th><th>Elemento del diseño</th><th>Cómo se aplica</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IEEE 802.1Q</strong></td>
+            <td>Trunk VLAN · etiquetado de tramas</td>
+            <td>Todas las VLANs se transportan sobre un enlace trunk 802.1Q entre vmnic2 y el Cisco Switch del laboratorio. pfSense crea sub-interfaces por VLAN ID. VLAN 4095 en ESXi habilita el trunk completo.</td>
+          </tr>
+          <tr>
+            <td><strong>IEEE 802.1X</strong></td>
+            <td>Control de acceso por puerto</td>
+            <td>Se considera como referencia para la fase de implementación (CE0341). En el diseño actual, el control de acceso se aplica mediante ACLs en pfSense y Active Directory.</td>
+          </tr>
+          <tr>
+            <td><strong>TIA/EIA-568</strong></td>
+            <td>Cableado estructurado · enlace físico vmnic2 → Switch</td>
+            <td>El cableado físico entre el servidor ESXi y el switch del laboratorio sigue la norma TIA/EIA-568-C para terminaciones y longitud máxima de segmento (100m Cat5e/6).</td>
+          </tr>
+          <tr>
+            <td><strong>ISO/IEC 11801</strong></td>
+            <td>Cableado genérico para instalaciones del cliente</td>
+            <td>El diseño de la red considera los subsistemas de cableado definidos por ISO/IEC 11801: cableado horizontal (workstations a patch panel), cableado vertical (entre pisos/locales) y sala de equipos.</td>
+          </tr>
+          <tr>
+            <td><strong>NIST SP 800-53 SC-7</strong></td>
+            <td>Boundary Protection · DMZ · segmentación</td>
+            <td>La DMZ (VLAN 30) implementa una zona de separación entre la red interna y los servicios expuestos a Internet. Las ACLs en pfSense implementan control de tráfico en los límites de cada zona.</td>
+          </tr>
+          <tr>
+            <td><strong>ISO/IEC 27001 A.13</strong></td>
+            <td>Seguridad de las comunicaciones de red</td>
+            <td>La segmentación por VLANs asegura que el tráfico de diferentes niveles de sensibilidad (datos, administración, usuarios) no se mezcle en el mismo dominio de broadcast.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- §11 CONCLUSIONES -->
+    <div class="section" id="s11">
+      <div class="section-header">
+        <div class="section-number">11</div>
+        <div>
+          <div class="section-title">Conclusiones</div>
+          <div class="section-subtitle">Síntesis del diseño de segmentación</div>
+        </div>
+      </div>
+
+      <div class="info-box navy">
+        <div class="info-icon">💡</div>
+        <div class="info-content">
+          <div class="info-label">Conclusión principal</div>
+          <div class="info-text">El diseño de segmentación de red para Franco's SAC establece <strong>15 VLANs distribuidas en 3 locales</strong>, con subredes dimensionadas según el principio de mínima superficie de ataque y enrutamiento inter-VLAN centralizado en pfSense. La DMZ garantiza que los servicios ERP accesibles desde Internet estén aislados de las zonas internas críticas.</div>
+        </div>
+      </div>
+
+      <p>El presente documento establece la base formal de segmentación de red para las siguientes fases del proyecto:</p>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Siguiente entregable</th><th>Cómo se apoya en CE0313</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>CE0314 — Redundancia y Alta Disponibilidad</strong></td><td>Las VLANs y subredes definidas aquí son la base para diseñar rutas de failover, Dual-WAN y resilencia por VLAN</td></tr>
+          <tr><td><strong>CE0315 — Cumplimiento de Estándares</strong></td><td>La aplicación de IEEE 802.1Q, TIA/EIA-568 e ISO/IEC 11801 documentada en §9 y §10 alimenta directamente CE0315</td></tr>
+          <tr><td><strong>CE0341/E4 — Implementación de Red (Semestre 2)</strong></td><td>Las tablas VLAN y las reglas de firewall documentadas aquí son la guía de configuración para Cisco Switch y pfSense</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- §12 FIRMAS -->
+    <div class="section" id="s12">
+      <div class="section-header">
+        <div class="section-number">12</div>
+        <div>
+          <div class="section-title">Firmas y Aprobaciones</div>
+          <div class="section-subtitle">Validación formal del documento</div>
+        </div>
+      </div>
+      <div class="signature-grid">
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">Ruben Mark Salazar</div>
+          <div class="sig-role">Director del Proyecto<br>Jefe de Infraestructura y Seguridad de TI</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Nombre del asesor]</div>
+          <div class="sig-role">Asesor del Proyecto<br>Docente — Escuela de Ing. de Sistemas</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Coordinador de área]</div>
+          <div class="sig-role">Coordinador de Línea ITI<br>Universidad Peruana Unión</div>
+        </div>
+      </div>
+      <div class="info-box gold" style="margin-top:24px;">
+        <div class="info-icon">📝</div>
+        <div class="info-content">
+          <div class="info-label">Declaración ética — Código ACM</div>
+          <div class="info-text">El diseño de segmentación documentado en el presente entregable ha sido elaborado con responsabilidad profesional, basado en los requerimientos reales de Franco's SAC y las restricciones técnicas del laboratorio UPeU. Se declara que toda la información es técnicamente veraz y cumple los principios éticos del <strong>Código de Ética de la ACM (Association for Computing Machinery)</strong>, garantizando confidencialidad e integridad en el manejo de la información organizacional.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /doc-body -->
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>CE0313 · Segmentación de Red · Franco's SAC · UPeU 2026</span>
+    <span class="confidential">USO ACADÉMICO RESTRINGIDO</span>
+    <span>Línea ITI · Ingeniería de Sistemas</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>

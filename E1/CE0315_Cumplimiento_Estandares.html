@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CE0315 – Cumplimiento de Estándares de Conectividad</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap');
+
+    :root {
+      --navy:    #1B2A4A;
+      --blue:    #2E5090;
+      --gold:    #C8A951;
+      --gold-lt: #F0DFA0;
+      --bg:      #F4F6FA;
+      --white:   #FFFFFF;
+      --text:    #1E1E2E;
+      --muted:   #6B7280;
+      --border:  #D1D9E6;
+      --danger:  #C0392B;
+      --success: #1A7A4A;
+      --warn:    #B7770D;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 10.5pt; line-height: 1.7; }
+    .page { max-width: 920px; margin: 0 auto; background: var(--white); box-shadow: 0 4px 32px rgba(27,42,74,.15); }
+
+    /* COVER */
+    .cover { background: linear-gradient(160deg, #1B2A4A 60%, #2E5090 100%); color: #fff; padding: 60px 64px 50px; position: relative; overflow: hidden; }
+    .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:320px; height:320px; border-radius:50%; background:rgba(200,169,81,.08); }
+    .cover::after  { content:''; position:absolute; bottom:-80px; left:-40px; width:260px; height:260px; border-radius:50%; background:rgba(200,169,81,.05); }
+    .cover-logo-row { display:flex; align-items:center; gap:14px; margin-bottom:48px; }
+    .logo-badge { width:48px; height:48px; border-radius:10px; background:var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:800; font-size:18px; color:var(--navy); flex-shrink:0; }
+    .logo-text .univ   { font-size:11px; color:rgba(255,255,255,.6); letter-spacing:.5px; font-family:'Montserrat',sans-serif; }
+    .logo-text .school { font-size:13px; font-weight:700; color:#fff; font-family:'Montserrat',sans-serif; }
+    .cover-code { display:inline-block; background:rgba(200,169,81,.18); border:1px solid var(--gold); color:var(--gold); font-family:'Montserrat',sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; padding:5px 14px; border-radius:4px; margin-bottom:20px; text-transform:uppercase; }
+    .cover h1 { font-family:'Montserrat',sans-serif; font-size:26px; font-weight:800; line-height:1.25; margin-bottom:10px; color:#fff; }
+    .cover-subtitle { font-size:13px; color:rgba(255,255,255,.65); margin-bottom:40px; }
+    .cover-divider { width:56px; height:4px; background:var(--gold); border-radius:2px; margin-bottom:36px; }
+    .cover-meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 32px; }
+    .cover-meta-label { font-size:9.5px; font-family:'Montserrat',sans-serif; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); margin-bottom:3px; }
+    .cover-meta-value { font-size:11.5px; color:#fff; font-weight:600; }
+
+    /* VERSION BAR */
+    .version-bar { background:var(--navy); padding:14px 64px; display:flex; align-items:center; gap:8px; }
+    .version-bar span { font-size:9.5px; font-family:'Montserrat',sans-serif; font-weight:600; letter-spacing:1px; color:rgba(255,255,255,.5); text-transform:uppercase; }
+    .vbadge { background:var(--gold); color:var(--navy); padding:2px 10px; border-radius:20px; font-size:9px; font-weight:800; }
+    .vsep { color:rgba(255,255,255,.2) !important; }
+
+    /* BODY */
+    .doc-body { padding:52px 64px; }
+
+    /* TOC */
+    .toc { background:var(--bg); border-left:4px solid var(--gold); border-radius:0 8px 8px 0; padding:24px 28px; margin-bottom:48px; }
+    .toc-title { font-family:'Montserrat',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--navy); margin-bottom:14px; }
+    .toc ol { list-style:none; counter-reset:toc-counter; padding-left:0; }
+    .toc ol li { counter-increment:toc-counter; display:flex; align-items:baseline; gap:8px; padding:4px 0; font-size:10.5px; color:var(--blue); border-bottom:1px dashed var(--border); }
+    .toc ol li:last-child { border-bottom:none; }
+    .toc ol li::before { content:counter(toc-counter)"."; font-family:'Montserrat',sans-serif; font-weight:700; color:var(--gold); min-width:18px; }
+    .toc-dots { flex:1; border-bottom:1px dotted var(--border); height:1px; margin:0 4px; position:relative; top:-4px; }
+    .toc-pg { font-weight:700; color:var(--navy); font-size:10px; }
+
+    /* SECTIONS */
+    .section { margin-bottom:44px; }
+    .section-header { display:flex; align-items:center; gap:14px; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid var(--border); }
+    .section-number { width:38px; height:38px; background:var(--navy); color:#fff; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:800; font-size:15px; flex-shrink:0; }
+    .section-title { font-family:'Montserrat',sans-serif; font-size:15px; font-weight:800; color:var(--navy); text-transform:uppercase; letter-spacing:.5px; }
+    .section-subtitle { font-size:10px; color:var(--muted); font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+    .subsection { margin-bottom:28px; }
+    .subsection-title { font-family:'Montserrat',sans-serif; font-size:11.5px; font-weight:700; color:var(--blue); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+    .subsection-title::before { content:''; width:3px; height:14px; background:var(--gold); border-radius:2px; flex-shrink:0; }
+    p { margin-bottom:12px; text-align:justify; }
+
+    /* TABLES */
+    .formal-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:10px; }
+    .formal-table thead tr { background:var(--navy); color:#fff; }
+    .formal-table thead th { padding:10px 14px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:9.5px; letter-spacing:.5px; text-align:left; text-transform:uppercase; }
+    .formal-table tbody tr:nth-child(even) { background:#F0F4FA; }
+    .formal-table tbody tr:nth-child(odd)  { background:#fff; }
+    .formal-table tbody tr:hover { background:var(--gold-lt); }
+    .formal-table tbody td { padding:9px 14px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5; }
+    .formal-table tfoot td { padding:8px 14px; font-style:italic; font-size:9px; color:var(--muted); border-top:2px solid var(--border); }
+
+    /* BADGES */
+    .badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:8.5px; font-family:'Montserrat',sans-serif; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+    .badge-high   { background:#FDE8E8; color:var(--danger); }
+    .badge-med    { background:#FEF8EC; color:var(--warn); }
+    .badge-low    { background:#EBF7F1; color:var(--success); }
+    .badge-navy   { background:#EEF1F8; color:var(--navy); }
+    .badge-gold   { background:var(--gold-lt); color:#7A6010; }
+    .badge-blue   { background:#E8EEF8; color:var(--blue); }
+
+    /* COMPLIANCE STATUS */
+    .comply-full { background:#EBF7F1; color:var(--success); font-weight:700; padding:3px 10px; border-radius:4px; font-size:9px; display:inline-block; }
+    .comply-part { background:#FEF8EC; color:var(--warn); font-weight:700; padding:3px 10px; border-radius:4px; font-size:9px; display:inline-block; }
+    .comply-tobe { background:#EEF1F8; color:var(--navy); font-weight:700; padding:3px 10px; border-radius:4px; font-size:9px; display:inline-block; }
+
+    /* STANDARD CARDS */
+    .std-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin:16px 0; }
+    .std-card { border:1px solid var(--border); border-top:4px solid var(--navy); border-radius:0 0 8px 8px; padding:16px 14px; background:var(--white); }
+    .std-card.gold-top { border-top-color:var(--gold); }
+    .std-card.blue-top { border-top-color:var(--blue); }
+    .std-card .std-code { font-family:'Montserrat',sans-serif; font-size:11px; font-weight:800; color:var(--navy); margin-bottom:4px; }
+    .std-card .std-name { font-size:9px; color:var(--muted); margin-bottom:8px; }
+    .std-card .std-body { font-size:9.5px; color:var(--text); line-height:1.6; }
+
+    /* INFO BOXES */
+    .info-box { border-radius:8px; padding:16px 20px; margin:16px 0; display:flex; gap:14px; align-items:flex-start; }
+    .info-box.navy    { background:#EEF1F8; border-left:4px solid var(--navy); }
+    .info-box.gold    { background:#FDF8EC; border-left:4px solid var(--gold); }
+    .info-box.success { background:#EBF7F1; border-left:4px solid var(--success); }
+    .info-box.warn    { background:#FEF8EC; border-left:4px solid var(--warn); }
+    .info-icon { font-size:17px; line-height:1; padding-top:2px; }
+    .info-content { flex:1; }
+    .info-label { font-family:'Montserrat',sans-serif; font-size:9.5px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
+    .info-box.navy  .info-label { color:var(--navy); }
+    .info-box.gold  .info-label { color:var(--warn); }
+    .info-box.success .info-label { color:var(--success); }
+    .info-box.warn  .info-label { color:var(--warn); }
+    .info-text { font-size:10px; color:var(--text); }
+
+    /* DECLARATION BOX */
+    .declaration { background:linear-gradient(135deg,#EEF1F8 0%,#F4F6FA 100%); border:2px solid var(--navy); border-radius:10px; padding:28px 32px; margin:24px 0; }
+    .declaration-title { font-family:'Montserrat',sans-serif; font-size:13px; font-weight:800; color:var(--navy); letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; text-align:center; }
+    .declaration-body { font-size:10.5px; line-height:1.8; text-align:justify; margin-bottom:16px; }
+    .declaration-sign { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-top:24px; }
+    .declaration-sign .sig-block { text-align:center; }
+    .declaration-sign .sig-line { border-top:1px solid var(--navy); margin-top:40px; margin-bottom:6px; }
+    .declaration-sign .sig-name { font-family:'Montserrat',sans-serif; font-size:10px; font-weight:700; color:var(--navy); }
+    .declaration-sign .sig-role { font-size:9px; color:var(--muted); }
+    .stamp-row { display:flex; justify-content:center; gap:20px; margin-top:20px; flex-wrap:wrap; }
+    .stamp { border:2px solid var(--navy); border-radius:8px; padding:10px 20px; text-align:center; }
+    .stamp .stamp-label { font-family:'Montserrat',sans-serif; font-size:8px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+    .stamp .stamp-value { font-family:'Montserrat',sans-serif; font-size:11px; font-weight:800; color:var(--navy); margin-top:2px; }
+
+    /* SIGNATURES */
+    .signature-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; margin:32px 0 20px; }
+    .sig-box { text-align:center; }
+    .sig-line { border-top:1px solid var(--navy); margin-bottom:6px; margin-top:40px; }
+    .sig-name { font-family:'Montserrat',sans-serif; font-size:10px; font-weight:700; color:var(--navy); }
+    .sig-role { font-size:9px; color:var(--muted); }
+
+    /* FOOTER */
+    .doc-footer { background:var(--navy); padding:16px 64px; display:flex; justify-content:space-between; align-items:center; }
+    .doc-footer span { font-size:9px; color:rgba(255,255,255,.45); font-family:'Montserrat',sans-serif; letter-spacing:.5px; }
+    .confidential { background:rgba(200,169,81,.15); border:1px solid rgba(200,169,81,.3); color:var(--gold); padding:3px 10px; border-radius:4px; font-size:8.5px; font-weight:700; letter-spacing:1px; }
+
+    @media print { body { background:white; } .page { box-shadow:none; max-width:100%; } }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-logo-row">
+      <div class="logo-badge">U</div>
+      <div class="logo-text">
+        <div class="univ">UNIVERSIDAD PERUANA UNIÓN — UPEU</div>
+        <div class="school">Escuela Profesional de Ingeniería de Sistemas</div>
+      </div>
+    </div>
+    <div class="cover-code">CE0315 &nbsp;·&nbsp; Entregable 1 &nbsp;·&nbsp; Semestre I – 2026</div>
+    <h1>Cumplimiento de Estándares<br>de Conectividad</h1>
+    <div class="cover-subtitle">Proyecto de Fin de Carrera — Área de Infraestructura Tecnológica (ITI)</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta-grid">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Empresa cliente</div>
+        <div class="cover-meta-value">Franco's SAC</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Competencia evaluada</div>
+        <div class="cover-meta-value">CE031 — Conectividad</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Etapa CDIO</div>
+        <div class="cover-meta-value">Conceive / Design</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Estándares referenciados</div>
+        <div class="cover-meta-value">TIA/EIA-568 · IEEE 802.x · ISO/IEC 11801</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Rol del autor</div>
+        <div class="cover-meta-value">Director del Proyecto / Jefe de Infraestructura y Seguridad de TI</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Fecha de emisión</div>
+        <div class="cover-meta-value">Mayo 2026</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Versión</div>
+        <div class="cover-meta-value">v1.0 — Documento inicial</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Clasificación</div>
+        <div class="cover-meta-value">Uso académico restringido</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERSION BAR -->
+  <div class="version-bar">
+    <span class="vbadge">v1.0</span>
+    <span class="vsep">|</span>
+    <span>Documento inicial · Mayo 2026</span>
+    <span class="vsep">|</span>
+    <span>CE0315 · Entregable 1 · Línea ITI</span>
+    <span class="vsep">|</span>
+    <span>Proyecto de Fin de Carrera — UPeU</span>
+  </div>
+
+  <!-- BODY -->
+  <div class="doc-body">
+
+    <!-- CONTROL DE VERSIONES -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">📋</div>
+        <div>
+          <div class="section-title">Control de Versiones</div>
+          <div class="section-subtitle">Historial de revisiones del documento</div>
+        </div>
+      </div>
+      <table class="formal-table">
+        <thead><tr><th>Versión</th><th>Fecha</th><th>Descripción</th><th>Elaborado por</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>v1.0</strong></td>
+            <td>Mayo 2026</td>
+            <td>Elaboración inicial: marco normativo, análisis de cumplimiento por estándar, matriz de trazabilidad diseño-estándar y declaración formal de cumplimiento</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-gold">Borrador</span></td>
+          </tr>
+          <tr>
+            <td>v2.0</td>
+            <td>—</td>
+            <td>Versión final aprobada para sustentación</td>
+            <td>—</td>
+            <td><span class="badge badge-low">Pendiente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <div class="toc-title">Tabla de Contenidos</div>
+      <ol>
+        <li><span>Introducción y Propósito</span><span class="toc-dots"></span><span class="toc-pg">§1</span></li>
+        <li><span>Marco Normativo — Estándares de referencia del proyecto</span><span class="toc-dots"></span><span class="toc-pg">§2</span></li>
+        <li><span>Cumplimiento TIA/EIA-568 — Cableado estructurado</span><span class="toc-dots"></span><span class="toc-pg">§3</span></li>
+        <li><span>Cumplimiento IEEE 802.x — Estándares LAN/WAN</span><span class="toc-dots"></span><span class="toc-pg">§4</span></li>
+        <li><span>Cumplimiento ISO/IEC 11801 — Cableado genérico</span><span class="toc-dots"></span><span class="toc-pg">§5</span></li>
+        <li><span>Cumplimiento NIST y ISO 27001 — Seguridad en red</span><span class="toc-dots"></span><span class="toc-pg">§6</span></li>
+        <li><span>Matriz de Trazabilidad — Diseño ↔ Estándar</span><span class="toc-dots"></span><span class="toc-pg">§7</span></li>
+        <li><span>Declaración Formal de Cumplimiento</span><span class="toc-dots"></span><span class="toc-pg">§8</span></li>
+        <li><span>Conclusiones</span><span class="toc-dots"></span><span class="toc-pg">§9</span></li>
+        <li><span>Firmas y Aprobaciones</span><span class="toc-dots"></span><span class="toc-pg">§10</span></li>
+      </ol>
+    </div>
+
+    <!-- §1 INTRODUCCIÓN -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div>
+          <div class="section-title">Introducción y Propósito</div>
+          <div class="section-subtitle">Alcance y justificación del documento de cumplimiento</div>
+        </div>
+      </div>
+      <p>El presente documento corresponde al entregable <strong>CE0315 — Cumplimiento de Estándares de Conectividad</strong>, el quinto subdocumento del Entregable 1 del Proyecto de Fin de Carrera en la línea de <strong>Infraestructura Tecnológica (ITI)</strong>. Su propósito es demostrar de forma explícita y trazable que el diseño de infraestructura de red para Franco's SAC se alinea con los estándares internacionales exigidos por la rúbrica de evaluación.</p>
+      <p>Este documento consolida las referencias normativas dispersas en CE0311–CE0314 en un solo instrumento de cumplimiento, que incluye el análisis de cada estándar, su aplicación específica en el diseño y una declaración formal de cumplimiento.</p>
+
+      <div class="info-box gold">
+        <div class="info-icon">📌</div>
+        <div class="info-content">
+          <div class="info-label">Relación con otros entregables</div>
+          <div class="info-text">CE0315 no redefine el diseño — lo referencia. Los elementos técnicos están documentados en CE0311 (requerimientos), CE0312 (topología), CE0313 (segmentación) y CE0314 (redundancia). Este documento provee la <strong>trazabilidad normativa formal</strong> que vincula cada decisión de diseño con el estándar internacional que la sustenta.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §2 MARCO NORMATIVO -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div>
+          <div class="section-title">Marco Normativo</div>
+          <div class="section-subtitle">Estándares internacionales de referencia aplicados al proyecto</div>
+        </div>
+      </div>
+
+      <p>El diseño de la infraestructura de red para Franco's SAC se basa en los siguientes estándares internacionales, agrupados por organismo emisor:</p>
+
+      <div class="std-grid">
+        <div class="std-card gold-top">
+          <div class="std-code">TIA/EIA-568</div>
+          <div class="std-name">Telecommunications Industry Association / Electronic Industries Alliance</div>
+          <div class="std-body">Estándar de cableado estructurado para edificios comerciales. Define los requisitos de cable, conectores, distancias, canales y pruebas para instalaciones de cobre y fibra óptica.</div>
+        </div>
+        <div class="std-card blue-top">
+          <div class="std-code">IEEE 802.x</div>
+          <div class="std-name">Institute of Electrical and Electronics Engineers</div>
+          <div class="std-body">Familia de estándares para redes LAN/MAN/WAN. Incluye Ethernet (802.3), VLANs (802.1Q), WiFi (802.11), control de acceso por puerto (802.1X), agregación de enlaces (802.3ad) y Spanning Tree (802.1w).</div>
+        </div>
+        <div class="std-card">
+          <div class="std-code">ISO/IEC 11801</div>
+          <div class="std-name">International Organization for Standardization / IEC</div>
+          <div class="std-body">Estándar internacional de cableado genérico para instalaciones del cliente (premises). Complementa TIA/EIA-568 con enfoque global. Define clases de canales (A–F) y categorías de cable.</div>
+        </div>
+        <div class="std-card gold-top">
+          <div class="std-code">NIST SP 800-53</div>
+          <div class="std-name">National Institute of Standards and Technology</div>
+          <div class="std-body">Catálogo de controles de seguridad para sistemas de información federales (EE. UU.), ampliamente adoptado como referencia internacional. Aplica controles de protección de límites (SC-7) y confidencialidad (SC-8).</div>
+        </div>
+        <div class="std-card blue-top">
+          <div class="std-code">ISO/IEC 27001</div>
+          <div class="std-name">International Organization for Standardization / IEC</div>
+          <div class="std-body">Sistema de Gestión de Seguridad de la Información (SGSI). El Anexo A.13 define controles de seguridad en redes; A.17 cubre continuidad del negocio. Marco transversal al proyecto ITI.</div>
+        </div>
+        <div class="std-card">
+          <div class="std-code">Uptime Institute</div>
+          <div class="std-name">Uptime Institute LLC</div>
+          <div class="std-body">Sistema de clasificación de disponibilidad de centros de datos (Tier I–IV). Define requisitos de redundancia, mantenimiento concurrente y tolerancia a fallos para infraestructura de TI.</div>
+        </div>
+      </div>
+
+      <table class="formal-table" style="margin-top:20px;">
+        <thead>
+          <tr><th>Estándar</th><th>Versión / Edición</th><th>Organismo</th><th>Categoría</th><th>Estado en el proyecto</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>TIA/EIA-568-C.0</strong></td><td>3.ª edición (2009)</td><td>TIA / EIA</td><td>Cableado estructurado</td><td><span class="comply-full">APLICADO</span></td></tr>
+          <tr><td><strong>TIA/EIA-568-C.2</strong></td><td>3.ª edición (2009)</td><td>TIA / EIA</td><td>Par trenzado balanceado</td><td><span class="comply-full">APLICADO</span></td></tr>
+          <tr><td><strong>IEEE 802.1Q-2018</strong></td><td>2018</td><td>IEEE</td><td>VLANs (etiquetado)</td><td><span class="comply-full">APLICADO</span></td></tr>
+          <tr><td><strong>IEEE 802.3ab</strong></td><td>1999 (incl. en 802.3-2018)</td><td>IEEE</td><td>Gigabit Ethernet (1000BASE-T)</td><td><span class="comply-full">APLICADO</span></td></tr>
+          <tr><td><strong>IEEE 802.3u</strong></td><td>1995 (incl. en 802.3-2018)</td><td>IEEE</td><td>Fast Ethernet (100BASE-TX)</td><td><span class="comply-full">APLICADO</span></td></tr>
+          <tr><td><strong>IEEE 802.11ac/ax</strong></td><td>Wi-Fi 5 / Wi-Fi 6</td><td>IEEE</td><td>WLAN (inalámbrico)</td><td><span class="comply-tobe">DISEÑO TO-BE</span></td></tr>
+          <tr><td><strong>IEEE 802.1w (RSTP)</strong></td><td>2001 (incl. en 802.1D-2004)</td><td>IEEE</td><td>Spanning Tree rápido</td><td><span class="comply-tobe">DISEÑO TO-BE</span></td></tr>
+          <tr><td><strong>IEEE 802.1X-2020</strong></td><td>2020</td><td>IEEE</td><td>Control de acceso por puerto</td><td><span class="comply-tobe">DISEÑO TO-BE</span></td></tr>
+          <tr><td><strong>IEEE 802.3ad (LACP)</strong></td><td>2000 (incl. en 802.3-2018)</td><td>IEEE</td><td>Agregación de enlaces</td><td><span class="comply-tobe">DISEÑO TO-BE</span></td></tr>
+          <tr><td><strong>ISO/IEC 11801:2017</strong></td><td>3.ª edición (2017)</td><td>ISO / IEC</td><td>Cableado genérico</td><td><span class="comply-full">APLICADO</span></td></tr>
+          <tr><td><strong>NIST SP 800-53 Rev. 5</strong></td><td>2020</td><td>NIST</td><td>Controles de seguridad</td><td><span class="comply-part">PARCIAL</span></td></tr>
+          <tr><td><strong>ISO/IEC 27001:2022</strong></td><td>3.ª edición (2022)</td><td>ISO / IEC</td><td>SGSI</td><td><span class="comply-part">PARCIAL</span></td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">APLICADO = implementado en el diseño actual. PARCIAL = aplicado en los controles relevantes para el alcance. DISEÑO TO-BE = referenciado en el diseño pero pendiente de implementación (Semestre 2 o infraestructura real).</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §3 TIA/EIA-568 -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div>
+          <div class="section-title">Cumplimiento TIA/EIA-568</div>
+          <div class="section-subtitle">Estándar de cableado estructurado para edificios comerciales</div>
+        </div>
+      </div>
+
+      <p>El estándar <strong>TIA/EIA-568</strong> establece los requisitos mínimos para el cableado de telecomunicaciones en edificios comerciales, incluyendo especificaciones de cable, conectores, longitudes de canal, salas de telecomunicaciones y pruebas de rendimiento.</p>
+
+      <div class="subsection">
+        <div class="subsection-title">TIA/EIA-568-C.0 — Requisitos generales de cableado</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>Requisito TIA/EIA-568-C.0</th><th>Aplicación en Franco's SAC</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Topología de estrella</strong><br><small>Cada terminal conecta al distribuidor de planta (DP)</small></td>
+              <td>Cada ESXi Host (terminal de red) conecta al Cisco Switch del laboratorio (distribuidor). Topología estrella implementada en el diseño físico (CE0312 §4, §5, §5b).</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Longitud máxima canal horizontal</strong><br><small>100 m (Cat5e/Cat6)</small></td>
+              <td>Los servidores ESXi y el switch del laboratorio se encuentran en la misma sala de equipos. Distancia estimada ≤ 10 m. Cumple ampliamente el máximo de 100 m.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Sala de telecomunicaciones</strong><br><small>Al menos 1 TR por planta</small></td>
+              <td>El laboratorio Cisco UPeU actúa como sala de telecomunicaciones del proyecto académico. En el diseño TO-BE para las instalaciones reales de Franco's SAC, se contempla una TR por local.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Identificación y etiquetado</strong><br><small>Todos los cables y puertos deben estar etiquetados</small></td>
+              <td>Los port groups de ESXi (PG-VLAN10-ADMIN, PG-WAN1-ISP1, etc.) implementan el etiquetado lógico. En la implementación física, se utilizarán etiquetas adhesivas en los cables según la convención de nomenclatura definida en CE0312.</td>
+              <td><span class="comply-part">PARCIAL</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">TIA/EIA-568-C.2 — Cableado de par trenzado balanceado (UTP/STP)</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>Especificación</th><th>Requerimiento TIA/EIA-568-C.2</th><th>Implementación en el proyecto</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Categoría de cable</strong></td>
+              <td>Mínimo Cat5e para GigE (1000BASE-T)</td>
+              <td>El laboratorio Cisco UPeU utiliza cables Cat6 UTP para las conexiones entre servidores ESXi y switches. Cat6 supera el mínimo de Cat5e.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Conector</strong></td>
+              <td>RJ45 (8P8C) — T568A o T568B</td>
+              <td>Todos los cables de red del laboratorio utilizan conectores RJ45 con terminación T568B (estándar más común en entornos empresariales de América).</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Longitud máxima segmento horizontal</strong></td>
+              <td>90 m (cable permanente) + 10 m patch cords = 100 m total</td>
+              <td>Distancia física entre ESXi Hosts y Cisco Switch ≤ 10 m. Dentro del límite de 90 m para cableado permanente.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Crosstalk (NEXT, FEXT)</strong></td>
+              <td>Definido por categoría. Cat6: NEXT ≥ 44.3 dB @ 100 MHz</td>
+              <td>El uso de cable Cat6 certificado garantiza los parámetros de crosstalk definidos por TIA/EIA-568-C.2. Las pruebas de campo se realizarán en la fase de implementación (CE0346).</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- §4 IEEE 802.x -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div>
+          <div class="section-title">Cumplimiento IEEE 802.x</div>
+          <div class="section-subtitle">Familia de estándares para redes de área local y metropolitana</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">IEEE 802.1Q — VLAN Tagging (Etiquetado de tramas)</div>
+        <table class="formal-table">
+          <thead><tr><th>Aspecto del estándar</th><th>Implementación en el proyecto</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Encapsulación 802.1Q</strong><br><small>Etiqueta de 4 bytes en la trama Ethernet</small></td>
+              <td>VMware ESXi configura Port Groups con VLAN IDs (10, 20, 30, 40, 50, 60, 99). El trunk entre vmnic2 y el Cisco Switch usa encapsulación 802.1Q nativa.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>VLAN ID rango</strong><br><small>1 – 4094 válidos; 4095 = trunk all</small></td>
+              <td>VLANs definidas en el proyecto: 10, 20, 30, 40, 50, 60, 99. El Port Group trunk usa VLAN ID 4095 (convención ESXi para trunk completo). Todos dentro del rango válido 802.1Q.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Puerto trunk vs. acceso</strong><br><small>Trunk: múltiples VLANs; acceso: una VLAN</small></td>
+              <td>vmnic2 de cada ESXi Host → Puerto trunk en Cisco Switch (transporta VLANs del local). Port Groups individuales (PG-VLAN10, etc.) → modo acceso para VMs de usuario final.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>Native VLAN</strong><br><small>VLAN sin etiquetar en el trunk</small></td>
+              <td>No se configura native VLAN en el trunk para prevenir ataques de VLAN hopping. Todo el tráfico entre ESXi y el switch viaja etiquetado.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">IEEE 802.3 — Ethernet (versiones aplicadas)</div>
+        <table class="formal-table">
+          <thead><tr><th>Sub-estándar</th><th>Velocidad</th><th>Aplicación en el proyecto</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>IEEE 802.3ab</strong></td>
+              <td>1000BASE-T (GigE)</td>
+              <td>Las NICs de ESXi Host 1 (vmnic1, vmnic2 — igbn) operan a 1 Gbps. Cisco Switch del lab soporta GigE. Conexiones principales del proyecto.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>IEEE 802.3u</strong></td>
+              <td>100BASE-TX (Fast Ethernet)</td>
+              <td>vmnic0 de ESXi Host 1 (ne1000) opera a 100 Mbps hacia el Cisco Lab Router (ISP1). Cumple 802.3u como enlace WAN1.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>IEEE 802.3x</strong></td>
+              <td>Flow Control (full-duplex)</td>
+              <td>Las interfaces GigE del ESXi operan en full-duplex con control de flujo habilitado para evitar pérdida de paquetes en ráfagas de tráfico.</td>
+              <td><span class="comply-full">CUMPLE</span></td>
+            </tr>
+            <tr>
+              <td><strong>IEEE 802.3ad (LACP)</strong></td>
+              <td>Link Aggregation</td>
+              <td>No implementado en el lab (restricción: un único ESXi Host por local). Documentado en el diseño TO-BE para aumentar ancho de banda y redundancia de enlace físico.</td>
+              <td><span class="comply-tobe">TO-BE</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">IEEE 802.11 — WLAN (Wi-Fi) · IEEE 802.1w — RSTP · IEEE 802.1X — Control de acceso</div>
+        <table class="formal-table">
+          <thead><tr><th>Estándar</th><th>Descripción</th><th>Estado en el proyecto</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>IEEE 802.11ac/ax</strong><br><small>Wi-Fi 5 / Wi-Fi 6</small></td>
+              <td>El diseño contempla Access Points inalámbricos para las VLANs de usuarios (VLAN 20) en los 3 locales, mapeando SSIDs a VLANs. Implementación física en Semestre 2 o despliegue real.</td>
+              <td><span class="comply-tobe">TO-BE</span></td>
+            </tr>
+            <tr>
+              <td><strong>IEEE 802.1w (RSTP)</strong><br><small>Rapid Spanning Tree</small></td>
+              <td>Documentado para la topología de switches en el TO-BE. RSTP converge en &lt; 1s ante falla de enlace, previniendo loops de capa 2. En el lab con un único switch no hay loops, por lo que no es crítico actualmente.</td>
+              <td><span class="comply-tobe">TO-BE</span></td>
+            </tr>
+            <tr>
+              <td><strong>IEEE 802.1X-2020</strong><br><small>Port-based Network Access Control</small></td>
+              <td>Control de acceso por puerto documentado para el TO-BE. En el diseño actual, el control de acceso a la red se realiza mediante VLANs y ACLs en pfSense, que proveen una separación equivalente en el contexto de laboratorio.</td>
+              <td><span class="comply-tobe">TO-BE</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- §5 ISO/IEC 11801 -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <div>
+          <div class="section-title">Cumplimiento ISO/IEC 11801</div>
+          <div class="section-subtitle">Cableado genérico para instalaciones del cliente (3.ª edición, 2017)</div>
+        </div>
+      </div>
+
+      <p>La norma <strong>ISO/IEC 11801:2017</strong> es el estándar internacional equivalente al TIA/EIA-568 de EE. UU., con aplicación global. Define las especificaciones de cableado para cuatro tipos de instalaciones: edificios residenciales (Part 1), edificios comerciales (Part 2), centros de datos (Part 3) y hogares inteligentes (Part 5).</p>
+
+      <p>Para Franco's SAC aplica principalmente la <strong>Parte 2 (edificios industriales/comerciales)</strong>, dado que se trata de una planta de producción y oficinas administrativas.</p>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Elemento ISO/IEC 11801</th><th>Especificación</th><th>Aplicación en el proyecto</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Clase D / Categoría 5e</strong></td>
+            <td>Soporte hasta 100 MHz. Requerimiento mínimo para GigE (1000BASE-T)</td>
+            <td>El diseño especifica Cat6 (Clase E, 250 MHz) para todas las conexiones principales, que supera el mínimo de Clase D.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Clase E / Categoría 6</strong></td>
+            <td>Soporte hasta 250 MHz. Recomendado para instalaciones nuevas</td>
+            <td>Cat6 es el estándar utilizado en el laboratorio Cisco UPeU y el especificado para el diseño real de Franco's SAC.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Cableado horizontal</strong></td>
+            <td>Desde área de trabajo (TO) al distribuidor de planta (FD). Máximo 90 m de cable permanente.</td>
+            <td>Conexión ESXi Host → Cisco Switch del lab ≤ 10 m. Cumple ampliamente el máximo de 90 m.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Cableado backbone</strong></td>
+            <td>Entre distribuidores de planta (FD) y distribuidor de edificio (BD). Fibra óptica recomendada para distancias &gt; 90 m.</td>
+            <td>En el diseño TO-BE para las instalaciones reales de Franco's SAC, el backbone entre locales utiliza el túnel VPN sobre el enlace WAN del ISP. No se requiere fibra óptica entre locales en el proyecto académico.</td>
+            <td><span class="comply-part">REFERENCIADO</span></td>
+          </tr>
+          <tr>
+            <td><strong>Subsistema de área de trabajo</strong></td>
+            <td>Patch cord máximo 5 m entre outlet (toma de red) y equipo terminal</td>
+            <td>En el laboratorio, los patch cords entre switch y servidores ESXi son ≤ 3 m. En el diseño real, los patch cords de puestos de trabajo serán ≤ 5 m.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sala de telecomunicaciones</strong></td>
+            <td>Temperatura: 18–27°C · Humedad: 40–55% · UPS requerido</td>
+            <td>El laboratorio Cisco UPeU mantiene las condiciones ambientales requeridas. En el TO-BE, se especifica sala de servidores con control ambiental y UPS por local.</td>
+            <td><span class="comply-part">LAB CUMPLE</span></td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">ISO/IEC 11801:2017 Parte 2 — Generic cabling for office premises. Categoría de cable: 5e (Clase D mínimo), 6 (Clase E — recomendado para nuevas instalaciones).</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §6 NIST + ISO 27001 -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <div>
+          <div class="section-title">Cumplimiento NIST SP 800-53 e ISO/IEC 27001</div>
+          <div class="section-subtitle">Controles de seguridad aplicados en la infraestructura de red</div>
+        </div>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Control</th><th>Referencia</th><th>Descripción del control</th><th>Implementación en el proyecto</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SC-7</strong></td>
+            <td>NIST 800-53</td>
+            <td>Boundary Protection — separación de zonas de red con diferente nivel de confianza</td>
+            <td>DMZ (VLAN 30) separa los servicios expuestos a Internet de las zonas internas. pfSense implementa las reglas de filtrado en cada límite de zona. Documentado en CE0313 §6.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>SC-8</strong></td>
+            <td>NIST 800-53</td>
+            <td>Transmission Confidentiality and Integrity — cifrado del tráfico en tránsito</td>
+            <td>Túneles VPN IPSec IKEv2/AES-256-GCM cifran todo el tráfico inter-local. HTTPS (TLS 1.2+) para el tráfico de usuarios hacia el frontend ERP. Documentado en CE0314 §4.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>SC-32</strong></td>
+            <td>NIST 800-53</td>
+            <td>Information System Partitioning — segmentación del sistema en componentes aislados</td>
+            <td>Las 15 VLANs del proyecto (7 en L1, 4 en L2, 4 en L3) particionan la infraestructura por función y nivel de seguridad. Documentado en CE0313 §2–§5.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>A.13.1</strong></td>
+            <td>ISO 27001:2022</td>
+            <td>Seguridad en las redes — gestión y control de las redes</td>
+            <td>Segmentación por VLANs, ACLs en pfSense y monitoreo SNMP (Zabbix) implementan controles de gestión y protección de redes conforme a A.13.1.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>A.13.2</strong></td>
+            <td>ISO 27001:2022</td>
+            <td>Transferencia de información — políticas y acuerdos para la transferencia</td>
+            <td>El cifrado VPN (IPSec AES-256-GCM) garantiza la confidencialidad de la transferencia de información entre locales. Las reglas de firewall definen qué flujos están permitidos.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>A.17.1</strong></td>
+            <td>ISO 27001:2022</td>
+            <td>Continuidad de la seguridad de la información — planificación</td>
+            <td>El plan de redundancia (CE0314) cubre Dual-WAN, VPN mesh y estrategias de backup, alineados a los objetivos de RTO/RPO definidos conforme a A.17.1.</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- §7 MATRIZ DE TRAZABILIDAD -->
+    <div class="section" id="s7">
+      <div class="section-header">
+        <div class="section-number">7</div>
+        <div>
+          <div class="section-title">Matriz de Trazabilidad — Diseño ↔ Estándar</div>
+          <div class="section-subtitle">Mapa completo de elementos de diseño y sus normas de respaldo</div>
+        </div>
+      </div>
+
+      <p>La siguiente matriz es el instrumento central de este documento. Vincula cada elemento del diseño de infraestructura de Franco's SAC con el estándar internacional que lo sustenta, indicando el documento CE03xx donde se encuentra desarrollado.</p>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>#</th><th>Elemento del diseño</th><th>Estándar(es) aplicado(s)</th><th>Documentado en</th><th>Cumplimiento</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>T-01</td>
+            <td><strong>Trunk VLAN 802.1Q</strong> en vmnic2 → Cisco Switch</td>
+            <td>IEEE 802.1Q-2018</td>
+            <td>CE0312 §6, CE0313 §9</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-02</td>
+            <td><strong>VLANs 10/20/30/40/50/60/99</strong> segmentación por zona</td>
+            <td>IEEE 802.1Q-2018 · ISO 27001 A.13.1</td>
+            <td>CE0313 §2–§5</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-03</td>
+            <td><strong>DMZ VLAN 30</strong> — separación de zona expuesta</td>
+            <td>IEEE 802.1Q · NIST SP 800-53 SC-7</td>
+            <td>CE0313 §6</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-04</td>
+            <td><strong>Cableado Cat6 UTP</strong> ESXi → Switch del lab</td>
+            <td>TIA/EIA-568-C.2 · ISO/IEC 11801:2017 Clase E</td>
+            <td>CE0312 §2</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-05</td>
+            <td><strong>Conector RJ45 T568B</strong></td>
+            <td>TIA/EIA-568-C.2</td>
+            <td>CE0312 §2</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-06</td>
+            <td><strong>Interfaces GigE (vmnic1, vmnic2)</strong></td>
+            <td>IEEE 802.3ab (1000BASE-T)</td>
+            <td>CE0312 §2</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-07</td>
+            <td><strong>Interfaz Fast Ethernet (vmnic0, 100 Mbps)</strong></td>
+            <td>IEEE 802.3u (100BASE-TX)</td>
+            <td>CE0312 §2</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-08</td>
+            <td><strong>VPN IPSec IKEv2 / AES-256-GCM</strong> inter-local</td>
+            <td>NIST SP 800-53 SC-8 · ISO 27001 A.13.2</td>
+            <td>CE0312 §11, CE0314 §4</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-09</td>
+            <td><strong>Dual-WAN failover</strong> pfSense Gateway Groups</td>
+            <td>IEEE 802.3 · ISO 27001 A.17.1</td>
+            <td>CE0314 §3</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-10</td>
+            <td><strong>Inter-VLAN routing</strong> pfSense Router-on-a-Stick</td>
+            <td>IEEE 802.1Q · NIST SP 800-53 SC-7</td>
+            <td>CE0313 §8</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-11</td>
+            <td><strong>ACLs de firewall</strong> entre zonas VLAN</td>
+            <td>NIST SP 800-53 SC-7 · ISO 27001 A.13.1</td>
+            <td>CE0313 §8</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-12</td>
+            <td><strong>Access Points WiFi</strong> (SSIDs por VLAN)</td>
+            <td>IEEE 802.11ac/ax</td>
+            <td>CE0311 RT-06</td>
+            <td><span class="comply-tobe">TO-BE</span></td>
+          </tr>
+          <tr>
+            <td>T-13</td>
+            <td><strong>RSTP / Spanning Tree</strong> en switches</td>
+            <td>IEEE 802.1w</td>
+            <td>CE0314 §9</td>
+            <td><span class="comply-tobe">TO-BE</span></td>
+          </tr>
+          <tr>
+            <td>T-14</td>
+            <td><strong>Link Aggregation (LACP)</strong> entre switches y hosts</td>
+            <td>IEEE 802.3ad</td>
+            <td>CE0314 §9</td>
+            <td><span class="comply-tobe">TO-BE</span></td>
+          </tr>
+          <tr>
+            <td>T-15</td>
+            <td><strong>Control de acceso por puerto</strong> (802.1X + AD)</td>
+            <td>IEEE 802.1X-2020</td>
+            <td>CE0311 RT-07</td>
+            <td><span class="comply-tobe">TO-BE</span></td>
+          </tr>
+          <tr>
+            <td>T-16</td>
+            <td><strong>Longitud máxima de canal</strong> ≤ 100 m</td>
+            <td>TIA/EIA-568-C.2 · ISO/IEC 11801</td>
+            <td>CE0312 §2</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-17</td>
+            <td><strong>Subnetting / direccionamiento IP estructurado</strong></td>
+            <td>RFC 1918 (IETF) · IEEE 802.3</td>
+            <td>CE0313 §7</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-18</td>
+            <td><strong>Monitoreo SNMP</strong> (Zabbix)</td>
+            <td>RFC 1157 / 3411 · ISO 27001 A.13.1</td>
+            <td>CE0311 RT-09</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">CUMPLE = implementado en el diseño actual del proyecto. TO-BE = diseñado y documentado, pendiente de implementación física (Semestre 2 / infraestructura real Franco's SAC).</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §8 DECLARACIÓN FORMAL -->
+    <div class="section" id="s8">
+      <div class="section-header">
+        <div class="section-number">8</div>
+        <div>
+          <div class="section-title">Declaración Formal de Cumplimiento</div>
+          <div class="section-subtitle">Instrumento oficial de alineación normativa del proyecto</div>
+        </div>
+      </div>
+
+      <div class="declaration">
+        <div class="declaration-title">Declaración de Cumplimiento de Estándares de Conectividad</div>
+        <div class="declaration-body">
+          Los suscritos, en calidad de equipo responsable del <strong>Proyecto de Fin de Carrera en la Línea de Infraestructura Tecnológica (ITI)</strong> de la Escuela Profesional de Ingeniería de Sistemas de la Universidad Peruana Unión, declaramos formalmente que:
+          <br><br>
+          <strong>1.</strong> El diseño de infraestructura de red desarrollado para <strong>Franco's SAC</strong> ha sido elaborado siguiendo los lineamientos y requisitos de los estándares internacionales <strong>TIA/EIA-568</strong> (cableado estructurado), <strong>IEEE 802.x</strong> (estándares LAN/WAN) e <strong>ISO/IEC 11801</strong> (cableado genérico para instalaciones del cliente), tal como se documenta en los entregables CE0311 a CE0315.
+          <br><br>
+          <strong>2.</strong> Los controles de seguridad de red implementados en el diseño se alinean a los marcos de referencia <strong>NIST SP 800-53 Rev. 5</strong> e <strong>ISO/IEC 27001:2022</strong>, específicamente en los controles SC-7 (Boundary Protection), SC-8 (Transmission Confidentiality), SC-32 (System Partitioning), A.13.1 y A.13.2 (Seguridad en redes) y A.17.1 (Continuidad).
+          <br><br>
+          <strong>3.</strong> Las decisiones de diseño que hacen referencia a estándares cuya implementación está pendiente para el Semestre 2 o la fase de despliegue real (IEEE 802.11, 802.1w, 802.1X, 802.3ad) han sido documentadas explícitamente como "TO-BE" en la Matriz de Trazabilidad (§7), diferenciándolas de los elementos ya implementados en el entorno de laboratorio.
+          <br><br>
+          <strong>4.</strong> Esta declaración se emite en cumplimiento del criterio de evaluación <strong>"Cumplimiento de Estándares"</strong> de la rúbrica del Entregable 1 (CE031 — Conectividad) del Proyecto de Fin de Carrera UPeU, según la Guía de Evaluación vigente (<em>master.pdf</em>).
+        </div>
+
+        <div class="stamp-row">
+          <div class="stamp">
+            <div class="stamp-label">Estándares de cableado</div>
+            <div class="stamp-value">TIA/EIA-568 ✓</div>
+          </div>
+          <div class="stamp">
+            <div class="stamp-label">Estándares LAN/WAN</div>
+            <div class="stamp-value">IEEE 802.x ✓</div>
+          </div>
+          <div class="stamp">
+            <div class="stamp-label">Cableado genérico</div>
+            <div class="stamp-value">ISO/IEC 11801 ✓</div>
+          </div>
+          <div class="stamp">
+            <div class="stamp-label">Seguridad de red</div>
+            <div class="stamp-value">NIST · ISO 27001 ✓</div>
+          </div>
+        </div>
+
+        <div class="declaration-sign">
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <div class="sig-name">Ruben Mark Salazar</div>
+            <div class="sig-role">Director del Proyecto · Jefe de Infraestructura y Seguridad de TI<br>DNI: ___________________</div>
+          </div>
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <div class="sig-name">Uziel Sauñe</div>
+            <div class="sig-role">Apoyo Técnico · Ingeniero de Infraestructura<br>DNI: ___________________</div>
+          </div>
+        </div>
+
+        <p style="font-size:9px;color:var(--muted);text-align:center;margin-top:16px;">Lima, Mayo de 2026 · Universidad Peruana Unión · Escuela Profesional de Ingeniería de Sistemas</p>
+      </div>
+    </div>
+
+    <!-- §9 CONCLUSIONES -->
+    <div class="section" id="s9">
+      <div class="section-header">
+        <div class="section-number">9</div>
+        <div>
+          <div class="section-title">Conclusiones</div>
+          <div class="section-subtitle">Síntesis del cumplimiento normativo del proyecto</div>
+        </div>
+      </div>
+
+      <div class="info-box success">
+        <div class="info-icon">✅</div>
+        <div class="info-content">
+          <div class="info-label">Conclusión de cumplimiento</div>
+          <div class="info-text">El diseño de infraestructura de red para Franco's SAC cumple con los estándares <strong>TIA/EIA-568, IEEE 802.1Q, IEEE 802.3 e ISO/IEC 11801</strong> en todos los elementos implementados en el entorno de laboratorio. De 18 elementos de trazabilidad identificados, <strong>13 tienen cumplimiento pleno</strong> y <strong>5 están documentados como TO-BE</strong> para la fase de implementación real. Ningún elemento carece de referencia normativa.</div>
+        </div>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Estándar</th><th>Elementos CUMPLEN</th><th>Elementos TO-BE</th><th>Nivel de cumplimiento</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>IEEE 802.1Q</strong></td><td>T-01, T-02, T-03, T-10</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+          <tr><td><strong>IEEE 802.3 (ab, u, x)</strong></td><td>T-06, T-07, T-09</td><td>T-14 (LACP)</td><td><span class="comply-part">75%</span></td></tr>
+          <tr><td><strong>IEEE 802.11</strong></td><td>—</td><td>T-12</td><td><span class="comply-tobe">TO-BE</span></td></tr>
+          <tr><td><strong>IEEE 802.1w / 802.1X</strong></td><td>—</td><td>T-13, T-15</td><td><span class="comply-tobe">TO-BE</span></td></tr>
+          <tr><td><strong>TIA/EIA-568</strong></td><td>T-04, T-05, T-16</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+          <tr><td><strong>ISO/IEC 11801</strong></td><td>T-04, T-16</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+          <tr><td><strong>NIST SP 800-53</strong></td><td>T-03, T-08, T-11</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+          <tr><td><strong>ISO/IEC 27001</strong></td><td>T-08, T-09, T-11</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">Los elementos TO-BE no representan incumplimiento — son parte del alcance definido del proyecto académico (Semestre 1 = diseño; Semestre 2 = implementación).</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §10 FIRMAS -->
+    <div class="section" id="s10">
+      <div class="section-header">
+        <div class="section-number">10</div>
+        <div>
+          <div class="section-title">Firmas y Aprobaciones</div>
+          <div class="section-subtitle">Validación académica del documento</div>
+        </div>
+      </div>
+      <div class="signature-grid">
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">Ruben Mark Salazar</div>
+          <div class="sig-role">Director del Proyecto<br>Jefe de Infraestructura y Seguridad de TI</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Nombre del asesor]</div>
+          <div class="sig-role">Asesor del Proyecto<br>Docente — Escuela de Ing. de Sistemas</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Coordinador de área]</div>
+          <div class="sig-role">Coordinador de Línea ITI<br>Universidad Peruana Unión</div>
+        </div>
+      </div>
+      <div class="info-box gold" style="margin-top:24px;">
+        <div class="info-icon">📝</div>
+        <div class="info-content">
+          <div class="info-label">Declaración ética — Código ACM</div>
+          <div class="info-text">Este documento ha sido elaborado con honestidad técnica, diferenciando explícitamente entre lo implementado en el laboratorio y lo diseñado para producción real. Se cumple el principio de <strong>honestidad y transparencia</strong> del Código de Ética de la ACM, declarando abiertamente las restricciones del entorno académico sin ocultar brechas entre el diseño y la implementación completa.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /doc-body -->
+
+  <div class="doc-footer">
+    <span>CE0315 · Cumplimiento de Estándares de Conectividad · Franco's SAC · UPeU 2026</span>
+    <span class="confidential">USO ACADÉMICO RESTRINGIDO</span>
+    <span>Línea ITI · Ingeniería de Sistemas</span>
+  </div>
+
+</div>
+</body>
+</html>

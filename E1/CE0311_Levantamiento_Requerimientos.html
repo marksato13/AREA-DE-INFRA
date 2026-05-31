@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CE0311 – Levantamiento de Requerimientos Técnicos y de Negocio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap');
+
+    :root {
+      --navy:    #1B2A4A;
+      --blue:    #2E5090;
+      --gold:    #C8A951;
+      --gold-lt: #F0DFA0;
+      --bg:      #F4F6FA;
+      --white:   #FFFFFF;
+      --text:    #1E1E2E;
+      --muted:   #6B7280;
+      --border:  #D1D9E6;
+      --danger:  #C0392B;
+      --success: #1A7A4A;
+      --warn:    #B7770D;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 10.5pt;
+      line-height: 1.7;
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--white);
+      box-shadow: 0 4px 32px rgba(27,42,74,.15);
+    }
+
+    /* ══════════════════════════════════════
+       COVER PAGE
+    ══════════════════════════════════════ */
+    .cover {
+      background: linear-gradient(160deg, var(--navy) 60%, var(--blue) 100%);
+      color: var(--white);
+      padding: 60px 64px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 320px; height: 320px;
+      border-radius: 50%;
+      background: rgba(200,169,81,.08);
+    }
+    .cover::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -40px;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      background: rgba(200,169,81,.05);
+    }
+
+    .cover-logo-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 48px;
+    }
+    .logo-badge {
+      width: 48px; height: 48px;
+      border-radius: 10px;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--navy);
+      flex-shrink: 0;
+    }
+    .logo-text { font-family: 'Montserrat', sans-serif; }
+    .logo-text .univ { font-size: 11px; color: rgba(255,255,255,.6); letter-spacing: .5px; }
+    .logo-text .school { font-size: 13px; font-weight: 700; color: var(--white); }
+
+    .cover-code {
+      display: inline-block;
+      background: rgba(200,169,81,.18);
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 5px 14px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .cover h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 10px;
+      color: var(--white);
+    }
+    .cover-subtitle {
+      font-size: 13px;
+      color: rgba(255,255,255,.65);
+      margin-bottom: 40px;
+    }
+
+    .cover-divider {
+      width: 56px; height: 4px;
+      background: var(--gold);
+      border-radius: 2px;
+      margin-bottom: 36px;
+    }
+
+    .cover-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 32px;
+    }
+    .cover-meta-item { }
+    .cover-meta-label {
+      font-size: 9.5px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 3px;
+    }
+    .cover-meta-value {
+      font-size: 11.5px;
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    /* ══════════════════════════════════════
+       VERSION CONTROL BAR
+    ══════════════════════════════════════ */
+    .version-bar {
+      background: var(--navy);
+      padding: 14px 64px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .version-bar span {
+      font-size: 9.5px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: rgba(255,255,255,.5);
+      text-transform: uppercase;
+    }
+    .version-bar .vbadge {
+      background: var(--gold);
+      color: var(--navy);
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 9px;
+      font-weight: 800;
+    }
+    .version-bar .vsep { color: rgba(255,255,255,.2); }
+
+    /* ══════════════════════════════════════
+       DOCUMENT BODY
+    ══════════════════════════════════════ */
+    .doc-body {
+      padding: 52px 64px;
+    }
+
+    /* ── TABLE OF CONTENTS ── */
+    .toc {
+      background: var(--bg);
+      border-left: 4px solid var(--gold);
+      border-radius: 0 8px 8px 0;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .toc-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 14px;
+    }
+    .toc ol {
+      list-style: none;
+      counter-reset: toc-counter;
+      padding-left: 0;
+    }
+    .toc ol li {
+      counter-increment: toc-counter;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      padding: 4px 0;
+      font-size: 10.5px;
+      color: var(--blue);
+      border-bottom: 1px dashed var(--border);
+    }
+    .toc ol li:last-child { border-bottom: none; }
+    .toc ol li::before {
+      content: counter(toc-counter) ".";
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      color: var(--gold);
+      min-width: 18px;
+    }
+    .toc ol li .toc-dots {
+      flex: 1;
+      border-bottom: 1px dotted var(--border);
+      height: 1px;
+      margin: 0 4px;
+      position: relative;
+      top: -4px;
+    }
+    .toc ol li .toc-pg {
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 10px;
+    }
+
+    /* ── SECTION HEADERS ── */
+    .section {
+      margin-bottom: 44px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+    }
+    .section-number {
+      width: 38px; height: 38px;
+      background: var(--navy);
+      color: var(--white);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--navy);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .section-subtitle {
+      font-size: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .subsection {
+      margin-bottom: 28px;
+    }
+    .subsection-title {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .subsection-title::before {
+      content: '';
+      width: 3px; height: 14px;
+      background: var(--gold);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    p { margin-bottom: 12px; text-align: justify; }
+
+    /* ── INFO BOXES ── */
+    .info-box {
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .info-box.navy   { background: #EEF1F8; border-left: 4px solid var(--navy); }
+    .info-box.gold   { background: #FDF8EC; border-left: 4px solid var(--gold); }
+    .info-box.danger { background: #FDEEEE; border-left: 4px solid var(--danger); }
+    .info-box.success{ background: #EBF7F1; border-left: 4px solid var(--success); }
+    .info-box.warn   { background: #FEF8EC; border-left: 4px solid var(--warn); }
+    .info-icon { font-size: 17px; line-height: 1; padding-top: 2px; }
+    .info-content { flex: 1; }
+    .info-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9.5px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .info-box.navy   .info-label { color: var(--navy); }
+    .info-box.gold   .info-label { color: var(--warn); }
+    .info-box.danger .info-label { color: var(--danger); }
+    .info-box.success .info-label { color: var(--success); }
+    .info-box.warn  .info-label { color: var(--warn); }
+    .info-text { font-size: 10px; color: var(--text); }
+
+    /* ── TABLES ── */
+    .formal-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 10px;
+    }
+    .formal-table thead tr {
+      background: var(--navy);
+      color: var(--white);
+    }
+    .formal-table thead th {
+      padding: 10px 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 9.5px;
+      letter-spacing: .5px;
+      text-align: left;
+      text-transform: uppercase;
+    }
+    .formal-table tbody tr:nth-child(even) { background: #F0F4FA; }
+    .formal-table tbody tr:nth-child(odd)  { background: var(--white); }
+    .formal-table tbody tr:hover           { background: var(--gold-lt); }
+    .formal-table tbody td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .formal-table tfoot td {
+      padding: 8px 14px;
+      font-style: italic;
+      font-size: 9px;
+      color: var(--muted);
+      border-top: 2px solid var(--border);
+    }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 20px;
+      font-size: 8.5px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+    .badge-high   { background: #FDE8E8; color: var(--danger); }
+    .badge-med    { background: #FEF8EC; color: var(--warn); }
+    .badge-low    { background: #EBF7F1; color: var(--success); }
+    .badge-navy   { background: #EEF1F8; color: var(--navy); }
+    .badge-gold   { background: var(--gold-lt); color: #7A6010; }
+
+    /* ── TWO-COLUMN GRID ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .stat-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+    .stat-card .stat-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .stat-card .stat-value {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .stat-card .stat-desc {
+      font-size: 9.5px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── REQUIREMENTS LIST ── */
+    .req-list {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0;
+    }
+    .req-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--blue);
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 8px;
+      background: var(--white);
+    }
+    .req-list li .req-id {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      color: var(--white);
+      background: var(--blue);
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+    .req-list.tech li { border-left-color: var(--navy); }
+    .req-list.tech li .req-id { background: var(--navy); }
+    .req-list li .req-text { flex: 1; font-size: 10px; }
+    .req-list li .req-text strong {
+      display: block;
+      font-size: 10.5px;
+      margin-bottom: 2px;
+      color: var(--navy);
+    }
+
+    /* ── PROCESS FLOW ── */
+    .flow-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+    .flow-step {
+      background: var(--navy);
+      color: var(--white);
+      padding: 10px 18px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 9.5px;
+      font-weight: 700;
+      text-align: center;
+      min-width: 100px;
+      position: relative;
+    }
+    .flow-step.gold { background: var(--gold); color: var(--navy); }
+    .flow-arrow {
+      width: 0; height: 0;
+      border-top: 20px solid transparent;
+      border-bottom: 20px solid transparent;
+      border-left: 14px solid var(--navy);
+    }
+    .flow-arrow.gold { border-left-color: var(--gold); }
+
+    /* ── SIGNATURE AREA ── */
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      margin: 32px 0 20px;
+    }
+    .sig-box {
+      text-align: center;
+    }
+    .sig-line {
+      border-top: 1px solid var(--navy);
+      margin-bottom: 6px;
+      margin-top: 40px;
+    }
+    .sig-name {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .sig-role {
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    /* ── FOOTER ── */
+    .doc-footer {
+      background: var(--navy);
+      padding: 16px 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .doc-footer span {
+      font-size: 9px;
+      color: rgba(255,255,255,.45);
+      font-family: 'Montserrat', sans-serif;
+      letter-spacing: .5px;
+    }
+    .doc-footer .confidential {
+      background: rgba(200,169,81,.15);
+      border: 1px solid rgba(200,169,81,.3);
+      color: var(--gold);
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 8.5px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ════════════════════════ COVER ════════════════════════ -->
+  <div class="cover">
+    <div class="cover-logo-row">
+      <div class="logo-badge">U</div>
+      <div class="logo-text">
+        <div class="univ">UNIVERSIDAD PERUANA UNIÓN — UPEU</div>
+        <div class="school">Escuela Profesional de Ingeniería de Sistemas</div>
+      </div>
+    </div>
+
+    <div class="cover-code">CE0311 &nbsp;·&nbsp; Entregable 1 &nbsp;·&nbsp; Semestre I – 2026</div>
+    <h1>Levantamiento de Requerimientos<br>Técnicos y de Negocio</h1>
+    <div class="cover-subtitle">Proyecto de Fin de Carrera — Área de Infraestructura Tecnológica (ITI)</div>
+    <div class="cover-divider"></div>
+
+    <div class="cover-meta-grid">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Empresa cliente</div>
+        <div class="cover-meta-value">Franco's SAC</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Competencia evaluada</div>
+        <div class="cover-meta-value">CE031 — Conectividad</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Etapa CDIO</div>
+        <div class="cover-meta-value">Conceive</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Estándares aplicados</div>
+        <div class="cover-meta-value">TIA/EIA-568 · IEEE 802.x · ISO/IEC 11801</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Rol del autor</div>
+        <div class="cover-meta-value">Director del Proyecto / Jefe de Infraestructura y Seguridad de TI</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Fecha de emisión</div>
+        <div class="cover-meta-value">Mayo 2026</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Versión</div>
+        <div class="cover-meta-value">v1.2 — Incorporación de Local 3</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Clasificación</div>
+        <div class="cover-meta-value">Uso académico restringido</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERSION BAR -->
+  <div class="version-bar">
+    <span class="vbadge">v1.2</span>
+    <span class="vsep">|</span>
+    <span>Incorporación de Local 3 · Mayo 2026</span>
+    <span class="vsep">|</span>
+    <span>CE0311 · Entregable 1 · Línea ITI</span>
+    <span class="vsep">|</span>
+    <span>Proyecto de Fin de Carrera — UPeU</span>
+  </div>
+
+  <!-- ════════════════════════ BODY ════════════════════════ -->
+  <div class="doc-body">
+
+    <!-- TABLA DE CONTROL DE CAMBIOS -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">📋</div>
+        <div>
+          <div class="section-title">Control de Versiones</div>
+          <div class="section-subtitle">Historial de revisiones del documento</div>
+        </div>
+      </div>
+      <table class="formal-table">
+        <thead>
+          <tr>
+            <th>Versión</th>
+            <th>Fecha</th>
+            <th>Descripción del cambio</th>
+            <th>Elaborado por</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>v1.0</strong></td>
+            <td>Mayo 2026</td>
+            <td>Elaboración inicial del documento de levantamiento de requerimientos</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-navy">Revisado</span></td>
+          </tr>
+          <tr>
+            <td><strong>v1.1</strong></td>
+            <td>Mayo 2026</td>
+            <td>Actualización técnica: VLANs ajustadas al diseño definitivo; incorporación de RT-11 (virtualización VMware ESXi), RT-12 (Docker), RT-13 (NATS); plataforma de implementación actualizada; supuestos y restricciones alineados al stack real (microservicios, FortiGate 40F, 2 ESXi)</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-navy">Revisado</span></td>
+          </tr>
+          <tr>
+            <td><strong>v1.2</strong></td>
+            <td>Mayo 2026</td>
+            <td>Incorporación de Local 3 (Segunda Planta de Producción): actualización a 3 locales, VPN mesh completo (L1↔L2, L1↔L3, L2↔L3), ESXi Host 3 propio (TBD), VLANs Local 3 reducidas (VLAN10/20/60/99 — 10.30.x.x)</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-gold">Borrador</span></td>
+          </tr>
+          <tr>
+            <td>v2.0</td>
+            <td>—</td>
+            <td>Versión final aprobada para sustentación</td>
+            <td>—</td>
+            <td><span class="badge badge-low">Pendiente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <div class="toc-title">Tabla de Contenidos</div>
+      <ol>
+        <li><span>Introducción y Propósito del Documento</span><span class="toc-dots"></span><span class="toc-pg">§1</span></li>
+        <li><span>Descripción de la Organización</span><span class="toc-dots"></span><span class="toc-pg">§2</span></li>
+        <li><span>Diagnóstico de la Infraestructura Actual (AS-IS)</span><span class="toc-dots"></span><span class="toc-pg">§3</span></li>
+        <li><span>Problemática Identificada</span><span class="toc-dots"></span><span class="toc-pg">§4</span></li>
+        <li><span>Requerimientos de Negocio</span><span class="toc-dots"></span><span class="toc-pg">§5</span></li>
+        <li><span>Requerimientos Técnicos de Red</span><span class="toc-dots"></span><span class="toc-pg">§6</span></li>
+        <li><span>Restricciones del Proyecto</span><span class="toc-dots"></span><span class="toc-pg">§7</span></li>
+        <li><span>Supuestos</span><span class="toc-dots"></span><span class="toc-pg">§8</span></li>
+        <li><span>Conclusiones</span><span class="toc-dots"></span><span class="toc-pg">§9</span></li>
+        <li><span>Firmas y Aprobaciones</span><span class="toc-dots"></span><span class="toc-pg">§10</span></li>
+      </ol>
+    </div>
+
+    <!-- ── SECCIÓN 1: INTRODUCCIÓN ── -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div>
+          <div class="section-title">Introducción y Propósito del Documento</div>
+          <div class="section-subtitle">Alcance y justificación del levantamiento</div>
+        </div>
+      </div>
+
+      <p>El presente documento corresponde al entregable <strong>CE0311 — Levantamiento de Requerimientos Técnicos y de Negocio</strong>, perteneciente al Entregable 1 del Proyecto de Fin de Carrera en la línea de <strong>Infraestructura Tecnológica (ITI)</strong> de la Escuela Profesional de Ingeniería de Sistemas de la Universidad Peruana Unión (UPeU).</p>
+
+      <p>Su propósito es documentar de forma sistemática y justificada los requerimientos que debe satisfacer la infraestructura tecnológica a diseñar e implementar para <strong>Franco's SAC</strong>, empresa del sector agroindustria alimentaria. Este levantamiento constituye la base técnica para las etapas de diseño (topología, segmentación, centro de datos y seguridad) y la posterior implementación en los laboratorios Cisco de la UPeU, donde se simulará el entorno productivo de la organización.</p>
+
+      <div class="info-box gold">
+        <div class="info-icon">📌</div>
+        <div class="info-content">
+          <div class="info-label">Nota metodológica</div>
+          <div class="info-text">El levantamiento fue realizado siguiendo el marco <strong>CDIO — Etapa Conceive</strong>, alineado a los estándares <strong>TIA/EIA-568, IEEE 802.x e ISO/IEC 11801</strong>. La información fue recopilada mediante entrevistas con la dirección de la empresa y observación directa de los procesos operativos.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECCIÓN 2: DESCRIPCIÓN DE LA ORGANIZACIÓN ── -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div>
+          <div class="section-title">Descripción de la Organización</div>
+          <div class="section-subtitle">Perfil organizacional de Franco's SAC</div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="stat-card">
+          <div class="stat-label">Razón social</div>
+          <div class="stat-value" style="font-size:15px;">Franco's SAC</div>
+          <div class="stat-desc">Empresa peruana de snacks naturales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Sector</div>
+          <div class="stat-value" style="font-size:15px;">Agroindustria</div>
+          <div class="stat-desc">Fabricación y venta de alimentos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Trabajadores</div>
+          <div class="stat-value">30 – 40</div>
+          <div class="stat-desc">Distribuidos en 3 locales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Locales operativos</div>
+          <div class="stat-value">3</div>
+          <div class="stat-desc">Producción · Ventas/Admin · 2ª Planta</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Misión y Visión</div>
+        <p><strong>Misión:</strong> Producir y comercializar snacks de alta calidad utilizando ingredientes frescos y 100% naturales, distinguidos por su sabor auténtico y frescura, para satisfacer las necesidades de sus clientes.</p>
+        <p><strong>Visión:</strong> Ser reconocida a nivel nacional e internacional por la excelencia de sus snacks, destacando por el sabor auténtico, la calidad de sus productos y el compromiso con una producción responsable y sostenible.</p>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Estructura Organizacional</div>
+        <table class="formal-table">
+          <thead>
+            <tr>
+              <th>Área</th>
+              <th>Función principal</th>
+              <th>Local</th>
+              <th>Usuarios aprox.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Administración</strong></td>
+              <td>Gestión financiera, contabilidad, RRHH y dirección general</td>
+              <td>Local 2</td>
+              <td>5 – 8</td>
+            </tr>
+            <tr>
+              <td><strong>Ventas</strong></td>
+              <td>Atención a clientes, facturación, registro de pedidos y distribución</td>
+              <td>Local 2</td>
+              <td>8 – 12</td>
+            </tr>
+            <tr>
+              <td><strong>Inventario</strong></td>
+              <td>Control de stock de insumos y productos terminados</td>
+              <td>Local 2</td>
+              <td>3 – 5</td>
+            </tr>
+            <tr>
+              <td><strong>Producción</strong></td>
+              <td>Fabricación de snacks, control de calidad y empaque</td>
+              <td>Local 1</td>
+              <td>15 – 20</td>
+            </tr>
+            <tr>
+              <td><strong>Producción (L3)</strong></td>
+              <td>Segunda planta de fabricación y empaque (expansión productiva)</td>
+              <td>Local 3</td>
+              <td>TBD</td>
+            </tr>
+          </tbody>
+          <tfoot><tr><td colspan="4">Fuente: Entrevista con la dirección de Franco's SAC — Mayo 2026. Local 3: datos pendientes de confirmación.</td></tr></tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SECCIÓN 3: DIAGNÓSTICO AS-IS ── -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div>
+          <div class="section-title">Diagnóstico de la Infraestructura Actual</div>
+          <div class="section-subtitle">Situación AS-IS — Estado previo al proyecto</div>
+        </div>
+      </div>
+
+      <p>Al momento del levantamiento, Franco's SAC carece de una infraestructura tecnológica formal. Los activos de TI existentes son mínimos y no responden a los requerimientos de una organización en proceso de crecimiento y transformación digital.</p>
+
+      <table class="formal-table">
+        <thead>
+          <tr>
+            <th>Componente</th>
+            <th>Estado actual</th>
+            <th>Observación</th>
+            <th>Criticidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Servidores</strong></td>
+            <td>Inexistentes</td>
+            <td>No existe ningún servidor físico ni virtual para alojar servicios</td>
+            <td><span class="badge badge-high">Alta</span></td>
+          </tr>
+          <tr>
+            <td><strong>Red LAN</strong></td>
+            <td>WiFi sin segmentación</td>
+            <td>Red plana sin VLANs ni control de acceso. Todos los dispositivos en el mismo dominio de broadcast</td>
+            <td><span class="badge badge-high">Alta</span></td>
+          </tr>
+          <tr>
+            <td><strong>Equipos de cómputo</strong></td>
+            <td>2 PCs activas</td>
+            <td>1 PC para registro de ventas, 1 PC para uso del jefe. Insuficiente para 30-40 usuarios</td>
+            <td><span class="badge badge-high">Alta</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sistema de gestión (ERP)</strong></td>
+            <td>No existe</td>
+            <td>Los registros de ventas, producción e inventario se llevan manualmente o en hojas de cálculo</td>
+            <td><span class="badge badge-high">Alta</span></td>
+          </tr>
+          <tr>
+            <td><strong>Presencia web</strong></td>
+            <td>Página estática</td>
+            <td>Sitio web informativo sin integración con sistemas internos</td>
+            <td><span class="badge badge-med">Media</span></td>
+          </tr>
+          <tr>
+            <td><strong>Conectividad inter-local</strong></td>
+            <td>No existe</td>
+            <td>Los 3 locales no están conectados. No hay intercambio de datos en tiempo real</td>
+            <td><span class="badge badge-high">Alta</span></td>
+          </tr>
+          <tr>
+            <td><strong>Firewall / Seguridad</strong></td>
+            <td>No existe</td>
+            <td>Sin controles de acceso, sin firewall perimetral, sin segmentación de red</td>
+            <td><span class="badge badge-high">Alta</span></td>
+          </tr>
+          <tr>
+            <td><strong>Backup / Respaldo</strong></td>
+            <td>No existe</td>
+            <td>Sin procedimientos de respaldo de información crítica</td>
+            <td><span class="badge badge-high">Alta</span></td>
+          </tr>
+          <tr>
+            <td><strong>Monitoreo</strong></td>
+            <td>No existe</td>
+            <td>Sin herramientas de monitoreo de red o disponibilidad de servicios</td>
+            <td><span class="badge badge-med">Media</span></td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">Fuente: Observación directa y entrevista con la dirección — Mayo 2026</td></tr></tfoot>
+      </table>
+
+      <div class="info-box danger">
+        <div class="info-icon">⚠️</div>
+        <div class="info-content">
+          <div class="info-label">Brecha crítica identificada</div>
+          <div class="info-text">Franco's SAC opera con una infraestructura tecnológica prácticamente inexistente para una empresa de 30-40 colaboradores distribuidos en 3 locales. La ausencia de servidores, red segmentada, ERP y mecanismos de seguridad representa un riesgo operativo y de continuidad del negocio, y es la principal barrera para la transformación digital de la organización.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SECCIÓN 4: PROBLEMÁTICA ── -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div>
+          <div class="section-title">Problemática Identificada</div>
+          <div class="section-subtitle">Causas y efectos del estado actual</div>
+        </div>
+      </div>
+
+      <p>A partir del diagnóstico AS-IS se identificaron los siguientes problemas estructurales que impiden la operación eficiente de Franco's SAC y bloquean su proceso de transformación digital:</p>
+
+      <table class="formal-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Problema</th>
+            <th>Área afectada</th>
+            <th>Impacto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>P-01</td>
+            <td>Ausencia de infraestructura de red estructurada impide la comunicación eficiente entre áreas y locales</td>
+            <td>Todas</td>
+            <td><span class="badge badge-high">Alto</span></td>
+          </tr>
+          <tr>
+            <td>P-02</td>
+            <td>Inexistencia de servidor centralizado para alojar servicios críticos (ERP, base de datos, autenticación)</td>
+            <td>Todas</td>
+            <td><span class="badge badge-high">Alto</span></td>
+          </tr>
+          <tr>
+            <td>P-03</td>
+            <td>Gestión manual de ventas, inventario y producción genera errores, duplicados y pérdida de información</td>
+            <td>Ventas · Inventario · Producción</td>
+            <td><span class="badge badge-high">Alto</span></td>
+          </tr>
+          <tr>
+            <td>P-04</td>
+            <td>Sin conectividad entre los 3 locales, imposibilitando visibilidad en tiempo real del negocio</td>
+            <td>Administración · Producción</td>
+            <td><span class="badge badge-high">Alto</span></td>
+          </tr>
+          <tr>
+            <td>P-05</td>
+            <td>Red WiFi sin segmentación expone datos de todas las áreas al mismo dominio de red, sin control de acceso</td>
+            <td>Seguridad</td>
+            <td><span class="badge badge-high">Alto</span></td>
+          </tr>
+          <tr>
+            <td>P-06</td>
+            <td>Ausencia de respaldos automatizados pone en riesgo la continuidad del negocio ante fallas</td>
+            <td>Todas</td>
+            <td><span class="badge badge-med">Medio</span></td>
+          </tr>
+          <tr>
+            <td>P-07</td>
+            <td>Sin sistema de monitoreo, los fallos de red o servicios no se detectan hasta que impactan la operación</td>
+            <td>TI</td>
+            <td><span class="badge badge-med">Medio</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── SECCIÓN 5: REQUERIMIENTOS DE NEGOCIO ── -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <div>
+          <div class="section-title">Requerimientos de Negocio</div>
+          <div class="section-subtitle">Necesidades organizacionales que debe satisfacer la infraestructura</div>
+        </div>
+      </div>
+
+      <p>Los siguientes requerimientos de negocio fueron identificados mediante entrevistas con la dirección y el análisis de los procesos operativos. Representan las necesidades organizacionales que la nueva infraestructura tecnológica debe satisfacer para habilitar la transformación digital de Franco's SAC.</p>
+
+      <ul class="req-list">
+        <li>
+          <span class="req-id">RN-01</span>
+          <div class="req-text">
+            <strong>Soporte para implementación de ERP</strong>
+            La infraestructura debe proveer la base tecnológica (servidores, red, almacenamiento) necesaria para alojar y operar un sistema ERP que integre los módulos de producción, ventas, inventario y administración.
+          </div>
+          <span class="badge badge-high">Alta</span>
+        </li>
+        <li>
+          <span class="req-id">RN-02</span>
+          <div class="req-text">
+            <strong>Conectividad entre los 3 locales</strong>
+            Los tres locales deben estar interconectados de forma segura y continua mediante VPN mesh (L1↔L2, L1↔L3, L2↔L3), permitiendo el intercambio de información en tiempo real entre producción (L1 y L3) y administración/ventas (L2).
+          </div>
+          <span class="badge badge-high">Alta</span>
+        </li>
+        <li>
+          <span class="req-id">RN-03</span>
+          <div class="req-text">
+            <strong>Acceso diferenciado por área</strong>
+            Cada área (Administración, Ventas, Inventario, Producción) debe tener acceso controlado a los recursos de red y servicios de TI, conforme a su rol en la organización, aplicando el principio de mínimo privilegio.
+          </div>
+          <span class="badge badge-high">Alta</span>
+        </li>
+        <li>
+          <span class="req-id">RN-04</span>
+          <div class="req-text">
+            <strong>Disponibilidad de servicios en horario operativo</strong>
+            Los servicios críticos (ERP, base de datos, conectividad) deben estar disponibles durante el horario laboral de la empresa (mínimo 8 horas diarias), con un SLA de disponibilidad del 99% en días hábiles.
+          </div>
+          <span class="badge badge-high">Alta</span>
+        </li>
+        <li>
+          <span class="req-id">RN-05</span>
+          <div class="req-text">
+            <strong>Capacidad para 30-40 usuarios concurrentes</strong>
+            La infraestructura debe dimensionarse para soportar la operación simultánea de todos los colaboradores de la empresa sin degradación del servicio.
+          </div>
+          <span class="badge badge-med">Media</span>
+        </li>
+        <li>
+          <span class="req-id">RN-06</span>
+          <div class="req-text">
+            <strong>Protección de información confidencial</strong>
+            Los datos de producción, ventas, clientes y finanzas deben estar protegidos frente a accesos no autorizados, garantizando confidencialidad e integridad conforme a la normativa vigente.
+          </div>
+          <span class="badge badge-high">Alta</span>
+        </li>
+        <li>
+          <span class="req-id">RN-07</span>
+          <div class="req-text">
+            <strong>Continuidad operativa ante fallos</strong>
+            Debe existir un plan de respaldo y recuperación que minimice el tiempo de inactividad ante fallos técnicos, garantizando la continuidad del negocio.
+          </div>
+          <span class="badge badge-med">Media</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ── SECCIÓN 6: REQUERIMIENTOS TÉCNICOS ── -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <div>
+          <div class="section-title">Requerimientos Técnicos de Red</div>
+          <div class="section-subtitle">Especificaciones técnicas para el diseño de la infraestructura</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Requerimientos de Conectividad y Red</div>
+        <ul class="req-list tech">
+          <li>
+            <span class="req-id">RT-01</span>
+            <div class="req-text">
+              <strong>Segmentación de red mediante VLANs</strong>
+              Diseño e implementación de VLANs independientes por zona funcional: VLAN 10 (Administración), VLAN 20 (Usuarios — Ventas/Producción), VLAN 30 (DMZ — API Gateway/Frontend Angular), VLAN 40 (Servicios — Microservicios NestJS/NATS), VLAN 50 (Datos — PostgreSQL), VLAN 60 (Gestión/Monitoreo — Zabbix/Grafana), VLAN 99 (Management ESXi). Segmentación estricta entre zonas mediante pfSense. Cumple: IEEE 802.1Q.
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+          <li>
+            <span class="req-id">RT-02</span>
+            <div class="req-text">
+              <strong>Direccionamiento IP estructurado y escalable</strong>
+              Esquema de direccionamiento IPv4 privado con subnetting por VLAN, documentado y alineado a la topología de red diseñada. Reserva de espacio para crecimiento futuro.
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+          <li>
+            <span class="req-id">RT-03</span>
+            <div class="req-text">
+              <strong>Red WAN segura entre los 3 locales (VPN mesh)</strong>
+              Implementación de 3 túneles VPN IPSec site-to-site en topología mesh completa: L1↔L2 (Producción ↔ Administración/Ventas), L1↔L3 (Producción ↔ Segunda Planta) y L2↔L3 (Administración/Ventas ↔ Segunda Planta). Cifrado AES-256-GCM con IKEv2. Cumple: IEEE 802.1X.
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+          <li>
+            <span class="req-id">RT-04</span>
+            <div class="req-text">
+              <strong>Firewall perimetral</strong>
+              Implementación de firewall (pfSense) con reglas de filtrado de tráfico entre VLANs, bloqueo de acceso no autorizado hacia la DMZ y control de tráfico hacia Internet.
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+          <li>
+            <span class="req-id">RT-05</span>
+            <div class="req-text">
+              <strong>Switch gestionable capa 3 en core</strong>
+              Dispositivo de núcleo con soporte para inter-VLAN routing, control de ACLs y segmentación del tráfico. Cumple: IEEE 802.3, TIA/EIA-568-C.
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+          <li>
+            <span class="req-id">RT-06</span>
+            <div class="req-text">
+              <strong>Cobertura WiFi segmentada por área</strong>
+              Puntos de acceso inalámbrico (APs) con soporte para múltiples SSIDs mapeados a VLANs correspondientes. Cobertura mínima del 95% de los espacios operativos. Cumple: IEEE 802.11ac/ax.
+            </div>
+            <span class="badge badge-med">Media</span>
+          </li>
+          <li>
+            <span class="req-id">RT-07</span>
+            <div class="req-text">
+              <strong>Control de acceso a la red (ACL)</strong>
+              Listas de control de acceso implementadas en el switch core y el firewall para restringir el tráfico entre VLANs conforme a la política de seguridad definida.
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+          <li>
+            <span class="req-id">RT-08</span>
+            <div class="req-text">
+              <strong>Alta disponibilidad WAN — Dual-ISP con failover automático</strong>
+              Implementación de Dual-WAN en pfSense con dos proveedores independientes: ISP1 mediante Cisco lab router (172.17.25.x) conectado a vmnic0, e ISP2 mediante FortiGate 40F (simulación de segundo proveedor) conectado a vmnic1. Failover automático configurado en pfSense para garantizar continuidad ante caída de un enlace. Aplica a los 3 locales (pfSense-L1, pfSense-L2 y pfSense-L3) con sus respectivas rutas WAN.
+            </div>
+            <span class="badge badge-med">Media</span>
+          </li>
+          <li>
+            <span class="req-id">RT-09</span>
+            <div class="req-text">
+              <strong>Monitoreo de red (SNMP)</strong>
+              Implementación de protocolo SNMP en los dispositivos de red para monitoreo de disponibilidad, latencia y throughput. Integración con herramienta de monitoreo (Zabbix / Nagios).
+            </div>
+            <span class="badge badge-med">Media</span>
+          </li>
+          <li>
+            <span class="req-id">RT-10</span>
+            <div class="req-text">
+              <strong>Cumplimiento de estándares internacionales</strong>
+              Todo el diseño e implementación de red debe alinearse explícitamente a: TIA/EIA-568 (cableado estructurado), IEEE 802.x (estándares LAN/WAN) e ISO/IEC 11801 (cableado genérico para instalaciones del cliente).
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+          <li>
+            <span class="req-id">RT-11</span>
+            <div class="req-text">
+              <strong>Plataforma de virtualización — VMware ESXi 8.0 U3</strong>
+              La infraestructura de cómputo se implementará sobre VMware ESXi 8.0 Update 3. Se configurarán vSwitches, port groups y etiquetado VLAN 802.1Q para segmentar el tráfico entre zonas. Se requieren mínimo 3 hosts ESXi en los laboratorios UPeU para simular los 3 locales de forma independiente: Host 1 — Local 1 (Dell Precision 7920 Tower, 6C Xeon Bronze 3204, 31.65 GB RAM, 348 GB VMFS6), Host 2 — Local 2 (≥16 GB RAM, ≥500 GB, specs TBD), Host 3 — Local 3 (specs TBD).
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+          <li>
+            <span class="req-id">RT-12</span>
+            <div class="req-text">
+              <strong>Soporte para microservicios contenerizados (Docker)</strong>
+              La infraestructura debe proveer VMs host con Docker Engine instalado sobre Ubuntu Server 24.04 LTS para alojar el stack ERP del área de Desarrollo: contenedores API Gateway (NestJS 11), Frontend (Angular 20), broker NATS Server, microservicios (auth-ms, person-ms, sales-invent-ms, strategic-ms) y bases de datos PostgreSQL. Se requieren mínimo 3 VMs Docker en VLAN 30, VLAN 40 y VLAN 50 respectivamente.
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+          <li>
+            <span class="req-id">RT-13</span>
+            <div class="req-text">
+              <strong>Conectividad interna para mensajería NATS (TCP)</strong>
+              La VLAN 40 (Servicios) debe garantizar conectividad TCP entre los contenedores de microservicios y el broker NATS Server (puerto 4222 por defecto). Las reglas de firewall en pfSense deben permitir el tráfico TCP interno dentro de la VLAN 40 y bloquear el acceso directo desde VLAN 20 (Usuarios) o VLAN 30 (DMZ) a la VLAN 40, excepto el flujo autorizado API Gateway → NATS.
+            </div>
+            <span class="badge badge-high">Alta</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Resumen de Requerimientos por Prioridad</div>
+        <table class="formal-table">
+          <thead>
+            <tr><th>Prioridad</th><th>Cantidad</th><th>Requerimientos</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="badge badge-high">Alta</span></td>
+              <td><strong>16</strong></td>
+              <td>RN-01, 02, 03, 04, 06 · RT-01, 02, 03, 04, 05, 07, 10, 11, 12, 13 + P-01 a P-05</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-med">Media</span></td>
+              <td><strong>6</strong></td>
+              <td>RN-05, 07 · RT-06, 08, 09 + P-06, P-07</td>
+            </tr>
+            <tr>
+              <td><span class="badge badge-low">Baja</span></td>
+              <td><strong>—</strong></td>
+              <td>No se identificaron requerimientos de baja prioridad en esta fase</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SECCIÓN 7: RESTRICCIONES ── -->
+    <div class="section" id="s7">
+      <div class="section-header">
+        <div class="section-number">7</div>
+        <div>
+          <div class="section-title">Restricciones del Proyecto</div>
+          <div class="section-subtitle">Limitaciones que condicionan el diseño e implementación</div>
+        </div>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>ID</th><th>Restricción</th><th>Tipo</th><th>Impacto</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>RST-01</td>
+            <td>La implementación se realiza sobre hipervisores <strong>VMware ESXi 8.0 Update 3</strong> en los laboratorios Cisco de la UPeU (Dell Precision 7920 Tower). La segmentación de red se realiza mediante vSwitches, port groups con etiquetado 802.1Q y pfSense como firewall/router virtual. El switch físico del laboratorio (Cisco, con soporte 802.1Q) actúa como enlace trunk hacia los hosts ESXi</td>
+            <td><span class="badge badge-navy">Técnica</span></td>
+            <td>El hardware físico de Franco's SAC es representado mediante VMs y la red mediante vSwitches dentro del entorno ESXi. No se requiere GNS3 ni Packet Tracer para la implementación principal</td>
+          </tr>
+          <tr>
+            <td>RST-02</td>
+            <td>El diseño debe desarrollarse en dos semestres académicos; el Semestre 1 cubre Conceive/Design y el Semestre 2 cubre Implement/Operate</td>
+            <td><span class="badge badge-navy">Tiempo</span></td>
+            <td>Los entregables E1, E2 y E3 deben completarse en el Semestre 1</td>
+          </tr>
+          <tr>
+            <td>RST-03</td>
+            <td>El presupuesto de inversión en hardware físico para Franco's SAC no está contemplado en el alcance del proyecto académico</td>
+            <td><span class="badge badge-navy">Presupuesto</span></td>
+            <td>Se elaborará un dimensionamiento estimado como referencia para futura implementación real</td>
+          </tr>
+          <tr>
+            <td>RST-04</td>
+            <td>Los estándares TIA/EIA-568, IEEE 802.x e ISO/IEC 11801 deben aplicarse y referenciarse explícitamente en todos los entregables de la línea ITI</td>
+            <td><span class="badge badge-navy">Normativa</span></td>
+            <td>Todas las decisiones de diseño deben justificarse bajo estos marcos</td>
+          </tr>
+          <tr>
+            <td>RST-05</td>
+            <td>El diseño debe ser aprobado por el coordinador del proyecto antes del inicio de la fase de implementación (Semestre 2)</td>
+            <td><span class="badge badge-navy">Académica</span></td>
+            <td>Sin aprobación no se puede avanzar al Semestre 2</td>
+          </tr>
+          <tr>
+            <td>RST-06</td>
+            <td>El FortiGate 40F disponible en el laboratorio opera <strong>sin licencia activa</strong>, lo que limita sus capacidades a enrutamiento básico y NAT. Funciones avanzadas como IPS, SSL Deep Inspection y SD-WAN no están disponibles</td>
+            <td><span class="badge badge-navy">Técnica</span></td>
+            <td>El FortiGate 40F se utilizará exclusivamente como simulador del segundo ISP (WAN2/ISP2). Las políticas de seguridad avanzadas recaen sobre pfSense, que sí opera con todas sus funcionalidades open-source disponibles</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ── SECCIÓN 8: SUPUESTOS ── -->
+    <div class="section" id="s8">
+      <div class="section-header">
+        <div class="section-number">8</div>
+        <div>
+          <div class="section-title">Supuestos</div>
+          <div class="section-subtitle">Premisas asumidas para la elaboración de este documento</div>
+        </div>
+      </div>
+
+      <ul class="req-list">
+        <li>
+          <span class="req-id">SUP-01</span>
+          <div class="req-text">Franco's SAC dispone de acceso a Internet en los 3 locales con un ancho de banda mínimo de 20 Mbps cada uno, suficiente para soportar el tráfico VPN mesh y el uso del ERP.</div>
+        </li>
+        <li>
+          <span class="req-id">SUP-02</span>
+          <div class="req-text">La empresa autoriza la instalación de la infraestructura de red propuesta (switches, APs, cableado) en sus instalaciones en la fase de implementación futura.</div>
+        </li>
+        <li>
+          <span class="req-id">SUP-03</span>
+          <div class="req-text">Los laboratorios Cisco de la UPeU cuentan con los hipervisores y recursos de cómputo necesarios (CPU, RAM, almacenamiento) para alojar las VMs del proyecto durante el Semestre 2.</div>
+        </li>
+        <li>
+          <span class="req-id">SUP-04</span>
+          <div class="req-text">El número de usuarios concurrentes máximo es de 40, distribuidos en las 4 áreas funcionales de la empresa.</div>
+        </li>
+        <li>
+          <span class="req-id">SUP-05</span>
+          <div class="req-text">El sistema ERP a implementar es una solución de microservicios desarrollada por el <strong>área de Desarrollo del proyecto</strong>, compuesta por: Frontend Angular 20 (SPA + Component-Based), API Gateway NestJS 11, broker de mensajería NATS Server, microservicios independientes (auth-ms, person-ms, sales-invent-ms, strategic-ms) y bases de datos PostgreSQL independientes por servicio. Todos los componentes se desplegarán como contenedores Docker sobre VMs Ubuntu Server 24.04 LTS alojadas en el hipervisor ESXi.</div>
+        </li>
+        <li>
+          <span class="req-id">SUP-06</span>
+          <div class="req-text">La información proporcionada por la dirección de Franco's SAC para el levantamiento es veraz y representa fielmente la situación operativa actual de la empresa.</div>
+        </li>
+        <li>
+          <span class="req-id">SUP-07</span>
+          <div class="req-text">El laboratorio Cisco de la UPeU cuenta con un <strong>FortiGate 40F físico</strong> disponible para el proyecto. Este dispositivo se configurará como router/CPE del segundo ISP, proporcionando una dirección de gateway WAN2 a pfSense a través de vmnic1 del ESXi Host 1. Opera sin licencia activa, limitándose a enrutamiento básico y NAT.</div>
+        </li>
+        <li>
+          <span class="req-id">SUP-08</span>
+          <div class="req-text">Se dispone de al menos <strong>3 hipervisores VMware ESXi</strong> en los laboratorios UPeU con recursos de cómputo suficientes (CPU, RAM ≥ 16 GB, disco ≥ 500 GB cada uno) para simular de forma independiente el Local 1 (Producción — stack de servidores y aplicaciones), el Local 2 (Ventas/Administración — workstations de usuarios) y el Local 3 (Segunda Planta de Producción — specs TBD), interconectados mediante 3 túneles IPSec pfSense-to-pfSense en topología mesh a través de la red del laboratorio.</div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- ── SECCIÓN 9: CONCLUSIONES ── -->
+    <div class="section" id="s9">
+      <div class="section-header">
+        <div class="section-number">9</div>
+        <div>
+          <div class="section-title">Conclusiones</div>
+          <div class="section-subtitle">Síntesis del levantamiento y base para el diseño</div>
+        </div>
+      </div>
+
+      <div class="info-box navy">
+        <div class="info-icon">💡</div>
+        <div class="info-content">
+          <div class="info-label">Conclusión principal</div>
+          <div class="info-text">Franco's SAC presenta una brecha tecnológica crítica que impide su transformación digital. La ausencia de infraestructura de red estructurada, servidores y sistemas de gestión representa el principal obstáculo para la implementación del ERP y la conectividad entre locales.</div>
+        </div>
+      </div>
+
+      <p>El presente levantamiento evidencia que Franco's SAC requiere el diseño e implementación de una <strong>infraestructura tecnológica completa desde cero</strong>. Con base en los 7 requerimientos de negocio y 10 requerimientos técnicos identificados, el proyecto deberá abordar los siguientes ejes fundamentales:</p>
+
+      <div class="flow-row">
+        <div class="flow-step">Red Segmentada<br>(VLANs)</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step gold">Data Center<br>Virtual</div>
+        <div class="flow-arrow gold"></div>
+        <div class="flow-step">Seguridad<br>(SGSI)</div>
+        <div class="flow-arrow"></div>
+        <div class="flow-step gold">ERP<br>Operativo</div>
+      </div>
+
+      <p>La implementación será realizada en los laboratorios Cisco de la UPeU, donde se simulará fielmente el entorno productivo de la empresa mediante herramientas de virtualización y emulación de red, garantizando que los entregables académicos reflejen una solución técnicamente válida y aplicable en el mundo real.</p>
+
+      <p>Este documento constituye la base técnica aprobada para proceder con el <strong>Entregable 1 — Diseño de Red (CE0312 a CE0316)</strong>, el <strong>Entregable 2 — Planificación de Seguridad</strong> y el <strong>Entregable 3 — Diseño de Centro de Datos</strong>, todos correspondientes al Semestre 1 del proyecto.</p>
+    </div>
+
+    <!-- ── SECCIÓN 10: FIRMAS ── -->
+    <div class="section" id="s10">
+      <div class="section-header">
+        <div class="section-number">10</div>
+        <div>
+          <div class="section-title">Firmas y Aprobaciones</div>
+          <div class="section-subtitle">Validación formal del documento</div>
+        </div>
+      </div>
+
+      <div class="signature-grid">
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">Ruben Mark Salazar</div>
+          <div class="sig-role">Director del Proyecto<br>Jefe de Infraestructura y Seguridad de TI</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Nombre del asesor]</div>
+          <div class="sig-role">Asesor del Proyecto<br>Docente — Escuela de Ing. de Sistemas</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Coordinador de área]</div>
+          <div class="sig-role">Coordinador de Línea ITI<br>Universidad Peruana Unión</div>
+        </div>
+      </div>
+
+      <div class="info-box gold" style="margin-top:24px;">
+        <div class="info-icon">📝</div>
+        <div class="info-content">
+          <div class="info-label">Declaración ética — Código ACM</div>
+          <div class="info-text">Los autores de este documento declaran que la información aquí contenida ha sido recopilada con la autorización expresa de Franco's SAC, que se ha respetado la confidencialidad de los datos de la organización y que el proyecto se desarrolla con responsabilidad profesional, cumpliendo los principios éticos del <strong>Código de Ética de la ACM (Association for Computing Machinery)</strong>.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /doc-body -->
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>CE0311 · Levantamiento de Requerimientos · Franco's SAC · UPeU 2026</span>
+    <span class="confidential">USO ACADÉMICO RESTRINGIDO</span>
+    <span>Línea ITI · Ingeniería de Sistemas</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
