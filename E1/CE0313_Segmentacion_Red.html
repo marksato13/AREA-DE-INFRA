@@ -193,11 +193,11 @@
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Fecha de emisión</div>
-        <div class="cover-meta-value">Mayo 2026</div>
+        <div class="cover-meta-value">31 Mayo 2026</div>
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Versión</div>
-        <div class="cover-meta-value">v1.0 — Documento inicial</div>
+        <div class="cover-meta-value">v1.1 — Local 2=Sede Central, RODC L1/L3, WAF DMZ, hub-and-spoke VPN</div>
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Clasificación</div>
@@ -208,9 +208,9 @@
 
   <!-- VERSION BAR -->
   <div class="version-bar">
-    <span class="vbadge">v1.0</span>
+    <span class="vbadge">v1.1</span>
     <span class="vsep">|</span>
-    <span>Documento inicial · Mayo 2026</span>
+    <span>Local 2=Sede Central · RODC L1/L3 · WAF DMZ · Hub-and-Spoke VPN · 31 Mayo 2026</span>
     <span class="vsep">|</span>
     <span>CE0313 · Entregable 1 · Línea ITI</span>
     <span class="vsep">|</span>
@@ -236,6 +236,13 @@
             <td><strong>v1.0</strong></td>
             <td>Mayo 2026</td>
             <td>Elaboración inicial: diseño de VLANs para 3 locales, DMZ, cálculos de subnetting, esquema de inter-VLAN routing y configuración trunk 802.1Q</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-navy">Revisado</span></td>
+          </tr>
+          <tr>
+            <td><strong>v1.1</strong></td>
+            <td>31 Mayo 2026</td>
+            <td>Actualización integral: LOCAL 2 = SEDE CENTRAL (10.10.x, 7 VLANs con DMZ/30/40/50); LOCAL 1 = Planta Producción 1 (10.20.x, 4 VLANs); corrección IPs VPN a hub-and-spoke (L1-L2:172.16.10/30, L2-L3:172.16.20/30, L2-AWS:172.16.30/30); DMZ incorpora VM-WAF NGINX+ModSecurity; L1/L3 incorporan RODC DC3/DC4 y VM-FILESERVER; descripción de Cisco Catalyst 1000</td>
             <td>Ruben Mark Salazar</td>
             <td><span class="badge badge-gold">Borrador</span></td>
           </tr>
@@ -303,17 +310,17 @@
         <div class="stat-card">
           <div class="stat-label">Total VLANs</div>
           <div class="stat-value">15</div>
-          <div class="stat-desc">7 L1 · 4 L2 · 4 L3</div>
+          <div class="stat-desc">7 L2 Sede Central · 4 L1 · 4 L3</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Locales segmentados</div>
           <div class="stat-value">3</div>
-          <div class="stat-desc">Producción · Admin/Ventas · 2ª Planta</div>
+          <div class="stat-desc">L2 Sede Central · L1 Prod. · L3 2ª Planta</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Zonas DMZ</div>
           <div class="stat-value">1</div>
-          <div class="stat-desc">VLAN 30 — Solo Local 1</div>
+          <div class="stat-desc">VLAN 30 — Solo LOCAL 2 (Sede Central)</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">Estándar VLAN</div>
@@ -327,27 +334,28 @@
         <pre>
   ┌─────────────────────────────────────────────────────────────────────────────────┐
   │                    ESQUEMA DE SEGMENTACIÓN — FRANCO'S SAC                       │
-  ├───────────────────────┬───────────────────────┬────────────────────────────────┤
-  │   LOCAL 1 (10.10.x.x) │  LOCAL 2 (10.20.x.x)  │   LOCAL 3 (10.30.x.x)         │
-  │   Producción          │  Ventas / Admin        │   Segunda Planta               │
-  ├───────────────────────┼───────────────────────┼────────────────────────────────┤
-  │ VLAN10  Admin  /24    │ VLAN10  Admin  /24    │ VLAN10  Admin  /24             │
-  │ VLAN20  Usuarios /24  │ VLAN20  Usuarios /24  │ VLAN20  Usuarios /24           │
-  │ VLAN30  DMZ    /28 ★  │ VLAN60  Gestión /28   │ VLAN60  Gestión /28            │
-  │ VLAN40  Svcs   /24    │ VLAN99  Mgmt   /28    │ VLAN99  Mgmt   /28             │
-  │ VLAN50  Datos  /28    │                       │                                │
-  │ VLAN60  Gestión /28   │                       │                                │
-  │ VLAN99  Mgmt   /28    │                       │                                │
-  ├───────────────────────┴───────────────────────┴────────────────────────────────┤
-  │  ★ DMZ (VLAN30) exclusiva de Local 1 — Aloja API Gateway + Frontend Angular    │
-  │  Trunk IEEE 802.1Q en vmnic2 de cada ESXi Host hacia Cisco Switch del lab      │
-  │  pfSense-L1 / pfSense-L2 / pfSense-L3 → gateways inter-VLAN por local          │
+  ├───────────────────────────┬─────────────────────┬──────────────────────────────┤
+  │  LOCAL 2 — SEDE CENTRAL   │ LOCAL 1 (10.20.x.x) │   LOCAL 3 (10.30.x.x)       │
+  │  (10.10.x.x) HUB          │ Planta Producción 1  │   Segunda Planta            │
+  ├───────────────────────────┼─────────────────────┼──────────────────────────────┤
+  │ VLAN10  Admin      /24    │ VLAN10  Admin  /24  │ VLAN10  Admin  /24           │
+  │ VLAN20  Usuarios   /24    │ VLAN20  Usuarios/24 │ VLAN20  Usuarios /24         │
+  │ VLAN30  DMZ        /28 ★  │ VLAN60  Gestión/28  │ VLAN60  Gestión /28          │
+  │ VLAN40  Servicios  /24    │ VLAN99  Mgmt   /28  │ VLAN99  Mgmt   /28           │
+  │ VLAN50  Datos      /28    │                     │                              │
+  │ VLAN60  Gestión    /28    │                     │                              │
+  │ VLAN99  Mgmt ESXi  /28    │                     │                              │
+  ├───────────────────────────┴─────────────────────┴──────────────────────────────┤
+  │  ★ DMZ (VLAN30) exclusiva de LOCAL 2 (Sede Central) — WAF + API GW NestJS     │
+  │  Trunk IEEE 802.1Q en vmnic2 de cada ESXi Host hacia Cisco Catalyst 1000 / Switch│
+  │  pfSense-BORDE(L2) · pfSense-L1 · pfSense-L3 → gateways inter-VLAN + DHCP    │
+  │  VPN hub-and-spoke: L2=hub · L1-L2(172.16.10/30) · L2-L3(172.16.20/30)       │
   └─────────────────────────────────────────────────────────────────────────────────┘</pre>
       </div>
 
       <table class="formal-table">
         <thead>
-          <tr><th>VLAN ID</th><th>Nombre</th><th>Local 1</th><th>Local 2</th><th>Local 3</th><th>Propósito</th></tr>
+          <tr><th>VLAN ID</th><th>Nombre</th><th>LOCAL 2 — Sede Central</th><th>LOCAL 1 — Producción</th><th>LOCAL 3 — 2ª Planta</th><th>Propósito</th></tr>
         </thead>
         <tbody>
           <tr class="vlan-row-admin">
@@ -355,52 +363,52 @@
             <td><span class="badge badge-navy">10.10.10.0/24</span></td>
             <td><span class="badge badge-blue">10.20.10.0/24</span></td>
             <td><span class="badge badge-gold">10.30.10.0/24</span></td>
-            <td>Administración, AD/DNS, dirección general</td>
+            <td>Administración, AD/DNS (DC1+DC2 en L2 · RODC DC3 en L1 · DC4 en L3)</td>
           </tr>
           <tr class="vlan-row-users">
             <td><strong>VLAN 20</strong></td><td>Usuarios</td>
             <td><span class="badge badge-navy">10.10.20.0/24</span></td>
             <td><span class="badge badge-blue">10.20.20.0/24</span></td>
             <td><span class="badge badge-gold">10.30.20.0/24</span></td>
-            <td>Workstations de producción, ventas y operaciones</td>
+            <td>Workstations + AP WiFi (FrancosCorp en L2) · operarios L1/L3</td>
           </tr>
           <tr class="vlan-row-dmz">
             <td><strong>VLAN 30</strong></td><td>DMZ</td>
             <td><span class="badge badge-high">10.10.30.0/28</span></td>
             <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
             <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
-            <td>Zona desmilitarizada: API Gateway NestJS + Frontend Angular</td>
+            <td>Zona desmilitarizada SEDE CENTRAL: VM-WAF (NGINX+ModSecurity) · VM-API-GATEWAY (NestJS 11) · VM-BACKUP-API-GW (H4 standby)</td>
           </tr>
           <tr class="vlan-row-svcs">
             <td><strong>VLAN 40</strong></td><td>Servicios</td>
             <td><span class="badge badge-navy">10.10.40.0/24</span></td>
             <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
             <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
-            <td>Microservicios: NATS, auth-ms, person-ms, sales-ms, strategic-ms</td>
+            <td>SEDE CENTRAL: NATS 2.x + JetStream · auth-ms · person-ms · sales-invent-ms · strategic-ms · VM-FILESERVER</td>
           </tr>
           <tr class="vlan-row-data">
             <td><strong>VLAN 50</strong></td><td>Datos</td>
             <td><span class="badge badge-navy">10.10.50.0/28</span></td>
             <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
             <td><span class="badge badge-med" style="color:#aaa;">—</span></td>
-            <td>Bases de datos PostgreSQL (4 instancias independientes)</td>
+            <td>SEDE CENTRAL: PostgreSQL 15 (person-db · sales-invent-db · strategic-db) + réplicas H4</td>
           </tr>
           <tr class="vlan-row-mgmt">
             <td><strong>VLAN 60</strong></td><td>Gestión</td>
             <td><span class="badge badge-navy">10.10.60.0/28</span></td>
             <td><span class="badge badge-blue">10.20.60.0/28</span></td>
             <td><span class="badge badge-gold">10.30.60.0/28</span></td>
-            <td>Monitoreo: Zabbix Server (L1), agentes Zabbix (L2/L3)</td>
+            <td>VM-MONITOR Zabbix+Grafana+CloudWatch (L2) · Agente Zabbix en FileServer (L1/L3)</td>
           </tr>
           <tr class="vlan-row-esximgmt">
             <td><strong>VLAN 99</strong></td><td>Mgmt ESXi</td>
             <td><span class="badge badge-navy">10.10.99.0/28</span></td>
             <td><span class="badge badge-blue">10.20.99.0/28</span></td>
             <td><span class="badge badge-gold">10.30.99.0/28</span></td>
-            <td>Gestión interna del hipervisor ESXi (VMkernel, SSH, Web UI)</td>
+            <td>Gestión interna ESXi (VMkernel, SSH, Web UI) — aislada del tráfico de producción</td>
           </tr>
         </tbody>
-        <tfoot><tr><td colspan="6">— = VLAN no presente en ese local. Subredes /28 aplicadas en zonas de alta seguridad (DMZ, Datos, Gestión, Mgmt) por principio de mínima superficie de ataque.</td></tr></tfoot>
+        <tfoot><tr><td colspan="6">— = VLAN no presente en ese local. /28 en DMZ, Datos, Gestión, Mgmt = mínima superficie de ataque. L1 y L3 no tienen VLANs 30/40/50 — sus servicios ERP residen en L2 (Sede Central) y se acceden vía VPN.</td></tr></tfoot>
       </table>
     </div>
 
@@ -409,53 +417,53 @@
       <div class="section-header">
         <div class="section-number">3</div>
         <div>
-          <div class="section-title">Diseño de VLANs — Local 1 (Producción)</div>
-          <div class="section-subtitle">ESXi Host 1 · Dell Precision 7920 · 7 VLANs · 10.10.x.x</div>
+          <div class="section-title">Diseño de VLANs — LOCAL 2 (SEDE CENTRAL — Hub Principal)</div>
+          <div class="section-subtitle">ESXi H1-H4 · Cisco Catalyst 1000 · 7 VLANs · 10.10.x.x · Stack ERP completo</div>
         </div>
       </div>
 
-      <p>El Local 1 es la sede principal de Franco's SAC y concentra el mayor número de VLANs (7) al alojar el stack completo de infraestructura: ERP, base de datos, monitoreo y la única DMZ del proyecto. Todas las VLANs son enrutadas por <strong>VM-PFSENSE-L1</strong> a través de sub-interfaces sobre vmnic2 en trunk 802.1Q.</p>
+      <p>LOCAL 2 es la Sede Central y concentra el mayor número de VLANs (7) al alojar el stack completo de infraestructura: ERP, bases de datos, monitoreo, WAF y la única DMZ del proyecto. Todas las VLANs son enrutadas por <strong>VM-PFSENSE-BORDE</strong> sobre vmnic2 en trunk 802.1Q hacia el <strong>Cisco Catalyst 1000</strong>, quien distribuye las VLANs apropiadas a cada hipervisor (H1-H4).</p>
 
       <div class="local-header">
-        <span class="local-badge">LOCAL 1</span>
-        <span class="local-name">Planta de Producción — ESXi Host 1</span>
+        <span class="local-badge">LOCAL 2</span>
+        <span class="local-name">SEDE CENTRAL — ESXi H1 (Borde) · H2 (Servicios) · H3 (Backend) · H4 (Backup)</span>
         <span class="local-range">Rango base: 10.10.0.0/16</span>
       </div>
 
       <table class="formal-table">
         <thead>
-          <tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Máscara</th><th>Gateway (pfSense)</th><th>Broadcast</th><th>Hosts disponibles</th><th>VMs / Dispositivos</th></tr>
+          <tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Máscara</th><th>Gateway (pfSense-BORDE)</th><th>Broadcast</th><th>Hosts disponibles</th><th>VMs / Dispositivos</th></tr>
         </thead>
         <tbody>
           <tr class="vlan-row-admin">
-            <td><strong>10</strong></td><td>Administración</td><td>10.10.10.0/24</td><td>255.255.255.0</td><td>10.10.10.1</td><td>10.10.10.255</td><td>253</td><td>VM-AD-DNS (10.10.10.10)</td>
+            <td><strong>10</strong></td><td>Administración</td><td>10.10.10.0/24</td><td>255.255.255.0</td><td>10.10.10.1</td><td>10.10.10.255</td><td>253</td><td>VM-AD-DC DC1 (10.10.10.20) · VM-AD-DC-2 DC2 (10.10.10.21) · VM-NTP (10.10.10.12) · H2/H4</td>
           </tr>
           <tr class="vlan-row-users">
-            <td><strong>20</strong></td><td>Usuarios</td><td>10.10.20.0/24</td><td>255.255.255.0</td><td>10.10.20.1</td><td>10.10.20.255</td><td>253</td><td>APs futuros · usuarios producción</td>
+            <td><strong>20</strong></td><td>Usuarios</td><td>10.10.20.0/24</td><td>255.255.255.0</td><td>10.10.20.1</td><td>10.10.20.255</td><td>253</td><td>Workstations áreas Admin/Ventas · AP WiFi FrancosCorp (10.10.20.50)</td>
           </tr>
           <tr class="vlan-row-dmz">
-            <td><strong>30</strong></td><td>DMZ</td><td>10.10.30.0/28</td><td>255.255.255.240</td><td>10.10.30.1</td><td>10.10.30.15</td><td>13</td><td>VM-DOCKER-APP (API GW + Frontend)</td>
+            <td><strong>30</strong></td><td>DMZ</td><td>10.10.30.0/28</td><td>255.255.255.240</td><td>10.10.30.1</td><td>10.10.30.15</td><td>13</td><td>VM-WAF NGINX+ModSecurity (10.10.30.5) · VM-API-GATEWAY NestJS (10.10.30.10) · VM-BACKUP-API-GW H4 (10.10.30.20)</td>
           </tr>
           <tr class="vlan-row-svcs">
-            <td><strong>40</strong></td><td>Servicios</td><td>10.10.40.0/24</td><td>255.255.255.0</td><td>10.10.40.1</td><td>10.10.40.255</td><td>253</td><td>VM-DOCKER-APP (NATS) · VM-DOCKER-SVC (microservs.)</td>
+            <td><strong>40</strong></td><td>Servicios</td><td>10.10.40.0/24</td><td>255.255.255.0</td><td>10.10.40.1</td><td>10.10.40.255</td><td>253</td><td>VM-NATS (10.10.40.20) · auth-ms (.21) · person-ms (.22) · sales-ms (.23) · strategic-ms (.24) · VM-FILESERVER (.10) · backups H4 (.30-.33)</td>
           </tr>
           <tr class="vlan-row-data">
-            <td><strong>50</strong></td><td>Datos</td><td>10.10.50.0/28</td><td>255.255.255.240</td><td>10.10.50.1</td><td>10.10.50.15</td><td>13</td><td>VM-DOCKER-DB (4× PostgreSQL)</td>
+            <td><strong>50</strong></td><td>Datos</td><td>10.10.50.0/28</td><td>255.255.255.240</td><td>10.10.50.1</td><td>10.10.50.15</td><td>13</td><td>person-db (.10) · sales-invent-db (.11) · strategic-db (.12) · réplicas H4 (.20/.21/.22)</td>
           </tr>
           <tr class="vlan-row-mgmt">
-            <td><strong>60</strong></td><td>Gestión</td><td>10.10.60.0/28</td><td>255.255.255.240</td><td>10.10.60.1</td><td>10.10.60.15</td><td>13</td><td>VM-MONITOR (Zabbix Server + Grafana)</td>
+            <td><strong>60</strong></td><td>Gestión</td><td>10.10.60.0/28</td><td>255.255.255.240</td><td>10.10.60.1</td><td>10.10.60.15</td><td>13</td><td>VM-MONITOR (10.10.60.10) — Zabbix Server + Grafana + cloudwatch-agent · H2</td>
           </tr>
           <tr class="vlan-row-esximgmt">
-            <td><strong>99</strong></td><td>Mgmt ESXi</td><td>10.10.99.0/28</td><td>255.255.255.240</td><td>10.10.99.1</td><td>10.10.99.15</td><td>13</td><td>VMkernel ESXi Host 1 (172.17.25.7)</td>
+            <td><strong>99</strong></td><td>Mgmt ESXi</td><td>10.10.99.0/28</td><td>255.255.255.240</td><td>10.10.99.1</td><td>10.10.99.15</td><td>13</td><td>VMkernel H1 (172.17.25.7) · Cisco Catalyst 1000 SNMP (10.10.99.2) · H2/H3/H4 VMkernel</td>
           </tr>
         </tbody>
-        <tfoot><tr><td colspan="8">pfSense-L1 GW: sub-interfaces em2.10, em2.20, em2.30, em2.40, em2.50, em2.60, em2.99 sobre vmnic2 (trunk VLAN 4095)</td></tr></tfoot>
+        <tfoot><tr><td colspan="8">pfSense-BORDE GW: sub-interfaces em2.10, em2.20, em2.30, em2.40, em2.50, em2.60, em2.99 sobre vmnic2 (trunk VLAN 4095) → Cisco Catalyst 1000. Cada hipervisor (H2/H3/H4) recibe solo las VLANs que necesita.</td></tr></tfoot>
       </table>
 
       <div class="info-box navy">
         <div class="info-icon">🔒</div>
         <div class="info-content">
-          <div class="info-label">Justificación de subredes /28 en L1</div>
+          <div class="info-label">Justificación de subredes /28 en Sede Central</div>
           <div class="info-text">Las VLANs 30 (DMZ), 50 (Datos), 60 (Gestión) y 99 (MGMT) usan /28 (13 hosts disponibles) por el principio de <strong>mínima superficie de ataque</strong>: limitar el número máximo de hosts reduce el radio de impacto ante un compromiso. Las VLANs 10, 20 y 40 usan /24 (253 hosts) para permitir crecimiento de usuarios y contenedores de servicios. Alineado a <strong>NIST SP 800-53 SC-7</strong> (Boundary Protection).</div>
         </div>
       </div>
@@ -466,38 +474,38 @@
       <div class="section-header">
         <div class="section-number">4</div>
         <div>
-          <div class="section-title">Diseño de VLANs — Local 2 (Ventas / Administración)</div>
-          <div class="section-subtitle">ESXi Host 2 · Lab UPeU (TBD) · 4 VLANs · 10.20.x.x</div>
+          <div class="section-title">Diseño de VLANs — LOCAL 1 (Planta de Producción 1 — Sede Remota)</div>
+          <div class="section-subtitle">ESXi Host 5 · Lab UPeU (TBD) · 4 VLANs · 10.20.x.x · Sede remota liviana</div>
         </div>
       </div>
 
-      <p>El Local 2 es la sede de ventas y administración de Franco's SAC. Al no alojar el stack ERP completo (este reside en L1), requiere únicamente 4 VLANs orientadas a usuarios, administración, gestión y management del hipervisor. Los usuarios acceden al ERP del Local 1 a través del túnel VPN L1↔L2.</p>
+      <p>LOCAL 1 es la primera planta de producción de Franco's SAC. Opera como <strong>sede remota liviana</strong> con 4 VLANs. <strong>pfSense-L1</strong> provee de forma nativa DHCP por VLAN, DNS (Unbound forwarder → RODC DC3 local → internet) y NTP (sincronizado desde Sede Central via VPN). El <strong>RODC DC3</strong> permite autenticación AD local sin depender del VPN. Los operarios acceden al ERP vía VPN hacia Sede Central.</p>
 
       <div class="local-header">
-        <span class="local-badge">LOCAL 2</span>
-        <span class="local-name">Ventas / Administración — ESXi Host 2</span>
+        <span class="local-badge">LOCAL 1</span>
+        <span class="local-name">Planta de Producción 1 — ESXi Host 5 (TBD)</span>
         <span class="local-range">Rango base: 10.20.0.0/16</span>
       </div>
 
       <table class="formal-table">
         <thead>
-          <tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Máscara</th><th>Gateway (pfSense)</th><th>Broadcast</th><th>Hosts disponibles</th><th>VMs / Dispositivos</th></tr>
+          <tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Máscara</th><th>Gateway (pfSense-L1)</th><th>Broadcast</th><th>Hosts disponibles</th><th>VMs / Dispositivos</th></tr>
         </thead>
         <tbody>
           <tr class="vlan-row-admin">
-            <td><strong>10</strong></td><td>Administración</td><td>10.20.10.0/24</td><td>255.255.255.0</td><td>10.20.10.1</td><td>10.20.10.255</td><td>253</td><td>Dispositivos de administración L2</td>
+            <td><strong>10</strong></td><td>Administración</td><td>10.20.10.0/24</td><td>255.255.255.0</td><td>10.20.10.1</td><td>10.20.10.255</td><td>253</td><td>VM-AD-DC-L1 RODC DC3 (10.20.10.20) — autentica operarios sin VPN · Samba RODC</td>
           </tr>
           <tr class="vlan-row-users">
-            <td><strong>20</strong></td><td>Usuarios</td><td>10.20.20.0/24</td><td>255.255.255.0</td><td>10.20.20.1</td><td>10.20.20.255</td><td>253</td><td>VM-PC-VENTAS · VM-PC-ADMIN · APs futuros</td>
+            <td><strong>20</strong></td><td>Usuarios</td><td>10.20.20.0/24</td><td>255.255.255.0</td><td>10.20.20.1</td><td>10.20.20.255</td><td>253</td><td>Workstations operarios producción (10.20.20.x) · APs físicos (futuro)</td>
           </tr>
           <tr class="vlan-row-mgmt">
-            <td><strong>60</strong></td><td>Gestión</td><td>10.20.60.0/28</td><td>255.255.255.240</td><td>10.20.60.1</td><td>10.20.60.15</td><td>13</td><td>Agente Zabbix L2 (reporta a Zabbix Server en L1)</td>
+            <td><strong>60</strong></td><td>Gestión</td><td>10.20.60.0/28</td><td>255.255.255.240</td><td>10.20.60.1</td><td>10.20.60.15</td><td>13</td><td>VM-FILESERVER-L1 (10.20.40.10) + Agente Zabbix → VM-MONITOR Sede Central vía VPN TCP 10051</td>
           </tr>
           <tr class="vlan-row-esximgmt">
-            <td><strong>99</strong></td><td>Mgmt ESXi</td><td>10.20.99.0/28</td><td>255.255.255.240</td><td>10.20.99.1</td><td>10.20.99.15</td><td>13</td><td>VMkernel ESXi Host 2</td>
+            <td><strong>99</strong></td><td>Mgmt ESXi</td><td>10.20.99.0/28</td><td>255.255.255.240</td><td>10.20.99.1</td><td>10.20.99.15</td><td>13</td><td>VMkernel ESXi Host 5 (specs TBD)</td>
           </tr>
         </tbody>
-        <tfoot><tr><td colspan="8">pfSense-L2 GW: sub-interfaces em2.10, em2.20, em2.60, em2.99 sobre vmnic2 (trunk VLAN 4095) · VPN IPSec L1↔L2: 172.16.0.0/30</td></tr></tfoot>
+        <tfoot><tr><td colspan="8">pfSense-L1: DHCP nativo (VLANs 10/20/60/99) · DNS Unbound → RODC DC3 (10.20.10.20) · NTP → VM-NTP L2 vía VPN · IPSec L1-L2: 172.16.10.0/30 (L2:172.16.10.1 / L1:172.16.10.2)</td></tr></tfoot>
       </table>
     </div>
 
@@ -506,38 +514,38 @@
       <div class="section-header">
         <div class="section-number">5</div>
         <div>
-          <div class="section-title">Diseño de VLANs — Local 3 (Segunda Planta de Producción)</div>
-          <div class="section-subtitle">ESXi Host 3 · Lab UPeU (TBD) · 4 VLANs · 10.30.x.x</div>
+          <div class="section-title">Diseño de VLANs — LOCAL 3 (Segunda Planta de Producción — Sede Remota)</div>
+          <div class="section-subtitle">ESXi Host 6 · Lab UPeU (TBD) · 4 VLANs · 10.30.x.x · Sede remota liviana</div>
         </div>
       </div>
 
-      <p>El Local 3 representa la segunda planta de producción de Franco's SAC. Al igual que el Local 2, opera con un esquema de VLANs reducido (4 VLANs), orientado a las operaciones de producción y la conectividad con el resto de la infraestructura vía VPN mesh. Los datos y servicios centrales residen en Local 1.</p>
+      <p>LOCAL 3 es la segunda planta de producción de Franco's SAC. Opera con la misma arquitectura liviana que LOCAL 1: 4 VLANs, pfSense-L3 con DHCP/DNS/NTP nativos, RODC DC4 para autenticación local. Los datos y servicios ERP residen en LOCAL 2 (Sede Central) y se acceden vía VPN hub-and-spoke.</p>
 
       <div class="local-header">
         <span class="local-badge">LOCAL 3</span>
-        <span class="local-name">Segunda Planta de Producción — ESXi Host 3</span>
+        <span class="local-name">Segunda Planta de Producción — ESXi Host 6 (TBD)</span>
         <span class="local-range">Rango base: 10.30.0.0/16</span>
       </div>
 
       <table class="formal-table">
         <thead>
-          <tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Máscara</th><th>Gateway (pfSense)</th><th>Broadcast</th><th>Hosts disponibles</th><th>VMs / Dispositivos</th></tr>
+          <tr><th>VLAN</th><th>Nombre</th><th>Red</th><th>Máscara</th><th>Gateway (pfSense-L3)</th><th>Broadcast</th><th>Hosts disponibles</th><th>VMs / Dispositivos</th></tr>
         </thead>
         <tbody>
           <tr class="vlan-row-admin">
-            <td><strong>10</strong></td><td>Administración</td><td>10.30.10.0/24</td><td>255.255.255.0</td><td>10.30.10.1</td><td>10.30.10.255</td><td>253</td><td>Dispositivos de supervisión L3 (TBD)</td>
+            <td><strong>10</strong></td><td>Administración</td><td>10.30.10.0/24</td><td>255.255.255.0</td><td>10.30.10.1</td><td>10.30.10.255</td><td>253</td><td>VM-AD-DC-L3 RODC DC4 (10.30.10.20) — autentica operarios sin VPN · Samba RODC</td>
           </tr>
           <tr class="vlan-row-users">
-            <td><strong>20</strong></td><td>Usuarios</td><td>10.30.20.0/24</td><td>255.255.255.0</td><td>10.30.20.1</td><td>10.30.20.255</td><td>253</td><td>VM-PC-PROD-L3 · operarios de planta · APs futuros</td>
+            <td><strong>20</strong></td><td>Usuarios</td><td>10.30.20.0/24</td><td>255.255.255.0</td><td>10.30.20.1</td><td>10.30.20.255</td><td>253</td><td>Workstations operarios 2ª planta (10.30.20.x) · APs físicos (futuro)</td>
           </tr>
           <tr class="vlan-row-mgmt">
-            <td><strong>60</strong></td><td>Gestión</td><td>10.30.60.0/28</td><td>255.255.255.240</td><td>10.30.60.1</td><td>10.30.60.15</td><td>13</td><td>Agente Zabbix L3 (reporta a Zabbix Server en L1)</td>
+            <td><strong>60</strong></td><td>Gestión</td><td>10.30.60.0/28</td><td>255.255.255.240</td><td>10.30.60.1</td><td>10.30.60.15</td><td>13</td><td>VM-FILESERVER-L3 (10.30.40.10) + Agente Zabbix → VM-MONITOR Sede Central vía VPN TCP 10051</td>
           </tr>
           <tr class="vlan-row-esximgmt">
-            <td><strong>99</strong></td><td>Mgmt ESXi</td><td>10.30.99.0/28</td><td>255.255.255.240</td><td>10.30.99.1</td><td>10.30.99.15</td><td>13</td><td>VMkernel ESXi Host 3 (specs TBD)</td>
+            <td><strong>99</strong></td><td>Mgmt ESXi</td><td>10.30.99.0/28</td><td>255.255.255.240</td><td>10.30.99.1</td><td>10.30.99.15</td><td>13</td><td>VMkernel ESXi Host 6 (specs TBD)</td>
           </tr>
         </tbody>
-        <tfoot><tr><td colspan="8">pfSense-L3 GW: sub-interfaces em2.10, em2.20, em2.60, em2.99 sobre vmnic2 (trunk VLAN 4095) · VPN IPSec L1↔L3: 172.16.1.0/30 · L2↔L3: 172.16.2.0/30</td></tr></tfoot>
+        <tfoot><tr><td colspan="8">pfSense-L3: DHCP nativo (VLANs 10/20/60/99) · DNS Unbound → RODC DC4 (10.30.10.20) · NTP → VM-NTP L2 vía VPN · IPSec L2-L3: 172.16.20.0/30 (L2:172.16.20.2 / L3:172.16.20.1)</td></tr></tfoot>
       </table>
 
       <div class="info-box warn">
@@ -554,45 +562,51 @@
       <div class="section-header">
         <div class="section-number">6</div>
         <div>
-          <div class="section-title">Diseño de la DMZ — VLAN 30 (Local 1)</div>
-          <div class="section-subtitle">Zona Desmilitarizada · 10.10.30.0/28 · Único punto de exposición controlada</div>
+          <div class="section-title">Diseño de la DMZ — VLAN 30 (LOCAL 2 — SEDE CENTRAL)</div>
+          <div class="section-subtitle">Zona Desmilitarizada · 10.10.30.0/28 · WAF + API Gateway · Único punto de exposición controlada</div>
         </div>
       </div>
 
-      <p>La <strong>DMZ (Demilitarized Zone)</strong> es una zona de red intermediaria entre la red interna e Internet, diseñada para alojar servicios que deben ser accesibles desde el exterior sin exponer directamente las zonas internas. En Franco's SAC, la DMZ se implementa exclusivamente en el Local 1 y aloja el Frontend Angular y el API Gateway NestJS del ERP.</p>
+      <p>La <strong>DMZ (Demilitarized Zone)</strong> es una zona de red intermediaria entre la red interna e Internet. En Franco's SAC, la DMZ se implementa exclusivamente en <strong>LOCAL 2 (Sede Central)</strong> y aloja tres componentes: el <strong>WAF NGINX + ModSecurity</strong> (primera línea de defensa) y el <strong>API Gateway NestJS 11</strong> (punto de entrada al ERP). El VM-BACKUP-API-GW en H4 comparte la misma subred como standby frío.</p>
 
       <div class="diagram">
-        <div class="diagram-title">Figura 6.1 — Arquitectura DMZ — VLAN 30 · Local 1</div>
+        <div class="diagram-title">Figura 6.1 — Arquitectura DMZ — VLAN 30 · LOCAL 2 (SEDE CENTRAL)</div>
         <pre>
-                        ╔══════════════════╗
-                        ║    INTERNET      ║
-                        ╚════════╤═════════╝
-                                 │ TCP 80/443
-                        ┌────────▼─────────┐
-                        │  VM-PFSENSE-L1   │  ← WAN1 (172.17.25.x) + WAN2 (192.168.100.x)
-                        │  pfSense 2.7     │
-                        │  Firewall + NAT  │
-                        └────────┬─────────┘
-                                 │
-               ┌─────────────────┼──────────────────────┐
-               │                 │                      │
-     ┌─────────▼──────┐ ┌───────▼────────┐   ┌────────▼────────┐
-     │   VLAN 30      │ │   VLAN 10/20   │   │  VLAN 40/50     │
-     │   DMZ          │ │   Internas     │   │  Servicios/Datos │
-     │ 10.10.30.0/28  │ │  Protegidas   │   │  Protegidas     │
-     │────────────────│ │────────────────│   │─────────────────│
-     │ VM-DOCKER-APP  │ │  Solo acceso  │   │  SIN acceso     │
-     │ ┌──────────────┤ │  autenticado  │   │  desde DMZ      │
-     │ │API GW NestJS │ │  vía AD/DNS   │   │  (pfSense ACL)  │
-     │ │Frontend Ang. │ │               │   │                 │
-     │ └──────────────┤ └───────────────┘   └─────────────────┘
-     └────────────────┘
-      TCP 443: HTTPS        REGLAS pfSense:
-      TCP 80: HTTP (redir)  DMZ → VLAN40 (NATS/API): PERMITIDO puerto específico
-                            DMZ → VLAN50 (DB): DENEGADO (no acceso directo a BD)
-                            DMZ → VLAN10 (AD): PERMITIDO LDAP/DNS
-                            Internet → DMZ: PERMITIDO TCP 80/443 únicamente
-                            VLAN20 → DMZ: PERMITIDO (usuarios internos)</pre>
+                  ╔══════════════════════╗
+                  ║  INTERNET / AWS      ║
+                  ║  CloudFront → API   ║
+                  ╚══════════╤═══════════╝
+                             │ TCP 443 (HTTPS)
+                  ┌──────────▼───────────┐
+                  │  VM-PFSENSE-BORDE    │  ← WAN1 (172.17.25.x) + WAN2 (192.168.100.x)
+                  │  pfSense 2.7         │    Dual-WAN Failover · NAT · Firewall
+                  │  IPSec: L1/L3/AWS   │
+                  └──────────┬───────────┘
+                             │ ALLOW WAN → VLAN30 TCP 443
+                  ┌──────────▼───────────┐
+                  │   VLAN 30 — DMZ      │  10.10.30.0/28
+                  │   GW: 10.10.30.1     │
+                  │──────────────────────│
+                  │ VM-WAF (10.10.30.5)  │  ← NGINX + ModSecurity OWASP CRS
+                  │  └─ inspección HTTP  │     Bloquea SQLi, XSS, OWASP Top 10
+                  │     capa 7           │     Rate limit: 100 req/seg/IP
+                  │          │           │
+                  │          ▼           │
+                  │ VM-API-GW(10.10.30.10│  ← NestJS 11 · REST endpoint
+                  │  └─ valida JWT       │     ALLOW: DMZ → VLAN40 TCP 4222 (NATS)
+                  │  └─ enruta via NATS  │     DENY:  DMZ → VLAN50 (BDs)
+                  │                      │
+                  │ VM-BACKUP-API-GW     │  ← Standby frío H4 (10.10.30.20)
+                  │  10.10.30.20         │     Activa si VM-API-GW (H1) falla
+                  └──────────────────────┘
+
+     REGLAS pfSense:
+     WAN/CloudFront → DMZ TCP 443: PERMITIDO
+     DMZ → VLAN40 TCP 4222 (NATS): PERMITIDO
+     DMZ → VLAN50 (PostgreSQL): DENEGADO
+     DMZ → VLAN10 TCP 389/636 (AD): PERMITIDO (validación JWT)
+     VLAN20 (usuarios) → DMZ TCP 443: PERMITIDO
+     VPN L1/L3 → DMZ TCP 443: PERMITIDO (operarios acceden al ERP)</pre>
       </div>
 
       <table class="formal-table">
@@ -600,14 +614,15 @@
           <tr><th>Parámetro</th><th>Valor</th><th>Justificación</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>Red DMZ</strong></td><td>10.10.30.0/28</td><td>Subred /28 (13 hosts) — mínima superficie de ataque; suficiente para las VMs de la DMZ</td></tr>
-          <tr><td><strong>Gateway DMZ</strong></td><td>10.10.30.1 (pfSense-L1)</td><td>pfSense actúa como único punto de entrada/salida de la DMZ</td></tr>
-          <tr><td><strong>Servicios en DMZ</strong></td><td>API Gateway NestJS 11 · Frontend Angular 20</td><td>Únicos servicios que requieren exposición controlada hacia Internet</td></tr>
-          <tr><td><strong>Puertos permitidos entrada</strong></td><td>TCP 80 (redirige a 443) · TCP 443</td><td>Solo HTTPS en producción. HTTP redirigido para evitar tráfico en claro</td></tr>
-          <tr><td><strong>Acceso DMZ → VLAN 40</strong></td><td>PERMITIDO (puertos NestJS específicos)</td><td>API Gateway necesita comunicarse con microservicios y NATS en VLAN 40</td></tr>
-          <tr><td><strong>Acceso DMZ → VLAN 50</strong></td><td>DENEGADO</td><td>La DMZ no tiene acceso directo a las bases de datos — principio de mínimo privilegio</td></tr>
-          <tr><td><strong>Acceso DMZ → otras VLANs</strong></td><td>DENEGADO por defecto</td><td>Regla default-deny en pfSense; solo flujos explícitamente permitidos</td></tr>
-          <tr><td><strong>Estándar aplicado</strong></td><td>NIST SP 800-53 SC-7</td><td>Boundary Protection — separación de zonas de confianza diferenciada</td></tr>
+          <tr><td><strong>Sede</strong></td><td>LOCAL 2 — Sede Central (exclusivo)</td><td>Solo la Sede Central tiene exposición a internet — L1 y L3 acceden al ERP solo vía VPN interna</td></tr>
+          <tr><td><strong>Red DMZ</strong></td><td>10.10.30.0/28</td><td>Subred /28 (13 hosts) — mínima superficie de ataque; 3 VMs actuales + espacio para expansión</td></tr>
+          <tr><td><strong>Gateway DMZ</strong></td><td>10.10.30.1 (pfSense-BORDE)</td><td>pfSense actúa como único punto de entrada/salida de la DMZ</td></tr>
+          <tr><td><strong>VM-WAF (10.10.30.5)</strong></td><td>NGINX + ModSecurity v3 + OWASP CRS</td><td>Capa 7 WAF — proxy reverso que inspecciona todo el tráfico antes de llegar al API Gateway</td></tr>
+          <tr><td><strong>VM-API-GW (10.10.30.10)</strong></td><td>NestJS 11 + Docker · HTTPS 443</td><td>Punto de entrada al ERP — valida JWT, enruta peticiones via NATS a los microservicios en VLAN 40</td></tr>
+          <tr><td><strong>VM-BACKUP-API-GW (10.10.30.20)</strong></td><td>NestJS (standby frío · H4)</td><td>Failover del API Gateway — se activa si H1 falla; misma subred DMZ vía Cisco Catalyst 1000 → H4</td></tr>
+          <tr><td><strong>Acceso DMZ → VLAN 40</strong></td><td>PERMITIDO TCP 4222 (NATS)</td><td>API Gateway se comunica con NATS para enrutar a microservicios</td></tr>
+          <tr><td><strong>Acceso DMZ → VLAN 50</strong></td><td>DENEGADO</td><td>La DMZ nunca accede directamente a BDs — mínimo privilegio</td></tr>
+          <tr><td><strong>Estándar aplicado</strong></td><td>NIST SP 800-53 SC-7 · ISO/IEC 27001 A.13</td><td>Boundary Protection — separación DMZ / redes internas / internet</td></tr>
         </tbody>
       </table>
     </div>
@@ -675,17 +690,17 @@
       </div>
 
       <div class="subsection">
-        <div class="subsection-title">Subredes VPN Mesh Inter-Local</div>
+        <div class="subsection-title">Subredes VPN Hub-and-Spoke (LOCAL 2 = Hub) + AWS</div>
         <table class="formal-table">
           <thead>
-            <tr><th>Túnel</th><th>Subred</th><th>Prefijo</th><th>Endpoint A</th><th>Endpoint B</th><th>Hosts disp.</th></tr>
+            <tr><th>Túnel</th><th>Subred</th><th>Prefijo</th><th>IP LOCAL 2 (hub)</th><th>IP remota</th><th>Subredes enrutadas</th></tr>
           </thead>
           <tbody>
-            <tr><td><strong>L1 ↔ L2</strong></td><td>172.16.0.0</td><td>/30</td><td>pfSense-L1: 172.16.0.1</td><td>pfSense-L2: 172.16.0.2</td><td>2</td></tr>
-            <tr><td><strong>L1 ↔ L3</strong></td><td>172.16.1.0</td><td>/30</td><td>pfSense-L1: 172.16.1.1</td><td>pfSense-L3: 172.16.1.2</td><td>2</td></tr>
-            <tr><td><strong>L2 ↔ L3</strong></td><td>172.16.2.0</td><td>/30</td><td>pfSense-L2: 172.16.2.1</td><td>pfSense-L3: 172.16.2.2</td><td>2</td></tr>
+            <tr><td><strong>L1 ↔ L2</strong></td><td>172.16.10.0</td><td>/30</td><td>pfSense-BORDE: 172.16.10.1</td><td>pfSense-L1: 172.16.10.2</td><td>10.20.0.0/16 ↔ 10.10.0.0/16</td></tr>
+            <tr><td><strong>L2 ↔ L3</strong></td><td>172.16.20.0</td><td>/30</td><td>pfSense-BORDE: 172.16.20.2</td><td>pfSense-L3: 172.16.20.1</td><td>10.30.0.0/16 ↔ 10.10.0.0/16</td></tr>
+            <tr><td><strong>L2 ↔ AWS</strong></td><td>172.16.30.0</td><td>/30</td><td>pfSense-BORDE: 172.16.30.2</td><td>AWS VPN GW: 172.16.30.1</td><td>10.40.0.0/16 (VPC) ↔ 10.10.0.0/16</td></tr>
           </tbody>
-          <tfoot><tr><td colspan="6">Subred /30 = 2 hosts útiles = mínimo necesario para un túnel punto a punto. Rango 172.16.x.x (RFC 1918 — privado).</td></tr></tfoot>
+          <tfoot><tr><td colspan="6">Topología hub-and-spoke: L2 (Sede Central) es el hub. L1 y L3 NO tienen túnel directo — comunican siempre a través de L2. Subred /30 = 2 hosts = mínimo para punto a punto. Rango 172.16.x.x (RFC 1918).</td></tr></tfoot>
         </table>
       </div>
     </div>
@@ -700,25 +715,33 @@
         </div>
       </div>
 
-      <p>El inter-VLAN routing permite la comunicación controlada entre VLANs distintas. En este proyecto, pfSense actúa como router virtual centralizado para cada local, utilizando la técnica <strong>Router-on-a-Stick</strong>: una única NIC física (vmnic2) transporta todas las VLANs en trunk 802.1Q, y pfSense crea sub-interfaces (em2.VLAN_ID) para actuar como gateway de cada VLAN.</p>
+      <p>El inter-VLAN routing permite la comunicación controlada entre VLANs distintas. En este proyecto, pfSense actúa como router virtual centralizado para cada local, utilizando la técnica <strong>Router-on-a-Stick</strong>: una única NIC física (vmnic2) transporta todas las VLANs en trunk 802.1Q, y pfSense crea sub-interfaces (em2.VLAN_ID) para actuar como gateway de cada VLAN. En LOCAL 2 (Sede Central), el trunk vmnic2 → <strong>Cisco Catalyst 1000</strong> → distribuye las VLANs necesarias a cada hipervisor (H2/H3/H4).</p>
 
       <div class="diagram">
-        <div class="diagram-title">Figura 8.1 — Router-on-a-Stick · pfSense-L1 · Inter-VLAN Routing</div>
+        <div class="diagram-title">Figura 8.1 — Router-on-a-Stick · pfSense-BORDE · Inter-VLAN Routing · SEDE CENTRAL</div>
         <pre>
                       vmnic2 (trunk 802.1Q · VLAN 4095)
                               │
                     ┌─────────▼──────────┐
-                    │   VM-PFSENSE-L1    │
+                    │ VM-PFSENSE-BORDE   │  ← LOCAL 2 (Sede Central)
                     │                    │
-                    │  em2.10  10.10.10.1│ ← GW VLAN 10 Admin
-                    │  em2.20  10.10.20.1│ ← GW VLAN 20 Usuarios
-                    │  em2.30  10.10.30.1│ ← GW VLAN 30 DMZ
-                    │  em2.40  10.10.40.1│ ← GW VLAN 40 Servicios
-                    │  em2.50  10.10.50.1│ ← GW VLAN 50 Datos
-                    │  em2.60  10.10.60.1│ ← GW VLAN 60 Gestión
-                    │  em2.99  10.10.99.1│ ← GW VLAN 99 Mgmt
+                    │  em2.10  10.10.10.1│ ← GW VLAN 10 Admin (AD, NTP)
+                    │  em2.20  10.10.20.1│ ← GW VLAN 20 Usuarios + AP WiFi
+                    │  em2.30  10.10.30.1│ ← GW VLAN 30 DMZ (WAF + API GW)
+                    │  em2.40  10.10.40.1│ ← GW VLAN 40 Servicios (NATS + ms)
+                    │  em2.50  10.10.50.1│ ← GW VLAN 50 Datos (PostgreSQL)
+                    │  em2.60  10.10.60.1│ ← GW VLAN 60 Gestión (Zabbix)
+                    │  em2.99  10.10.99.1│ ← GW VLAN 99 Mgmt ESXi
+                    └────────┬───────────┘
+                             │ vmnic2
+                    ┌────────▼───────────┐
+                    │ Cisco Catalyst 1000│ ← switch físico 802.1Q
+                    │  H2: VLANs 10,40,60│
+                    │  H3: VLANs 40,50   │
+                    │  H4: VLANs 10,30,40│ ,50
+                    │  AP: Access VLAN20 │
                     └────────────────────┘
-                    Firewall rules → controlan qué VLANs se hablan entre sí</pre>
+    pfSense-L1 / pfSense-L3: misma técnica con sub-interfaces em2.10/20/60/99</pre>
       </div>
 
       <table class="formal-table">
@@ -768,9 +791,9 @@
               │        Cisco Switch           │
               │        Puerto TRUNK           │
               │   VLANs permitidas:           │
-              │   L1: 10,20,30,40,50,60,99   │
-              │   L2: 10,20,60,99             │
-              │   L3: 10,20,60,99             │
+              │  L2(Sede): 10,20,30,40,50,60,99│
+              │  L1(Prod): 10,20,60,99        │
+              │  L3(2ªPl): 10,20,60,99        │
               └──────────────────────────────┘
 
   Formato trama 802.1Q:
@@ -858,7 +881,7 @@
         <div class="info-icon">💡</div>
         <div class="info-content">
           <div class="info-label">Conclusión principal</div>
-          <div class="info-text">El diseño de segmentación de red para Franco's SAC establece <strong>15 VLANs distribuidas en 3 locales</strong>, con subredes dimensionadas según el principio de mínima superficie de ataque y enrutamiento inter-VLAN centralizado en pfSense. La DMZ garantiza que los servicios ERP accesibles desde Internet estén aislados de las zonas internas críticas.</div>
+          <div class="info-text">El diseño de segmentación de red para Franco's SAC establece <strong>15 VLANs distribuidas en 3 locales</strong> (7 en LOCAL 2 Sede Central · 4 en LOCAL 1 · 4 en LOCAL 3), con subredes dimensionadas según el principio de mínima superficie de ataque. LOCAL 2 concentra el stack completo (VLANs 10/20/30/40/50/60/99) incluyendo la única DMZ con WAF NGINX+ModSecurity + API Gateway NestJS. LOCAL 1 y LOCAL 3 son sedes remotas livianas (4 VLANs c/u) con RODC para autenticación local autónoma. La topología VPN hub-and-spoke con L2 como hub y túnel L2↔AWS garantiza conectividad segura completa.</div>
         </div>
       </div>
 
