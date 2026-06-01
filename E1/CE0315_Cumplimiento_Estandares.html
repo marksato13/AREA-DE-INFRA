@@ -188,11 +188,11 @@
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Fecha de emisión</div>
-        <div class="cover-meta-value">Mayo 2026</div>
+        <div class="cover-meta-value">31 Mayo 2026</div>
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Versión</div>
-        <div class="cover-meta-value">v1.0 — Documento inicial</div>
+        <div class="cover-meta-value">v1.1 — WAF ModSecurity, AWS VPN, streaming replication, RODC, hub-and-spoke VPN</div>
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Clasificación</div>
@@ -203,9 +203,9 @@
 
   <!-- VERSION BAR -->
   <div class="version-bar">
-    <span class="vbadge">v1.0</span>
+    <span class="vbadge">v1.1</span>
     <span class="vsep">|</span>
-    <span>Documento inicial · Mayo 2026</span>
+    <span>WAF ModSecurity · AWS VPN · Streaming Replication · RODC · Hub-and-Spoke VPN · 31 Mayo 2026</span>
     <span class="vsep">|</span>
     <span>CE0315 · Entregable 1 · Línea ITI</span>
     <span class="vsep">|</span>
@@ -231,6 +231,13 @@
             <td><strong>v1.0</strong></td>
             <td>Mayo 2026</td>
             <td>Elaboración inicial: marco normativo, análisis de cumplimiento por estándar, matriz de trazabilidad diseño-estándar y declaración formal de cumplimiento</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-navy">Revisado</span></td>
+          </tr>
+          <tr>
+            <td><strong>v1.1</strong></td>
+            <td>31 Mayo 2026</td>
+            <td>Actualización con arquitectura final: corrección local labels (LOCAL 2=Sede Central 10.10.x, LOCAL 1=10.20.x, LOCAL 3=10.30.x); §6 actualiza VPN a hub-and-spoke y A.17.1 con streaming replication H3→H4 RPO&lt;5min + pg_dump→S3; §7 agrega T-19 (WAF ModSecurity), T-20 (AWS VPN Gateway), T-21 (PostgreSQL Streaming Replication), T-22 (Docker restart), T-23 (RODC L1/L3); §8 actualiza rol Uziel y arquitectura; §9 actualiza conteo a 18 CUMPLE + 5 TO-BE</td>
             <td>Ruben Mark Salazar</td>
             <td><span class="badge badge-gold">Borrador</span></td>
           </tr>
@@ -619,7 +626,7 @@
             <td><strong>SC-32</strong></td>
             <td>NIST 800-53</td>
             <td>Information System Partitioning — segmentación del sistema en componentes aislados</td>
-            <td>Las 15 VLANs del proyecto (7 en L1, 4 en L2, 4 en L3) particionan la infraestructura por función y nivel de seguridad. Documentado en CE0313 §2–§5.</td>
+            <td>Las 15 VLANs del proyecto (7 en LOCAL 2 Sede Central, 4 en LOCAL 1, 4 en LOCAL 3) particionan la infraestructura por función y nivel de seguridad. LOCAL 2 concentra VLAN 30 (DMZ), VLAN 40 (Servicios), VLAN 50 (Datos) que no existen en L1/L3. Documentado en CE0313 §2–§5.</td>
             <td><span class="comply-full">CUMPLE</span></td>
           </tr>
           <tr>
@@ -640,7 +647,7 @@
             <td><strong>A.17.1</strong></td>
             <td>ISO 27001:2022</td>
             <td>Continuidad de la seguridad de la información — planificación</td>
-            <td>El plan de redundancia (CE0314) cubre Dual-WAN, VPN mesh y estrategias de backup, alineados a los objetivos de RTO/RPO definidos conforme a A.17.1.</td>
+            <td>El plan de redundancia (CE0314) cubre: Dual-WAN failover automático (3 locales); VPN hub-and-spoke con DPD; <strong>PostgreSQL Streaming Replication H3→H4 (RPO &lt;5 min)</strong>; <strong>pg_dump diario → S3 AWS</strong>; OVF export semanal → S3; Docker restart:always; H4 backup crítico (standby frío). RTO/RPO definidos conforme a A.17.1.</td>
             <td><span class="comply-full">CUMPLE</span></td>
           </tr>
         </tbody>
@@ -715,8 +722,8 @@
           </tr>
           <tr>
             <td>T-08</td>
-            <td><strong>VPN IPSec IKEv2 / AES-256-GCM</strong> inter-local</td>
-            <td>NIST SP 800-53 SC-8 · ISO 27001 A.13.2</td>
+            <td><strong>VPN IPSec IKEv2 / AES-256-GCM</strong> hub-and-spoke (L1-L2, L2-L3, L2-AWS)</td>
+            <td>NIST SP 800-53 SC-8 · ISO 27001 A.13.2 · NIST SP 800-77</td>
             <td>CE0312 §11, CE0314 §4</td>
             <td><span class="comply-full">CUMPLE</span></td>
           </tr>
@@ -785,9 +792,44 @@
           </tr>
           <tr>
             <td>T-18</td>
-            <td><strong>Monitoreo SNMP</strong> (Zabbix)</td>
+            <td><strong>Monitoreo SNMP</strong> (Zabbix + Grafana + CloudWatch)</td>
             <td>RFC 1157 / 3411 · ISO 27001 A.13.1</td>
-            <td>CE0311 RT-09</td>
+            <td>CE0311 RT-17</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-19</td>
+            <td><strong>WAF NGINX + ModSecurity v3 (OWASP CRS)</strong> en VLAN 30 DMZ (10.10.30.5)</td>
+            <td>NIST SP 800-53 SC-7 · ISO 27001 A.13.1 · OWASP Top 10</td>
+            <td>CE0313 §6, CE0311 RT-16</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-20</td>
+            <td><strong>AWS VPN Gateway site-to-site IPSec</strong> (172.16.30.0/30) + CloudFront TLS 1.3 + S3 Backups</td>
+            <td>NIST SP 800-53 SC-8 · ISO 27001 A.13.2 · AWS Well-Architected</td>
+            <td>CE0311 RT-15, CE0312 §11</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-21</td>
+            <td><strong>PostgreSQL Streaming Replication H3→H4</strong> (RPO &lt;5 min) + pg_dump diario → S3 AWS</td>
+            <td>ISO 27001 A.17.1 · NIST SP 800-34 · ISO/IEC 27001 A.12.3</td>
+            <td>CE0314 §5, §6, §7</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-22</td>
+            <td><strong>Docker restart:always + health checks</strong> en microservicios NestJS (H3) + NATS JetStream persistencia</td>
+            <td>ISO 27001 A.17.1 · NIST SP 800-53 CP-10</td>
+            <td>CE0314 §5</td>
+            <td><span class="comply-full">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td>T-23</td>
+            <td><strong>RODC Samba AD (DC3 en L1, DC4 en L3)</strong> — autenticación local sin VPN para operarios remotos</td>
+            <td>ISO 27001 A.9 (Access Control) · NIST SP 800-53 IA-2</td>
+            <td>CE0311 RT-14, CE0312 §8</td>
             <td><span class="comply-full">CUMPLE</span></td>
           </tr>
         </tbody>
@@ -810,13 +852,13 @@
         <div class="declaration-body">
           Los suscritos, en calidad de equipo responsable del <strong>Proyecto de Fin de Carrera en la Línea de Infraestructura Tecnológica (ITI)</strong> de la Escuela Profesional de Ingeniería de Sistemas de la Universidad Peruana Unión, declaramos formalmente que:
           <br><br>
-          <strong>1.</strong> El diseño de infraestructura de red desarrollado para <strong>Franco's SAC</strong> ha sido elaborado siguiendo los lineamientos y requisitos de los estándares internacionales <strong>TIA/EIA-568</strong> (cableado estructurado), <strong>IEEE 802.x</strong> (estándares LAN/WAN) e <strong>ISO/IEC 11801</strong> (cableado genérico para instalaciones del cliente), tal como se documenta en los entregables CE0311 a CE0315.
+          <strong>1.</strong> El diseño de infraestructura de red desarrollado para <strong>Franco's SAC</strong> — arquitectura híbrida on-premises (LOCAL 1, LOCAL 2 Sede Central, LOCAL 3) + AWS Cloud — ha sido elaborado siguiendo los lineamientos de los estándares internacionales <strong>TIA/EIA-568</strong> (cableado estructurado), <strong>IEEE 802.x</strong> (estándares LAN/WAN) e <strong>ISO/IEC 11801</strong> (cableado genérico), tal como se documenta en los entregables CE0311 a CE0315.
           <br><br>
-          <strong>2.</strong> Los controles de seguridad de red implementados en el diseño se alinean a los marcos de referencia <strong>NIST SP 800-53 Rev. 5</strong> e <strong>ISO/IEC 27001:2022</strong>, específicamente en los controles SC-7 (Boundary Protection), SC-8 (Transmission Confidentiality), SC-32 (System Partitioning), A.13.1 y A.13.2 (Seguridad en redes) y A.17.1 (Continuidad).
+          <strong>2.</strong> Los controles de seguridad implementados se alinean a <strong>NIST SP 800-53 Rev. 5</strong> e <strong>ISO/IEC 27001:2022</strong>: SC-7 (DMZ + WAF NGINX+ModSecurity + ACLs pfSense), SC-8 (VPN IPSec IKEv2/AES-256-GCM hub-and-spoke + CloudFront TLS 1.3), SC-32 (15 VLANs en 3 locales), A.13.1/A.13.2 (segmentación + cifrado inter-local), A.17.1 (streaming replication RPO&lt;5min + pg_dump→S3 + OVF→S3 + DC2+RODC), IA-2 (RODC DC3/DC4 auth local sin VPN).
           <br><br>
-          <strong>3.</strong> Las decisiones de diseño que hacen referencia a estándares cuya implementación está pendiente para el Semestre 2 o la fase de despliegue real (IEEE 802.11, 802.1w, 802.1X, 802.3ad) han sido documentadas explícitamente como "TO-BE" en la Matriz de Trazabilidad (§7), diferenciándolas de los elementos ya implementados en el entorno de laboratorio.
+          <strong>3.</strong> Las decisiones de diseño cuya implementación está pendiente para el Semestre 2 o el despliegue real (IEEE 802.11, 802.1w, 802.1X, 802.3ad) han sido documentadas explícitamente como "TO-BE" en la Matriz de Trazabilidad (§7), diferenciándolas de los 18 elementos con cumplimiento pleno en el diseño actual.
           <br><br>
-          <strong>4.</strong> Esta declaración se emite en cumplimiento del criterio de evaluación <strong>"Cumplimiento de Estándares"</strong> de la rúbrica del Entregable 1 (CE031 — Conectividad) del Proyecto de Fin de Carrera UPeU, según la Guía de Evaluación vigente (<em>master.pdf</em>).
+          <strong>4.</strong> Esta declaración se emite en cumplimiento del criterio <strong>"Cumplimiento de Estándares"</strong> de la rúbrica del Entregable 1 (CE031 — Conectividad) del Proyecto de Fin de Carrera UPeU, según la Guía de Evaluación vigente (<em>master.pdf</em>).
         </div>
 
         <div class="stamp-row">
@@ -847,11 +889,11 @@
           <div class="sig-block">
             <div class="sig-line"></div>
             <div class="sig-name">Uziel Sauñe</div>
-            <div class="sig-role">Apoyo Técnico · Ingeniero de Infraestructura<br>DNI: ___________________</div>
+            <div class="sig-role">Especialista en Infraestructura Tecnológica · Ingeniero de Implementación ITI<br>DNI: ___________________</div>
           </div>
         </div>
 
-        <p style="font-size:9px;color:var(--muted);text-align:center;margin-top:16px;">Lima, Mayo de 2026 · Universidad Peruana Unión · Escuela Profesional de Ingeniería de Sistemas</p>
+        <p style="font-size:9px;color:var(--muted);text-align:center;margin-top:16px;">Lima, 31 de Mayo de 2026 · Universidad Peruana Unión · Escuela Profesional de Ingeniería de Sistemas</p>
       </div>
     </div>
 
@@ -869,7 +911,7 @@
         <div class="info-icon">✅</div>
         <div class="info-content">
           <div class="info-label">Conclusión de cumplimiento</div>
-          <div class="info-text">El diseño de infraestructura de red para Franco's SAC cumple con los estándares <strong>TIA/EIA-568, IEEE 802.1Q, IEEE 802.3 e ISO/IEC 11801</strong> en todos los elementos implementados en el entorno de laboratorio. De 18 elementos de trazabilidad identificados, <strong>13 tienen cumplimiento pleno</strong> y <strong>5 están documentados como TO-BE</strong> para la fase de implementación real. Ningún elemento carece de referencia normativa.</div>
+          <div class="info-text">El diseño de infraestructura híbrida (on-premises + AWS Cloud) para Franco's SAC cumple con los estándares <strong>TIA/EIA-568, IEEE 802.1Q, IEEE 802.3, ISO/IEC 11801, NIST SP 800-53 e ISO 27001</strong> en todos los elementos implementados. De 23 elementos de trazabilidad identificados, <strong>18 tienen cumplimiento pleno</strong> (incluyendo WAF ModSecurity, AWS VPN, streaming replication, Docker restart y RODC) y <strong>5 están documentados como TO-BE</strong> para la fase de implementación real. Ningún elemento carece de referencia normativa.</div>
         </div>
       </div>
 
@@ -884,8 +926,11 @@
           <tr><td><strong>IEEE 802.1w / 802.1X</strong></td><td>—</td><td>T-13, T-15</td><td><span class="comply-tobe">TO-BE</span></td></tr>
           <tr><td><strong>TIA/EIA-568</strong></td><td>T-04, T-05, T-16</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
           <tr><td><strong>ISO/IEC 11801</strong></td><td>T-04, T-16</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
-          <tr><td><strong>NIST SP 800-53</strong></td><td>T-03, T-08, T-11</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
-          <tr><td><strong>ISO/IEC 27001</strong></td><td>T-08, T-09, T-11</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+          <tr><td><strong>NIST SP 800-53</strong></td><td>T-03, T-08, T-11, T-19, T-22, T-23</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+          <tr><td><strong>ISO/IEC 27001</strong></td><td>T-08, T-09, T-11, T-21, T-22, T-23</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+          <tr><td><strong>OWASP / ModSecurity</strong></td><td>T-19 (WAF capa 7)</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+          <tr><td><strong>AWS Well-Architected</strong></td><td>T-20 (VPN GW + CloudFront + S3)</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
+          <tr><td><strong>NIST SP 800-34</strong></td><td>T-21 (Streaming Rep. + Backups S3)</td><td>—</td><td><span class="comply-full">100%</span></td></tr>
         </tbody>
         <tfoot><tr><td colspan="4">Los elementos TO-BE no representan incumplimiento — son parte del alcance definido del proyecto académico (Semestre 1 = diseño; Semestre 2 = implementación).</td></tr></tfoot>
       </table>
