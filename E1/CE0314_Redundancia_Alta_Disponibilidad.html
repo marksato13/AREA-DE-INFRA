@@ -180,11 +180,11 @@
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Fecha de emisión</div>
-        <div class="cover-meta-value">Mayo 2026</div>
+        <div class="cover-meta-value">31 Mayo 2026</div>
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Versión</div>
-        <div class="cover-meta-value">v1.0 — Documento inicial</div>
+        <div class="cover-meta-value">v1.1 — Arquitectura final: DC2/DC3/DC4, streaming replication H3→H4, AWS S3, hub-and-spoke VPN</div>
       </div>
       <div class="cover-meta-item">
         <div class="cover-meta-label">Clasificación</div>
@@ -195,9 +195,9 @@
 
   <!-- VERSION BAR -->
   <div class="version-bar">
-    <span class="vbadge">v1.0</span>
+    <span class="vbadge">v1.1</span>
     <span class="vsep">|</span>
-    <span>Documento inicial · Mayo 2026</span>
+    <span>DC2/DC3/DC4 · Streaming Replication H3→H4 RPO&lt;5min · AWS S3 · Hub-and-Spoke VPN · 31 Mayo 2026</span>
     <span class="vsep">|</span>
     <span>CE0314 · Entregable 1 · Línea ITI</span>
     <span class="vsep">|</span>
@@ -223,6 +223,13 @@
             <td><strong>v1.0</strong></td>
             <td>Mayo 2026</td>
             <td>Elaboración inicial: análisis SPOF, plan Dual-WAN, VPN mesh, respaldo de VMs, métricas RTO/RPO y restricciones de entorno de laboratorio</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-navy">Revisado</span></td>
+          </tr>
+          <tr>
+            <td><strong>v1.1</strong></td>
+            <td>31 Mayo 2026</td>
+            <td>Actualización integral con arquitectura final: DC2 (H4) + DC3 RODC (L1) + DC4 RODC (L3) ya implementados; streaming replication H3→H4 RPO&lt;5min; pg_dump → S3 AWS + OVF → S3; VPN cambia a hub-and-spoke (eliminado túnel L1↔L3 directo, agregado L2↔AWS); H4 backup crítico con standby frío microservicios; Docker restart policy nivel 1; tablas SPOF, servicios, SLA/RPO actualizadas</td>
             <td>Ruben Mark Salazar</td>
             <td><span class="badge badge-gold">Borrador</span></td>
           </tr>
@@ -270,7 +277,7 @@
         <div class="info-icon">📌</div>
         <div class="info-content">
           <div class="info-label">Alcance del plan</div>
-          <div class="info-text">Este documento cubre la redundancia en 3 capas: <strong>(1) Capa WAN</strong> — Dual-ISP con failover automático en pfSense; <strong>(2) Capa de conectividad inter-local</strong> — VPN mesh con 3 túneles independientes; <strong>(3) Capa de servicios</strong> — estrategia de respaldo de VMs y continuidad de servicios críticos. La redundancia a nivel de hardware físico está limitada por las restricciones del entorno de laboratorio UPeU (ver §8).</div>
+          <div class="info-text">Este documento cubre la redundancia en 5 capas: <strong>(1) Capa WAN</strong> — Dual-ISP con failover automático en pfSense (3 locales); <strong>(2) Capa VPN</strong> — hub-and-spoke IPSec (L1-L2, L2-L3, L2-AWS) con DPD; <strong>(3) Capa de AD/autenticación</strong> — DC1+DC2 en Sede Central, RODC DC3 en L1, DC4 en L3; <strong>(4) Capa de servicios ERP</strong> — H4 backup crítico con standby frío de microservicios y Docker restart; <strong>(5) Capa de datos</strong> — PostgreSQL streaming replication H3→H4 (RPO &lt;5 min) + pg_dump diario → S3 AWS + OVF semanal → S3. La redundancia de hardware físico está limitada por las restricciones del entorno de laboratorio UPeU (ver §8).</div>
         </div>
       </div>
 
@@ -283,7 +290,7 @@
         <div class="stat-card">
           <div class="stat-label">Túneles VPN</div>
           <div class="stat-value">3</div>
-          <div class="stat-desc">Mesh L1↔L2 · L1↔L3 · L2↔L3</div>
+          <div class="stat-desc">Hub-and-spoke: L1-L2 · L2-L3 · L2-AWS</div>
         </div>
         <div class="stat-card">
           <div class="stat-label">SLA objetivo</div>
@@ -332,50 +339,58 @@
           </tr>
           <tr>
             <td>SPOF-03</td>
-            <td><strong>VM-PFSENSE-L1</strong></td>
-            <td>Falla del firewall/router del Local 1</td>
+            <td><strong>VM-PFSENSE-BORDE (Sede Central)</strong></td>
+            <td>Falla del firewall/router principal — hub de todos los túneles VPN</td>
             <td><span class="risk-high">ALTO</span></td>
-            <td>Snapshot programado de la VM. En entorno real se implementaría pfSense HA (CARP). En laboratorio: restauración desde snapshot en ≤ 30 min.</td>
+            <td>Snapshot diario de la VM. Dual-WAN garantiza que si falla WAN1 se mantiene WAN2. pfSense CARP (futuro): VM-PFSENSE-BORDE-2 en standby. L1 y L3 mantienen operación local (RODC, FileServer) aunque el VPN se interrumpa.</td>
             <td><span class="risk-med">MEDIO</span></td>
           </tr>
           <tr>
             <td>SPOF-04</td>
-            <td><strong>ESXi Host 1</strong></td>
-            <td>Falla del servidor principal (Local 1)</td>
+            <td><strong>ESXi H1 (Sede Central — Borde)</strong></td>
+            <td>Falla del hipervisor de borde: cae VM-WAF + VM-API-GATEWAY</td>
             <td><span class="risk-high">ALTO</span></td>
-            <td>En entorno real: VMware vMotion + HA cluster. En laboratorio: respaldo de VMs (OVF export) en almacenamiento externo. RTO ≤ 4h para restauración manual.</td>
+            <td><strong>H4 backup activo:</strong> VM-BACKUP-API-GW (10.10.30.20) en H4 como standby frío. Al detectar caída de H1 (Zabbix), equipo TI levanta VM en H4 y actualiza DNS (api.francos.local → H4). RTO ≤ 15 min.</td>
             <td><span class="risk-med">MEDIO</span></td>
           </tr>
           <tr>
             <td>SPOF-05</td>
-            <td><strong>Cisco Switch Lab</strong></td>
-            <td>Falla del switch de interconexión</td>
+            <td><strong>Cisco Catalyst 1000 (Sede Central)</strong></td>
+            <td>Falla del switch físico de interconexión H1-H2-H3-H4</td>
             <td><span class="risk-high">ALTO</span></td>
-            <td>El laboratorio Cisco UPeU cuenta con switches redundantes. En diseño real se implementaría STP/RSTP o link aggregation (LACP — IEEE 802.3ad). Documentado como restricción de lab.</td>
+            <td>El laboratorio Cisco UPeU cuenta con infraestructura de red propia. En diseño real: stack de switches redundantes con LACP (IEEE 802.3ad) y RSTP. Documentado como restricción de lab.</td>
             <td><span class="risk-med">MEDIO</span></td>
           </tr>
           <tr>
             <td>SPOF-06</td>
-            <td><strong>Túnel VPN L1↔L2</strong></td>
-            <td>Pérdida de conectividad inter-local L1-L2</td>
+            <td><strong>Túnel VPN L1-L2 o L2-L3</strong></td>
+            <td>Pérdida de conectividad inter-local (hub-and-spoke)</td>
             <td><span class="risk-high">ALTO</span></td>
-            <td>VPN mesh: L2 puede rutar a L1 vía L3 (L2→L3→L1) si el túnel directo falla. DPD (Dead Peer Detection) reconecta el túnel automáticamente.</td>
-            <td><span class="risk-low">BAJO</span></td>
-          </tr>
-          <tr>
-            <td>SPOF-07</td>
-            <td><strong>VM-AD-DNS</strong></td>
-            <td>Falla del servicio de directorio y DNS</td>
-            <td><span class="risk-high">ALTO</span></td>
-            <td>Snapshot programado. En diseño real se replicaría AD en un segundo DC. DNS secundario configurado en pfSense como fallback.</td>
+            <td><strong>Nota hub-and-spoke:</strong> NO hay ruta alternativa si cae el túnel (no existe L1↔L3 directo). Sin embargo: DPD reconecta automáticamente en &lt;30 seg. Dual-WAN en L1/L3 garantiza que si WAN1 cae el túnel se reconecta por WAN2. Operación local continúa (RODC + FileServer).</td>
             <td><span class="risk-med">MEDIO</span></td>
           </tr>
           <tr>
+            <td>SPOF-07</td>
+            <td><strong>VM-AD-DC (DC1) — Sede Central</strong></td>
+            <td>Falla del Domain Controller primario (FSMO roles)</td>
+            <td><span class="risk-high">ALTO</span></td>
+            <td><strong>DC2 en H4 (10.10.10.21)</strong> es réplica completa activa — asume autenticación y DNS automáticamente en segundos. <strong>RODC DC3 en L1 (10.20.10.20)</strong> y <strong>DC4 en L3 (10.30.10.20)</strong> autentican operarios localmente aunque ambos DCs de Sede Central fallen.</td>
+            <td><span class="risk-low">BAJO</span></td>
+          </tr>
+          <tr>
             <td>SPOF-08</td>
-            <td><strong>VM-DOCKER-DB (PostgreSQL)</strong></td>
+            <td><strong>BDs PostgreSQL H3 (person-db, sales-db, strategic-db)</strong></td>
             <td>Falla de las bases de datos del ERP</td>
             <td><span class="risk-high">ALTO</span></td>
-            <td>Backup diario de volúmenes PostgreSQL. En diseño real: replicación streaming PostgreSQL. Snapshot de VM programado.</td>
+            <td><strong>Streaming Replication H3→H4:</strong> réplicas activas en H4 (RPO &lt;5 min). Al fallar H3, se hace pg_ctl promote en H4 → BDs primarias en minutos. <strong>pg_dump diario 22:00 → S3 AWS</strong> como capa adicional (RPO 24h en caso extremo).</td>
+            <td><span class="risk-low">BAJO</span></td>
+          </tr>
+          <tr>
+            <td>SPOF-09</td>
+            <td><strong>ESXi H3 (Backend completo)</strong></td>
+            <td>Falla del hipervisor de microservicios + BDs primarias</td>
+            <td><span class="risk-high">ALTO</span></td>
+            <td><strong>H4 backup crítico:</strong> microservicios en standby frío (auth-ms .30, person-ms .31, sales-ms .32, strategic-ms .33). Al fallar H3: (1) promover BDs réplica H4, (2) levantar VMs standby H4, (3) verificar salud. RTO ≤ 30 min.</td>
             <td><span class="risk-med">MEDIO</span></td>
           </tr>
         </tbody>
@@ -396,10 +411,10 @@
       <p>La redundancia WAN se implementa en pfSense mediante la función <strong>Gateway Groups</strong>, que permite agrupar los dos ISPs y definir un comportamiento de failover o balanceo de carga. Para Franco's SAC se configura en modo <strong>failover puro</strong>: ISP1 es el enlace primario y ISP2 toma el tráfico automáticamente si ISP1 falla.</p>
 
       <div class="diagram">
-        <div class="diagram-title">Figura 3.1 — Arquitectura Dual-WAN · Failover pfSense</div>
+        <div class="diagram-title">Figura 3.1 — Arquitectura Dual-WAN · Failover pfSense · 3 Locales</div>
         <pre>
-                        ┌──────────────────────────────────────────┐
-                        │          VM-PFSENSE-L1 (pfSense 2.7)    │
+  ┌──────────────── SEDE CENTRAL — LOCAL 2 (VM-PFSENSE-BORDE) ──────────────────┐
+  │  ISP1: Cisco Router (GW:172.17.25.121) ──► WAN1 (vmnic0)                   │
                         │                                          │
   ISP1 (Cisco Router) ──► WAN1 · vmnic0 · 172.17.25.x            │
   ISP2 (FortiGate 40F)──► WAN2 · vmnic1 · 192.168.100.x          │
@@ -435,9 +450,9 @@
           <tr><td><strong>IP monitor</strong></td><td>8.8.8.8 (Google DNS)</td><td>1.1.1.1 (Cloudflare DNS)</td></tr>
           <tr><td><strong>Protocolo monitoreo</strong></td><td>ICMP (ping)</td><td>ICMP (ping)</td></tr>
           <tr><td><strong>Capacidades</strong></td><td>Enrutamiento completo + NAT</td><td>Enrutamiento básico + NAT (sin licencia)</td></tr>
-          <tr><td><strong>Aplica a locales</strong></td><td>L1 (Host 1)</td><td>L1 (Host 1) — L2 y L3 tienen ISPs propios (TBD)</td></tr>
+          <tr><td><strong>Aplica a locales</strong></td><td>L2 Sede Central (Cisco Router ISP1) · L1 y L3 (ISPs lab UPeU)</td><td>L2 Sede Central (FortiGate 40F ISP2) · L1 y L3 (ISP simulado lab)</td></tr>
         </tbody>
-        <tfoot><tr><td colspan="3">El Dual-WAN completo (ISP primario + ISP secundario) se implementa en cada local. L2 y L3 usan ISPs del segmento de laboratorio UPeU disponibles.</td></tr></tfoot>
+        <tfoot><tr><td colspan="3">Dual-WAN implementado en los 3 locales: pfSense-BORDE (L2), pfSense-L1, pfSense-L3. Cada local tiene su propio Dual-WAN independiente. La reconexión del túnel VPN usa NAT-T para funcionar en el WAN que esté activo.</td></tr></tfoot>
       </table>
 
       <div class="info-box success">
@@ -454,40 +469,43 @@
       <div class="section-header">
         <div class="section-number">4</div>
         <div>
-          <div class="section-title">Redundancia de Conectividad — VPN Mesh IPSec</div>
-          <div class="section-subtitle">3 túneles independientes · Dead Peer Detection · Rutas alternativas</div>
+          <div class="section-title">Redundancia de Conectividad — VPN Hub-and-Spoke IPSec + AWS</div>
+          <div class="section-subtitle">LOCAL 2 como hub · 3 túneles · Dead Peer Detection · Dual-WAN como respaldo del túnel</div>
         </div>
       </div>
 
-      <p>La topología VPN mesh con 3 túneles independientes proporciona redundancia de conectividad inter-local. Si un túnel falla, los locales afectados pueden comunicarse mediante el tercer local como nodo intermedio (enrutamiento transitivo), evitando el aislamiento total de cualquier sede.</p>
+      <p>La topología VPN es <strong>hub-and-spoke</strong> con LOCAL 2 (Sede Central) como hub central. Existen 3 túneles: L1-L2, L2-L3 y L2-AWS. La redundancia de conectividad se logra mediante Dual-WAN (si WAN1 cae, el túnel se reconecta vía WAN2) y DPD para reconexión automática. L1 y L3 no tienen túnel directo entre sí.</p>
 
       <div class="diagram">
-        <div class="diagram-title">Figura 4.1 — Redundancia VPN Mesh · Rutas de Failover</div>
+        <div class="diagram-title">Figura 4.1 — VPN Hub-and-Spoke · Redundancia via Dual-WAN + DPD</div>
         <pre>
-   LOCAL 1 (pfSense-L1)          LOCAL 2 (pfSense-L2)
-        172.16.0.1    ◄──Túnel L1↔L2──► 172.16.0.2
-             │                                │
-             │                                │
-        Túnel L1↔L3                      Túnel L2↔L3
-             │                                │
-             ▼                                ▼
-        172.16.1.1    ◄──Túnel L1↔L3──► (L3 nodo relay)
-   LOCAL 3 (pfSense-L3)          172.16.1.2 / 172.16.2.1
-        172.16.2.2
+   LOCAL 1 (pfSense-L1)          LOCAL 2 — SEDE CENTRAL (pfSense-BORDE)
+   WAN1: IP ISP1 lab              WAN1: 172.17.25.x (Cisco Router)
+   WAN2: IP ISP2 lab              WAN2: 100.17.25.x (FortiGate 40F)
+   Tunnel: 172.16.10.2 ◄──Túnel L1-L2──► 172.16.10.1
+                                          │         │
+                                   Túnel L2-L3   Túnel L2-AWS
+                                          │         │
+                                          ▼         ▼
+   LOCAL 3 (pfSense-L3)          172.16.20.1   172.16.30.1
+   Tunnel: 172.16.20.1                          (AWS VPN GW)
+                                                (Route53·CloudFront·S3·ECR)
 
-  ── Escenario de failover ──────────────────────────────────────────
-  SI Túnel L1↔L2 cae:
-    L2 → L3 (Túnel L2↔L3) → L1 (Túnel L1↔L3)
-    Latencia adicional: +1 salto VPN (~5–15ms en lab)
+  ── Redundancia del túnel via Dual-WAN ─────────────────────────────────
+  SI WAN1 de L1 cae:
+    Dual-WAN → activa WAN2 → tunnel L1-L2 se reconecta via WAN2
+    DPD detecta nueva IP → IKEv2 + NAT-T renegocian automáticamente
+    RTO túnel: ~15-30 seg
 
-  SI Túnel L1↔L3 cae:
-    L3 → L2 (Túnel L2↔L3) → L1 (Túnel L1↔L2)
+  SI Túnel L1-L2 cae (ambas WANs OK):
+    DPD detecta en 10s → reinicia negociación IKEv2
+    RTO: ~30-60 segundos
 
-  SI Túnel L2↔L3 cae:
-    L2 → L1 (Túnel L1↔L2) → L3 (Túnel L1↔L3)
+  ⚠️ L1 sin conexión a L2: L1 queda aislado (sin ruta alternativa)
+     Mitigación: RODC DC3 autentica localmente · FileServer-L1 opera
+     ERP inaccesible hasta restaurar VPN
 
-  Dead Peer Detection (DPD): reconexión automática del túnel caído
-  Intervalo DPD: 10 segundos · Reintentos: 5 · Acción: restart</pre>
+  Dead Peer Detection: 10s · 5 reintentos · Acción: restart tunnel</pre>
       </div>
 
       <table class="formal-table">
@@ -517,53 +535,60 @@
 
       <table class="formal-table">
         <thead>
-          <tr><th>Servicio</th><th>VM</th><th>Estrategia en lab (AS-IS académico)</th><th>Diseño real TO-BE</th><th>Disponibilidad estimada</th></tr>
+          <tr><th>Servicio</th><th>VM(s) primaria</th><th>Mecanismo de redundancia implementado</th><th>Nivel TO-BE (futuro)</th><th>Disponibilidad</th></tr>
         </thead>
         <tbody>
           <tr>
             <td><strong>Firewall / Router</strong></td>
-            <td>VM-PFSENSE-L1/L2/L3</td>
-            <td>Snapshot diario. Restauración manual desde snapshot en ≤ 30 min</td>
-            <td>pfSense HA con CARP (Common Address Redundancy Protocol) — IP virtual compartida entre 2 nodos pfSense</td>
-            <td><span class="badge badge-gold">99% (lab)</span></td>
+            <td>VM-PFSENSE-BORDE (H1) · pfSense-L1 · pfSense-L3</td>
+            <td>Snapshot diario. Dual-WAN failover automático &lt;10s. pfSense-BORDE es el más crítico. RTO ≤ 30 min con restauración desde snapshot.</td>
+            <td>pfSense CARP HA: VM-PFSENSE-BORDE-2 como standby activo con VIP flotante — failover &lt;2s</td>
+            <td><span class="badge badge-gold">99%</span></td>
+          </tr>
+          <tr>
+            <td><strong>WAF + API Gateway</strong></td>
+            <td>VM-WAF (H1, 10.10.30.5) · VM-API-GW (H1, 10.10.30.10)</td>
+            <td><strong>VM-BACKUP-API-GW en H4 (10.10.30.20)</strong> — standby frío. Docker restart:always en VM-API-GW. Al caer H1: equipo TI levanta backup H4, actualiza DNS. RTO ≤ 15 min.</td>
+            <td>2 instancias activas con load balancer NGINX upstream. Health check 30s.</td>
+            <td><span class="badge badge-gold">99%</span></td>
           </tr>
           <tr>
             <td><strong>Active Directory / DNS</strong></td>
-            <td>VM-AD-DNS</td>
-            <td>Snapshot semanal. DNS de respaldo en pfSense (forwarder). Restauración en ≤ 2h</td>
-            <td>Segundo DC (Domain Controller) de réplica en VLAN 10 + DNS secundario independiente</td>
-            <td><span class="badge badge-gold">98% (lab)</span></td>
+            <td>VM-AD-DC DC1 (H2, 10.10.10.20)</td>
+            <td><strong>DC2 en H4 (10.10.10.21)</strong> — réplica activa, toma auth y DNS automáticamente si DC1 cae. <strong>RODC DC3 en L1 (10.20.10.20)</strong> y <strong>DC4 en L3 (10.30.10.20)</strong> — operarios autentican localmente sin VPN. pfSense Unbound como DNS terciario.</td>
+            <td>DC distribuido por sede — ya implementado en diseño actual</td>
+            <td><span class="badge badge-low">99.9%</span></td>
           </tr>
           <tr>
-            <td><strong>API Gateway + Frontend</strong></td>
-            <td>VM-DOCKER-APP</td>
-            <td>Docker restart policy: always. Contenedor reinicia automáticamente ante crash</td>
-            <td>Múltiples réplicas de contenedores con load balancer (nginx upstream). Health checks cada 30s</td>
-            <td><span class="badge badge-low">99.5%</span></td>
-          </tr>
-          <tr>
-            <td><strong>Microservicios (NATS + ms)</strong></td>
-            <td>VM-DOCKER-SVC</td>
-            <td>Docker restart policy: always. NATS con persistencia de mensajes activada (JetStream)</td>
-            <td>Cluster NATS (3 nodos). Microservicios con réplicas y circuit breaker</td>
+            <td><strong>Microservicios NestJS</strong></td>
+            <td>auth-ms/person-ms/sales-ms/strategic-ms (H3, VLAN40)</td>
+            <td><strong>Docker restart:always</strong> — reinicio automático ante crash (&lt;5s). <strong>H4 standby frío</strong>: VMs backup (.30-.33) listas para levantar si H3 falla. NATS JetStream persiste mensajes en cola.</td>
+            <td>NATS cluster 3 nodos. Microservicios con réplicas activas y circuit breaker.</td>
             <td><span class="badge badge-low">99.5%</span></td>
           </tr>
           <tr>
             <td><strong>Bases de datos PostgreSQL</strong></td>
-            <td>VM-DOCKER-DB</td>
-            <td>pg_dump diario programado (cron). Backup en volumen separado del host ESXi</td>
-            <td>Replicación streaming PostgreSQL (primary + standby). Failover automático con Patroni</td>
-            <td><span class="badge badge-gold">98% (lab)</span></td>
+            <td>person-db/sales-db/strategic-db (H3, VLAN50)</td>
+            <td><strong>PostgreSQL Streaming Replication H3→H4</strong> — réplicas activas en H4 (10.10.50.20/.21/.22). RPO &lt;5 min. Failover: pg_ctl promote en H4. <strong>pg_dump diario 22:00 → S3 AWS</strong> como capa adicional.</td>
+            <td>PostgreSQL Patroni HA con failover automático. RTO &lt;2 min.</td>
+            <td><span class="badge badge-low">99.5%</span></td>
           </tr>
           <tr>
-            <td><strong>Monitoreo (Zabbix)</strong></td>
-            <td>VM-MONITOR</td>
-            <td>Servicio no crítico para la operación. Snapshot mensual</td>
-            <td>Zabbix en alta disponibilidad con base de datos externa replicada</td>
-            <td><span class="badge badge-navy">95% (lab)</span></td>
+            <td><strong>Monitoreo (Zabbix + Grafana)</strong></td>
+            <td>VM-MONITOR (H2, 10.10.60.10)</td>
+            <td>Docker restart:always para contenedores Zabbix+Grafana+cloudwatch-agent. Snapshot diario de VM-MONITOR. No es servicio crítico operativo — puede estar caído hasta 4h sin impacto en ERP.</td>
+            <td>Zabbix HA con base de datos externa replicada. Grafana Cloud como backup.</td>
+            <td><span class="badge badge-navy">95%</span></td>
+          </tr>
+          <tr>
+            <td><strong>FileServer + RODC sedes remotas</strong></td>
+            <td>VM-FILESERVER-L1/L3 · VM-AD-DC-L1/L3 (RODC)</td>
+            <td>Archivos locales disponibles independientemente del VPN. RODC cachea credenciales — autentica operarios sin VPN. Agente Zabbix reporta estado al servidor central.</td>
+            <td>FileServer replicado bidireccional entre sedes (DFS-R Samba).</td>
+            <td><span class="badge badge-low">99%</span></td>
           </tr>
         </tbody>
-        <tfoot><tr><td colspan="5">Lab = entorno académico con restricciones de hardware. TO-BE = diseño para implementación real futura en instalaciones de Franco's SAC.</td></tr></tfoot>
+        <tfoot><tr><td colspan="5">TO-BE = diseño para implementación real futura. La arquitectura actual ya implementa las capas más críticas de redundancia: DC2, streaming replication, H4 backup, RODC en L1/L3.</td></tr></tfoot>
       </table>
     </div>
 
@@ -585,36 +610,44 @@
           </thead>
           <tbody>
             <tr>
-              <td><strong>L1 — VM Snapshot</strong></td>
-              <td>Snapshot completo de VM (ESXi)</td>
+              <td><strong>N1 — Streaming Replication</strong></td>
+              <td>PostgreSQL WAL streaming H3→H4 (tiempo real)</td>
+              <td>Continua (tiempo real)</td>
+              <td>Permanente</td>
+              <td>PostgreSQL Streaming Replication</td>
+              <td>H4 (person-db .20, sales-db .21, strategic-db .22)</td>
+            </tr>
+            <tr>
+              <td><strong>N2 — VM Snapshot ESXi</strong></td>
+              <td>Snapshot completo de VMs críticas (H1-H4)</td>
               <td>Diario (23:00 hrs)</td>
               <td>7 días</td>
               <td>VMware ESXi snapshot</td>
-              <td>Datastore VMFS6 local</td>
+              <td>Datastore VMFS6 local de cada hipervisor</td>
             </tr>
             <tr>
-              <td><strong>L2 — OVF Export</strong></td>
-              <td>Export completo de VM (OVF/OVA)</td>
-              <td>Semanal (domingo)</td>
-              <td>4 semanas</td>
-              <td>VMware OVF Tool / ESXi UI</td>
-              <td>Disco externo USB / NAS lab</td>
-            </tr>
-            <tr>
-              <td><strong>L3 — DB Dump</strong></td>
-              <td>Volcado lógico PostgreSQL (pg_dump)</td>
+              <td><strong>N3 — DB Dump → S3 AWS</strong></td>
+              <td>Volcado lógico PostgreSQL (pg_dump) de las 3 BDs</td>
               <td>Diario (22:00 hrs)</td>
               <td>30 días</td>
-              <td>pg_dump + cron</td>
-              <td>Volumen Docker separado + copia en VLAN 50</td>
+              <td>pg_dump + cron + aws s3 cp</td>
+              <td>S3 AWS: francos-db-backups/ (vía VPN L2-AWS)</td>
             </tr>
             <tr>
-              <td><strong>L4 — Config Backup</strong></td>
-              <td>Exportación de configuración pfSense</td>
+              <td><strong>N4 — OVF Export → S3 AWS</strong></td>
+              <td>Export completo de VMs críticas (OVF/OVA)</td>
+              <td>Semanal (domingo 02:00)</td>
+              <td>4 semanas</td>
+              <td>VMware OVF Tool + aws s3 cp</td>
+              <td>S3 AWS: francos-vm-exports/ (vía VPN L2-AWS)</td>
+            </tr>
+            <tr>
+              <td><strong>N5 — Config Backup pfSense</strong></td>
+              <td>Configuración XML pfSense de los 3 locales</td>
               <td>Tras cada cambio + semanal</td>
               <td>30 días</td>
-              <td>pfSense backup XML</td>
-              <td>VM-MONITOR (VLAN 60) + disco externo</td>
+              <td>pfSense backup XML automático</td>
+              <td>VM-MONITOR (VLAN 60) + S3 AWS</td>
             </tr>
           </tbody>
           <tfoot><tr><td colspan="6">Los snapshots de ESXi consumen espacio en el datastore. Se debe monitorear el espacio libre (≥ 20% libre en todo momento) para garantizar la correcta ejecución de snapshots automáticos.</td></tr></tfoot>
@@ -693,51 +726,65 @@
           <tr>
             <td><strong>Conectividad WAN (Internet)</strong></td>
             <td>99% horario laboral</td>
-            <td>10 segundos</td>
+            <td>&lt;10 segundos</td>
             <td>0 (sin pérdida)</td>
-            <td>Dual-WAN failover automático pfSense</td>
+            <td>Dual-WAN failover automático pfSense (3 locales)</td>
           </tr>
           <tr>
-            <td><strong>Conectividad inter-local (VPN)</strong></td>
+            <td><strong>Conectividad VPN hub-and-spoke</strong></td>
             <td>99% horario laboral</td>
-            <td>60 segundos</td>
+            <td>30–60 segundos</td>
             <td>0 (sin pérdida)</td>
-            <td>VPN mesh + DPD reconexión automática</td>
+            <td>DPD reconexión automática + Dual-WAN como backup del túnel</td>
           </tr>
           <tr>
-            <td><strong>Firewall / pfSense</strong></td>
+            <td><strong>Firewall pfSense-BORDE</strong></td>
             <td>99%</td>
             <td>30 minutos</td>
             <td>24 horas</td>
-            <td>Snapshot diario + restauración desde snapshot</td>
+            <td>Snapshot diario. Futuro: pfSense CARP (RTO &lt;2s)</td>
           </tr>
           <tr>
-            <td><strong>ERP (Frontend + API GW)</strong></td>
+            <td><strong>API Gateway + WAF</strong></td>
             <td>99% horario laboral</td>
-            <td>5 minutos</td>
+            <td>15 minutos</td>
             <td>0 (sin pérdida)</td>
-            <td>Docker restart policy: always + health checks</td>
-          </tr>
-          <tr>
-            <td><strong>Base de datos PostgreSQL</strong></td>
-            <td>98%</td>
-            <td>2 horas</td>
-            <td>24 horas</td>
-            <td>pg_dump diario + snapshot VM diario</td>
+            <td>Docker restart:always + VM-BACKUP-API-GW en H4 (standby frío)</td>
           </tr>
           <tr>
             <td><strong>Active Directory / DNS</strong></td>
-            <td>98%</td>
-            <td>2 horas</td>
-            <td>7 días</td>
-            <td>Snapshot semanal + DNS respaldo en pfSense</td>
+            <td>99.9%</td>
+            <td>&lt;30 segundos</td>
+            <td>&lt;15 minutos (replication lag)</td>
+            <td>DC2 en H4 réplica activa + RODC DC3/DC4 en L1/L3 para auth local</td>
+          </tr>
+          <tr>
+            <td><strong>Microservicios NestJS</strong></td>
+            <td>99.5% horario laboral</td>
+            <td>&lt;5 segundos (restart) / 30 min (H4)</td>
+            <td>0 (NATS JetStream persiste)</td>
+            <td>Docker restart:always + H4 standby frío</td>
+          </tr>
+          <tr>
+            <td><strong>Bases de datos PostgreSQL</strong></td>
+            <td>99.5%</td>
+            <td>&lt;30 minutos (pg_ctl promote H4)</td>
+            <td><strong>&lt;5 minutos</strong> (streaming replication)</td>
+            <td>PostgreSQL Streaming Replication H3→H4 + pg_dump diario → S3 AWS</td>
           </tr>
           <tr>
             <td><strong>Monitoreo (Zabbix)</strong></td>
             <td>95%</td>
             <td>4 horas</td>
-            <td>30 días</td>
-            <td>Snapshot mensual (servicio no crítico operativamente)</td>
+            <td>24 horas (snapshot diario)</td>
+            <td>Docker restart:always + snapshot diario VM-MONITOR</td>
+          </tr>
+          <tr>
+            <td><strong>Operación local L1/L3 (sin VPN)</strong></td>
+            <td>99%</td>
+            <td>0 (instantáneo)</td>
+            <td>N/A</td>
+            <td>RODC DC3/DC4 auth local + VM-FILESERVER-L1/L3 + pfSense DHCP/DNS/NTP nativos</td>
           </tr>
         </tbody>
         <tfoot><tr><td colspan="5">Horario laboral: lunes a sábado 08:00–18:00. SLA 99% = máximo 1.75h de inactividad por semana en horario laboral. Valores definidos para el entorno académico de laboratorio UPeU.</td></tr></tfoot>
@@ -859,7 +906,7 @@
         <div class="info-icon">💡</div>
         <div class="info-content">
           <div class="info-label">Conclusión principal</div>
-          <div class="info-text">El plan de redundancia de Franco's SAC garantiza continuidad en las capas más críticas — WAN y conectividad inter-local — mediante Dual-WAN con failover automático y VPN mesh con rutas alternativas. Las restricciones del entorno de laboratorio se documentan de forma transparente y las mitigaciones implementadas (snapshots, backups, restart policies) permiten alcanzar los SLAs objetivo en contexto académico.</div>
+          <div class="info-text">El plan de redundancia de Franco's SAC implementa <strong>5 capas de protección</strong>: (1) Dual-WAN failover automático en los 3 locales; (2) VPN hub-and-spoke con DPD + Dual-WAN como respaldo del túnel; (3) AD redundante — DC2 activo en H4 + RODC DC3/DC4 en L1/L3 para autenticación sin VPN; (4) H4 backup crítico con standby frío de todos los microservicios y VM-BACKUP-API-GW; (5) PostgreSQL Streaming Replication H3→H4 con RPO &lt;5 min + pg_dump → S3 AWS como capa adicional. Las restricciones del laboratorio se documentan de forma transparente.</div>
         </div>
       </div>
 
@@ -868,12 +915,14 @@
           <tr><th>Capa</th><th>Mecanismo de redundancia</th><th>Riesgo residual</th></tr>
         </thead>
         <tbody>
-          <tr><td><strong>WAN</strong></td><td>Dual-ISP · Gateway Groups pfSense · RTO 10s</td><td><span class="risk-low">BAJO</span></td></tr>
-          <tr><td><strong>VPN inter-local</strong></td><td>Mesh 3 túneles · DPD · rutas alternativas · RTO 60s</td><td><span class="risk-low">BAJO</span></td></tr>
-          <tr><td><strong>Firewall</strong></td><td>Snapshot diario · RTO 30min</td><td><span class="risk-med">MEDIO</span></td></tr>
-          <tr><td><strong>Servicios ERP</strong></td><td>Docker restart:always · health checks · RTO 5min</td><td><span class="risk-low">BAJO</span></td></tr>
-          <tr><td><strong>Base de datos</strong></td><td>pg_dump diario · RPO 24h · RTO 2h</td><td><span class="risk-med">MEDIO</span></td></tr>
-          <tr><td><strong>Hipervisor (hardware)</strong></td><td>OVF semanal · RTO 4h (restricción de lab)</td><td><span class="risk-med">MEDIO</span></td></tr>
+          <tr><td><strong>WAN (3 locales)</strong></td><td>Dual-ISP · Gateway Groups pfSense · RTO &lt;10s</td><td><span class="risk-low">BAJO</span></td></tr>
+          <tr><td><strong>VPN hub-and-spoke</strong></td><td>DPD + Dual-WAN backup del túnel · RTO 30-60s · sin ruta alternativa L1↔L3</td><td><span class="risk-med">MEDIO</span></td></tr>
+          <tr><td><strong>Firewall pfSense-BORDE</strong></td><td>Snapshot diario · RTO 30min · futuro CARP &lt;2s</td><td><span class="risk-med">MEDIO</span></td></tr>
+          <tr><td><strong>API Gateway + WAF</strong></td><td>H4 standby frío · Docker restart · RTO 15min</td><td><span class="risk-med">MEDIO</span></td></tr>
+          <tr><td><strong>Active Directory / DNS</strong></td><td>DC2 activo H4 + RODC DC3/DC4 L1/L3 · RTO &lt;30s</td><td><span class="risk-low">BAJO</span></td></tr>
+          <tr><td><strong>Microservicios ERP</strong></td><td>Docker restart:always + H4 standby · RTO &lt;5s/30min</td><td><span class="risk-low">BAJO</span></td></tr>
+          <tr><td><strong>Bases de datos</strong></td><td>Streaming Replication RPO&lt;5min · pg_dump S3 · RTO &lt;30min</td><td><span class="risk-low">BAJO</span></td></tr>
+          <tr><td><strong>Operación local L1/L3</strong></td><td>RODC + FileServer local · independiente del VPN · RTO 0</td><td><span class="risk-low">BAJO</span></td></tr>
         </tbody>
       </table>
     </div>
