@@ -177,7 +177,7 @@
     <div class="cg-item"><div class="lbl">Estándares principales</div><div class="val">ISO 27001:2022 · ISO 27005:2022 · NIST CSF v2.0</div></div>
     <div class="cg-item"><div class="lbl">Equipo</div><div class="val">Ruben Mark Salazar · Uziel Sauñe</div></div>
     <div class="cg-item"><div class="lbl">Fecha de emisión</div><div class="val">31 Mayo 2026</div></div>
-    <div class="cg-item"><div class="lbl">Versión</div><div class="val">v1.0 — CE0321 completo · CE0322-CE0325 en elaboración</div></div>
+    <div class="cg-item"><div class="lbl">Versión</div><div class="val">v1.0 — Documento completo · CE0321–CE0325 · 01 Junio 2026</div></div>
     <div class="cg-item"><div class="lbl">Rol del proyecto</div><div class="val">Analista de Seguridad / CISO Junior</div></div>
   </div>
 </div>
@@ -185,7 +185,7 @@
 <div class="vbar">
   <span class="vbadge">v1.0</span>
   <span class="vsep">|</span>
-  <span>CE0321 completo · 31 Mayo 2026</span>
+  <span>E2 COMPLETO · CE0321–CE0325 · 01 Junio 2026</span>
   <span class="vsep">|</span>
   <span>CE032 · Seguridad de la Información · ITI UPeU</span>
 </div>
@@ -1384,24 +1384,224 @@
     </div><!-- /criterio-body -->
   </div><!-- /criterio §4 -->
 
-  <!-- ══ §5 CALIDAD Y ÉTICA (placeholder) ══ -->
+  <!-- ══ §5 CALIDAD Y ÉTICA ══ -->
   <div class="criterio" id="s5">
     <div class="criterio-header">
       <div class="criterio-num">5</div>
       <div class="criterio-info">
-        <div class="criterio-code">CE0325 · Criterio 5 de 5 · Código ACM 2018 · Ley 29733</div>
-        <div class="criterio-title">Calidad Documental y Ética ACM</div>
-        <div class="criterio-sub">Coherencia E2 · Ética en gestión de seguridad · Ley 29733 · Declaración formal</div>
+        <div class="criterio-code">CE0325 · Criterio 5 de 5 · Código ACM 2018 · Ley 29733 Perú · ISO 27001:2022</div>
+        <div class="criterio-title">Calidad Documental y Ética Profesional ACM</div>
+        <div class="criterio-sub">Coherencia E2 · Principios ACM en seguridad · Impacto social y legal · Declaración formal de cierre</div>
       </div>
     </div>
     <div class="criterio-body">
-      <div class="placeholder">
-        <div class="ph-icon">🔄</div>
-        <div class="ph-title">En elaboración — CE0325</div>
-        <div class="ph-sub">Contenido: Revisión de coherencia CE0321-CE0324 · Principios ACM aplicados a la gestión de seguridad (confidencialidad de datos clientes/empleados, honestidad en análisis de riesgos) · Ley 29733 aplicada a person-db · Impacto social y legal · Declaración formal de cierre E2</div>
+
+      <!-- 5.1 Revisión de coherencia -->
+      <div class="sub">
+        <div class="sub-title">5.1 Revisión de coherencia del Entregable 2 (CE0321–CE0325)</div>
+        <p>La coherencia del SGSI de Franco's SAC requiere que cada sección del E2 sea el insumo directo de la siguiente. La siguiente tabla verifica la trazabilidad entre los 5 criterios del entregable.</p>
+        <table class="t">
+          <thead><tr><th>#</th><th>Punto de coherencia verificado</th><th>CE0321</th><th>CE0322</th><th>CE0323</th><th>CE0324</th><th>Estado</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>C-01</td>
+              <td><strong>Cada riesgo referencia el activo afectado</strong> del inventario CE0321</td>
+              <td>D-01..P-04</td><td>R-01..R-18</td><td>—</td><td>—</td>
+              <td><span class="b b-ok">COHERENTE</span></td>
+            </tr>
+            <tr>
+              <td>C-02</td>
+              <td><strong>Cada política CE0323 mitiga riesgos</strong> identificados en CE0322</td>
+              <td>—</td><td>R-01..R-18</td><td>POL-01..06</td><td>—</td>
+              <td><span class="b b-ok">COHERENTE</span></td>
+            </tr>
+            <tr>
+              <td>C-03</td>
+              <td><strong>Cada política tiene un Accountable</strong> en la matriz RACI CE0324</td>
+              <td>—</td><td>—</td><td>POL-01..06</td><td>RACI A</td>
+              <td><span class="b b-ok">COHERENTE</span></td>
+            </tr>
+            <tr>
+              <td>C-04</td>
+              <td><strong>Los activos críticos D-01/D-02</strong> (person-db, sales-db) tienen riesgos específicos y políticas dedicadas</td>
+              <td>D-01 CIA=5<br>D-02 CIA=5</td><td>R-01, R-02, R-04</td><td>POL-01, POL-03</td><td>DBA Accountable</td>
+              <td><span class="b b-ok">COHERENTE</span></td>
+            </tr>
+            <tr>
+              <td>C-05</td>
+              <td><strong>Los 2 riesgos aceptados</strong> (R-17, R-18) están justificados y documentados en CE0322 y no generan políticas operativas</td>
+              <td>HW-01/02</td><td>R-17 Aceptar<br>R-18 Aceptar</td><td>Sin política (aceptados)</td><td>Sin RACI específico</td>
+              <td><span class="b b-ok">COHERENTE</span></td>
+            </tr>
+            <tr>
+              <td>C-06</td>
+              <td><strong>La persona asignada como CISO</strong> (Ruben Mark Salazar) aparece consistentemente en portada, RACI y declaración</td>
+              <td>—</td><td>—</td><td>—</td><td>A en 10/13 procesos</td>
+              <td><span class="b b-ok">COHERENTE</span></td>
+            </tr>
+            <tr>
+              <td>C-07</td>
+              <td><strong>Los estándares ISO 27001 y NIST CSF</strong> se referencian consistentemente en CE0322 (NIST CSF), CE0323 (ISO 27001 Anexo A) y CE0324 (ISO 27001 A.6)</td>
+              <td>ISO 27005</td><td>NIST CSF v2.0</td><td>ISO 27001 A.9-A.16</td><td>ISO 27001 A.5-A.18</td>
+              <td><span class="b b-ok">COHERENTE</span></td>
+            </tr>
+            <tr>
+              <td>C-08</td>
+              <td><strong>La Ley 29733</strong> aparece en activos (D-01 datos personales), riesgos (R-02), políticas (POL-05, POL-06) y roles (CISO notifica INDECOPI)</td>
+              <td>D-01 Ley 29733</td><td>R-02 Ley 29733</td><td>POL-05, POL-06</td><td>CISO Notifica</td>
+              <td><span class="b b-ok">COHERENTE</span></td>
+            </tr>
+          </tbody>
+          <tfoot><tr><td colspan="7">8/8 puntos de coherencia verificados · Trazabilidad completa activos → riesgos → políticas → roles → ética.</td></tr></tfoot>
+        </table>
       </div>
-    </div>
-  </div>
+
+      <!-- 5.2 ACM Ethics -->
+      <div class="sub">
+        <div class="sub-title">5.2 Código de Ética ACM (2018) — aplicación a la planificación de seguridad</div>
+        <p>La gestión de la seguridad de la información involucra decisiones que afectan datos personales, privacidad y continuidad operativa. El <strong>Código de Ética de la ACM (2018)</strong> guía cada decisión del SGSI diseñado para Franco's SAC.</p>
+        <table class="t">
+          <thead><tr><th>Principio ACM</th><th>Aplicación concreta en el SGSI de Franco's SAC</th><th>Evidencia en E2</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>1.1 Contribuir al bienestar de la sociedad</strong></td>
+              <td>Las 6 políticas de seguridad protegen los datos de los 30-40 trabajadores y sus clientes. Un SGSI robusto garantiza la continuidad del negocio y la estabilidad económica de los empleados. La seguridad de person-db protege datos que afectan directamente la vida de las personas.</td>
+              <td>CE0321 · 28 activos · CE0323 POL-01/02</td>
+            </tr>
+            <tr>
+              <td><strong>1.2 Evitar causar daño</strong></td>
+              <td>El análisis de riesgos (CE0322) identifica sistemáticamente los daños potenciales antes de que ocurran. Las políticas CE0323 implementan controles preventivos. Los 2 riesgos aceptados (R-17, R-18) se documentan con justificación y se comunican a la Gerencia para decisión informada.</td>
+              <td>CE0322 · 18 riesgos · CE0323 · CE0324 RACI</td>
+            </tr>
+            <tr>
+              <td><strong>1.3 Ser honesto y confiable</strong></td>
+              <td>Los riesgos R-17 (acceso físico lab UPeU) y R-18 (corte eléctrico) se aceptan de forma <strong>transparente y documentada</strong>, reconociendo que están fuera del control del proyecto. No se afirma que el sistema es 100% seguro — se comunica el riesgo residual a la Gerencia.</td>
+              <td>CE0322 R-17/R-18 · CE0324 Gerencia Informed</td>
+            </tr>
+            <tr>
+              <td><strong>1.4 Ser justo — no discriminar</strong></td>
+              <td>POL-01 garantiza acceso equitativo al ERP para todos los trabajadores según su rol, sin discriminación por sede (L1, L2, L3). Los RODC en L1 y L3 aseguran que los operarios de planta tienen el mismo nivel de autenticación que el personal de Sede Central.</td>
+              <td>CE0323 POL-01 · CE0324 Usuario Final</td>
+            </tr>
+            <tr>
+              <td><strong>1.6 Respetar la privacidad</strong></td>
+              <td>person-db (D-01) contiene datos personales regulados por Ley 29733. Se implementan controles específicos: VLAN 50 aislada, mínimo privilegio en usuarios PostgreSQL, cifrado en tránsito (VPN AES-256-GCM), backup cifrado en S3. Los datos personales solo se usan para los fines autorizados por el titular.</td>
+              <td>CE0321 D-01 · CE0322 R-02 · CE0323 POL-05/06</td>
+            </tr>
+            <tr>
+              <td><strong>1.7 Honrar la confidencialidad</strong></td>
+              <td>La información de riesgos de Franco's SAC (vulnerabilidades identificadas, activos críticos, configuraciones) se maneja con estricta confidencialidad. El documento está marcado "USO ACADÉMICO RESTRINGIDO". Los resultados del análisis de riesgos no se divulgan fuera del proyecto sin autorización.</td>
+              <td>Footer · Acta de Conformidad</td>
+            </tr>
+            <tr>
+              <td><strong>2.5 Evaluación exhaustiva de impactos</strong></td>
+              <td>El inventario de activos cubre 6 categorías y 28 activos (CE0321). El análisis de riesgos evalúa 18 riesgos con metodología cuantitativa P×I (CE0322). No se minimiza ningún riesgo por conveniencia — los 8 riesgos ALTO están documentados con sus controles.</td>
+              <td>CE0321 28 activos · CE0322 18 riesgos</td>
+            </tr>
+            <tr>
+              <td><strong>2.9 Diseñar sistemas seguros</strong></td>
+              <td><strong>Security by Design:</strong> las políticas de seguridad (CE0323) definen controles desde el diseño del SGSI, no como parche posterior. POL-04 (parches) y POL-06 (incidentes) garantizan que el sistema mantiene su postura de seguridad en el tiempo. La seguridad no es opcional — es un requisito de arquitectura.</td>
+              <td>CE0323 POL-01 a POL-06 · CE0324 RACI operativo</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 5.3 Impacto social y legal -->
+      <div class="sub">
+        <div class="sub-title">5.3 Impacto social, legal y responsabilidad profesional</div>
+        <table class="t">
+          <thead><tr><th>Dimensión</th><th>Análisis</th><th>Control implementado</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Ley 29733 — Protección de Datos Personales (Perú)</strong></td>
+              <td>person-db (D-01) contiene datos personales de empleados, clientes y proveedores. La Ley 29733 exige: consentimiento informado, medidas de seguridad técnicas, no cesión a terceros sin autorización, notificación de brechas en ≤ 72h al INDECOPI.</td>
+              <td>VLAN 50 aislada · mínimo privilegio BD · VPN cifrado · POL-06 notificación INDECOPI ≤72h · POL-05 no divulgación · backup S3 en región autorizada (AWS)</td>
+            </tr>
+            <tr>
+              <td><strong>D.S. 003-2013-JUS — Reglamento Ley 29733</strong></td>
+              <td>Obliga al responsable del banco de datos a implementar medidas de seguridad físicas, técnicas y organizativas proporcionales al riesgo. Franco's SAC es responsable de los datos almacenados.</td>
+              <td>E2 CE0321-CE0324 constituye el marco de medidas de seguridad organizativas. Las medidas técnicas están en E1 (CE0313-CE0315).</td>
+            </tr>
+            <tr>
+              <td><strong>Impacto social — empleados (30-40 personas)</strong></td>
+              <td>Un incidente de seguridad que paralice el ERP impacta directamente la operación de 30-40 trabajadores: sin registro de ventas, sin control de inventario, sin remuneraciones a tiempo. El SGSI protege la continuidad laboral.</td>
+              <td>SLA 99% horario laboral · RTO/RPO definidos · RODC garantiza auth local sin VPN · H4 backup crítico</td>
+            </tr>
+            <tr>
+              <td><strong>Código Penal Peruano — Delitos informáticos (Ley 30096)</strong></td>
+              <td>El acceso no autorizado a sistemas informáticos y la interceptación de datos son delitos tipificados. El SGSI reduce la probabilidad de ser víctima y documenta los controles de due diligence del responsable.</td>
+              <td>WAF ModSecurity · VPN cifrado · ACLs pfSense · auditoría Zabbix · POL-06 respuesta a incidentes</td>
+            </tr>
+            <tr>
+              <td><strong>Responsabilidad profesional del equipo ITI</strong></td>
+              <td>El diseño del SGSI genera obligaciones éticas: documentar riesgos honestamente, no ocultar vulnerabilidades a la Gerencia, recomendar controles proporcionales al riesgo y al presupuesto, y actuar con due diligence en la protección de datos.</td>
+              <td>R-17/R-18 documentados y aceptados con justificación · riesgos comunicados a Gerencia vía RACI · políticas aplicables al contexto real de Franco's SAC</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 5.4 Declaración formal -->
+      <div class="sub">
+        <div class="sub-title">5.4 Declaración formal de calidad y ética — Cierre del Entregable 2</div>
+        <div class="decl">
+          <div class="decl-title">Declaración de Calidad Documental y Ética Profesional<br>Entregable 2 — Planificación de Seguridad · Franco's SAC · ITI UPeU 2026</div>
+          <div class="decl-body">
+            Los suscritos, en calidad de equipo responsable del <strong>Proyecto de Fin de Carrera en la Línea de Infraestructura Tecnológica (ITI)</strong> de la Escuela Profesional de Ingeniería de Sistemas de la Universidad Peruana Unión, declaramos formalmente que:
+            <br><br>
+            <strong>1. Sobre la calidad documental:</strong> El Entregable 2 — Planificación de Seguridad está compuesto por 5 secciones (CE0321–CE0325) que cubren la totalidad de los criterios de la rúbrica CE032. Los 8 puntos de coherencia verificados en §5.1 confirman la trazabilidad completa: activos → riesgos → políticas → roles → ética. Todos los documentos usan terminología técnica formal alineada a ISO 27005:2022, ISO 27001:2022 y NIST CSF v2.0.
+            <br><br>
+            <strong>2. Sobre el Código de Ética ACM:</strong> Los 8 principios del <strong>Código de Ética de la ACM (2018)</strong> han sido aplicados explícitamente en el diseño del SGSI: se priorizó la protección de datos personales de empleados y clientes (principio 1.6), se documentaron de forma transparente los riesgos aceptados (principio 1.3), y las políticas de seguridad fueron diseñadas con un enfoque de Security by Design (principio 2.9).
+            <br><br>
+            <strong>3. Sobre el marco legal peruano:</strong> El SGSI diseñado incorpora los requisitos de la <strong>Ley 29733 (Protección de Datos Personales)</strong> y su Reglamento D.S. 003-2013-JUS, especialmente en la protección de person-db (datos personales de empleados y clientes) y en el procedimiento de notificación ante brechas de datos (POL-06 ≤ 72h al INDECOPI).
+            <br><br>
+            <strong>4. Sobre la transparencia:</strong> Los riesgos R-17 y R-18 han sido aceptados de forma documentada y comunicada a la Gerencia, reconociendo honestamente los límites del control del proyecto sobre la infraestructura física del laboratorio UPeU. Esta transparencia es parte de la responsabilidad profesional del equipo ITI.
+          </div>
+          <div style="display:flex;justify-content:center;gap:20px;margin:16px 0;flex-wrap:wrap;">
+            <div style="border:2px solid var(--navy);border-radius:8px;padding:10px 20px;text-align:center;">
+              <div style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">E2 Completo</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--navy);">5/5 criterios ✓</div>
+            </div>
+            <div style="border:2px solid var(--navy);border-radius:8px;padding:10px 20px;text-align:center;">
+              <div style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Principios ACM</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--navy);">8/8 aplicados ✓</div>
+            </div>
+            <div style="border:2px solid var(--navy);border-radius:8px;padding:10px 20px;text-align:center;">
+              <div style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Coherencia</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--navy);">8/8 puntos ✓</div>
+            </div>
+            <div style="border:2px solid var(--navy);border-radius:8px;padding:10px 20px;text-align:center;">
+              <div style="font-family:'Montserrat',sans-serif;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--muted);">Marco legal</div>
+              <div style="font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;color:var(--navy);">Ley 29733 ✓</div>
+            </div>
+          </div>
+          <div class="decl-sigs">
+            <div class="sig-box">
+              <div class="sig-line"></div>
+              <div class="sig-name">Ruben Mark Salazar</div>
+              <div class="sig-role">CISO · Director del Proyecto · Jefe de Infraestructura y Seguridad de TI<br>DNI: ___________________</div>
+            </div>
+            <div class="sig-box">
+              <div class="sig-line"></div>
+              <div class="sig-name">Uziel Sauñe</div>
+              <div class="sig-role">Especialista en Infraestructura Tecnológica · Ingeniero de Implementación ITI<br>DNI: ___________________</div>
+            </div>
+          </div>
+          <p style="font-size:8.5px;color:var(--muted);text-align:center;margin-top:16px;">Lima, 01 de Junio de 2026 · Universidad Peruana Unión · Escuela Profesional de Ingeniería de Sistemas</p>
+        </div>
+      </div>
+
+      <div class="ib ok">
+        <div class="ib-icon">✅</div>
+        <div class="ib-body">
+          <div class="ib-label">Entregable 2 — Planificación de Seguridad: COMPLETO</div>
+          Los 5 criterios de la rúbrica CE032 están cubiertos: §1 Activos Críticos (28 activos, CIA 1–5, ISO 27005) · §2 Análisis de Riesgos (18 riesgos, heat map 5×5, NIST CSF) · §3 Políticas de Seguridad (6 políticas formales, ISO 27001 Anexo A) · §4 Roles y Responsabilidades (6 roles, RACI 13 procesos, responsabilidades operativas) · §5 Calidad y Ética ACM (8 principios, Ley 29733, coherencia verificada). Próximo entregable: <strong>E3 — Diseño de Centro de Datos (CE033)</strong>.
+        </div>
+      </div>
+
+    </div><!-- /criterio-body -->
+  </div><!-- /criterio §5 -->
 
   <!-- FIRMAS -->
   <div class="section-break"><span>Validación Académica</span></div>
