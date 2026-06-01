@@ -177,15 +177,15 @@
     <div class="cg-item"><div class="lbl">Estándares principales</div><div class="val">ISO 27001:2022 · ISO 27005:2022 · NIST CSF v2.0</div></div>
     <div class="cg-item"><div class="lbl">Equipo</div><div class="val">Ruben Mark Salazar · Uziel Sauñe</div></div>
     <div class="cg-item"><div class="lbl">Fecha de emisión</div><div class="val">31 Mayo 2026</div></div>
-    <div class="cg-item"><div class="lbl">Versión</div><div class="val">v1.0 — Documento completo · CE0321–CE0325 · 01 Junio 2026</div></div>
+    <div class="cg-item"><div class="lbl">Versión</div><div class="val">v1.1 — Referencias normativas + sin anexos redundantes · 01 Junio 2026</div></div>
     <div class="cg-item"><div class="lbl">Rol del proyecto</div><div class="val">Analista de Seguridad / CISO Junior</div></div>
   </div>
 </div>
 
 <div class="vbar">
-  <span class="vbadge">v1.0</span>
+  <span class="vbadge">v1.1</span>
   <span class="vsep">|</span>
-  <span>E2 COMPLETO · CE0321–CE0325 · 01 Junio 2026</span>
+  <span>E2 COMPLETO · CE0321–CE0325 · Referencias normativas · Sin anexos redundantes · 01 Junio 2026</span>
   <span class="vsep">|</span>
   <span>CE032 · Seguridad de la Información · ITI UPeU</span>
 </div>
@@ -1603,6 +1603,63 @@
     </div><!-- /criterio-body -->
   </div><!-- /criterio §5 -->
 
+  <!-- REFERENCIAS NORMATIVAS -->
+  <div class="section-break"><span>Referencias Normativas</span></div>
+  <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:32px;">
+    <p style="font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:16px;">Estándares y normas de referencia aplicados en este documento</p>
+    <table class="t">
+      <thead><tr><th style="width:40%;">Documento</th><th style="width:30%;">Organismo · Versión</th><th>Aplicación en el E2</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>ISO/IEC 27001:2022</strong><br><small>Information security management systems — Requirements</small></td>
+          <td>ISO / IEC · 3.ª edición 2022</td>
+          <td>Marco general del SGSI · políticas (CE0323) · roles (CE0324) · controles Anexo A aplicados en todas las secciones</td>
+        </tr>
+        <tr>
+          <td><strong>ISO/IEC 27005:2022</strong><br><small>Guidance on managing information security risks</small></td>
+          <td>ISO / IEC · 4.ª edición 2022</td>
+          <td>Metodología de identificación de activos (CE0321 · 6 categorías) · proceso de análisis de riesgos P×I (CE0322)</td>
+        </tr>
+        <tr>
+          <td><strong>NIST Cybersecurity Framework v2.0</strong><br><small>Cybersecurity Framework</small></td>
+          <td>NIST · Versión 2.0 · Febrero 2024</td>
+          <td>Mapeo de riesgos a dominios Protect / Detect / Respond / Recover (CE0322 §2.5) · indicadores de controles</td>
+        </tr>
+        <tr>
+          <td><strong>NIST SP 800-53 Rev. 5</strong><br><small>Security and Privacy Controls for Information Systems and Organizations</small></td>
+          <td>NIST · Rev. 5 · Septiembre 2020</td>
+          <td>Controles específicos referenciados en riesgos: PR.AC, PR.DS, PR.IP, DE.CM, RS.RP, RC.RP (CE0322)</td>
+        </tr>
+        <tr>
+          <td><strong>NIST SP 800-63B</strong><br><small>Digital Identity Guidelines — Authentication and Lifecycle Management</small></td>
+          <td>NIST · 2017 (actualizado 2022)</td>
+          <td>Fundamento técnico de la Política de Gestión de Contraseñas POL-02 (CE0323 §3.2)</td>
+        </tr>
+        <tr>
+          <td><strong>ACM Code of Ethics and Professional Conduct</strong><br><small>Association for Computing Machinery</small></td>
+          <td>ACM · Versión 2018</td>
+          <td>8 principios aplicados al SGSI (CE0325 §5.2) · responsabilidad ética del equipo ITI en el manejo de datos</td>
+        </tr>
+        <tr>
+          <td><strong>Ley N.° 29733</strong><br><small>Ley de Protección de Datos Personales</small></td>
+          <td>Congreso de la República del Perú · 2011</td>
+          <td>Marco legal para el tratamiento de person-db (D-01) · requisitos de seguridad técnica y notificación de brechas (CE0323 POL-06)</td>
+        </tr>
+        <tr>
+          <td><strong>D.S. N.° 003-2013-JUS</strong><br><small>Reglamento de la Ley de Protección de Datos Personales</small></td>
+          <td>Ministerio de Justicia del Perú · 2013</td>
+          <td>Medidas de seguridad técnicas, organizativas y legales requeridas al responsable del banco de datos (CE0325 §5.3)</td>
+        </tr>
+        <tr>
+          <td><strong>Ley N.° 30096</strong><br><small>Ley de Delitos Informáticos (modificada por Ley 30171)</small></td>
+          <td>Congreso de la República del Perú · 2013</td>
+          <td>Marco legal penal para accesos no autorizados a sistemas · justificación de controles técnicos (CE0325 §5.3)</td>
+        </tr>
+      </tbody>
+      <tfoot><tr><td colspan="3">Las referencias normativas son fuentes consultadas directamente en la elaboración de este documento. Las versiones indicadas corresponden a las ediciones vigentes al momento de elaboración (Junio 2026).</td></tr></tfoot>
+    </table>
+  </div>
+
   <!-- FIRMAS -->
   <div class="section-break"><span>Validación Académica</span></div>
   <div class="sigs-acad">
@@ -1623,22 +1680,6 @@
     </div>
   </div>
 
-  <!-- ANEXOS -->
-  <div class="section-break"><span>Anexos</span></div>
-
-  <div class="anx-body" id="anx-a">
-    <div class="anx-header">
-      <span class="anx-badge">Anexo A</span>
-      <div class="anx-title">Inventario completo de activos — clasificación ISO 27005 (28 activos)</div>
-    </div>
-    <div class="ib navy">
-      <div class="ib-icon">📋</div>
-      <div class="ib-body">
-        <div class="ib-label">Resumen del inventario completo</div>
-        Categoría 1 — Datos (6 activos): D-01 a D-06 · Categoría 2 — Servicios (6 activos): S-01 a S-06 · Categoría 3 — Software (8 activos): SW-01 a SW-08 · Categoría 4 — Hardware (7 activos): HW-01 a HW-07 · Categoría 5 — Red (5 activos): NW-01 a NW-05 · Categoría 6 — Personas (4 activos): P-01 a P-04. Total: 28 activos catalogados. 9 CRÍTICOS · 10 ALTOS · 5 IMPORTANTES · 4 NORMALES. Ver §1.3 a §1.8 para el inventario detallado.
-      </div>
-    </div>
-  </div>
 
 </div><!-- /body -->
 
