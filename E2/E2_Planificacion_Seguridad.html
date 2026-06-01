@@ -472,24 +472,333 @@
     </div><!-- /criterio-body -->
   </div><!-- /criterio §1 -->
 
-  <!-- ══ §2 ANÁLISIS DE RIESGOS (placeholder) ══ -->
+  <!-- ══ §2 ANÁLISIS DE RIESGOS ══ -->
   <div class="criterio" id="s2">
     <div class="criterio-header">
       <div class="criterio-num">2</div>
       <div class="criterio-info">
         <div class="criterio-code">CE0322 · Criterio 2 de 5 · ISO 27005:2022 · NIST CSF v2.0</div>
         <div class="criterio-title">Análisis de Riesgos</div>
-        <div class="criterio-sub">Amenazas · Vulnerabilidades · Probabilidad × Impacto · Matriz Heat Map · Tratamiento</div>
+        <div class="criterio-sub">18 riesgos · Probabilidad × Impacto · Heat Map · NIST CSF · Plan de tratamiento</div>
       </div>
     </div>
     <div class="criterio-body">
-      <div class="placeholder">
-        <div class="ph-icon">🔄</div>
-        <div class="ph-title">En elaboración — CE0322</div>
-        <div class="ph-sub">Contenido: Matriz de riesgos (amenazas × activos × probabilidad × impacto) · Heat Map · Plan de tratamiento · Mapeo NIST CSF (Identify→Protect→Detect→Respond→Recover)</div>
+
+      <div class="sub">
+        <div class="sub-title">2.1 Metodología de análisis de riesgos</div>
+        <p>El análisis de riesgos se realiza conforme a <strong>ISO 27005:2022</strong> (metodología cualitativa-cuantitativa) y se mapea a los cinco dominios del <strong>NIST CSF v2.0</strong> (Identify · Protect · Detect · Respond · Recover). Cada riesgo se evalúa mediante:</p>
+        <table class="t" style="margin-bottom:8px;">
+          <thead><tr><th>Variable</th><th>Escala</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Probabilidad (P)</strong></td><td>1–5</td><td>Muy baja</td><td>Baja</td><td>Media</td><td>Alta</td><td>Muy alta</td></tr>
+            <tr><td><strong>Impacto (I)</strong></td><td>1–5</td><td>Mínimo</td><td>Bajo</td><td>Medio</td><td>Alto</td><td>Crítico</td></tr>
+          </tbody>
+        </table>
+        <p><strong>Nivel de riesgo = P × I</strong> (1–25). Clasificación: <span class="cia-5" style="font-size:9px;">CRÍTICO 20-25</span> <span class="cia-4" style="font-size:9px;">ALTO 12-19</span> <span class="cia-3" style="font-size:9px;">MEDIO 6-11</span> <span class="cia-2" style="font-size:9px;">BAJO 1-5</span></p>
+        <p><strong>Opciones de tratamiento:</strong> Mitigar (reducir P o I con controles) · Transferir (seguro, tercero) · Aceptar (riesgo residual documentado) · Evitar (eliminar el activo/proceso)</p>
       </div>
-    </div>
-  </div>
+
+      <div class="sub">
+        <div class="sub-title">2.2 Estadísticas del análisis</div>
+        <div class="stats">
+          <div class="stat"><div class="lbl">Total riesgos</div><div class="val">18</div><div class="desc">identificados</div></div>
+          <div class="stat"><div class="lbl">Riesgo ALTO</div><div class="val">8</div><div class="desc">valor 12–19</div></div>
+          <div class="stat"><div class="lbl">Riesgo MEDIO</div><div class="val">10</div><div class="desc">valor 6–11</div></div>
+          <div class="stat"><div class="lbl">A mitigar</div><div class="val">16</div><div class="desc">2 aceptados</div></div>
+        </div>
+      </div>
+
+      <div class="sub">
+        <div class="sub-title">2.3 Matriz de riesgos — 18 riesgos identificados</div>
+        <table class="t">
+          <thead>
+            <tr><th>ID</th><th>Amenaza</th><th>Vulnerabilidad</th><th>Activo afectado</th><th>P</th><th>I</th><th>P×I</th><th>Nivel</th><th>Tratamiento</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>R-01</strong></td>
+              <td>Ransomware cifra bases de datos PostgreSQL</td>
+              <td>Acceso lateral si un contenedor Docker es comprometido; sin aislamiento total de VLAN 50</td>
+              <td>D-01 person-db · D-02 sales-db</td>
+              <td><span class="cia-3">3</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-4" style="font-size:10px;padding:3px 8px;"><strong>15</strong></span></td>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-02</strong></td>
+              <td>Acceso no autorizado a datos personales (Ley 29733)</td>
+              <td>Credenciales de BD débiles o compartidas; sin auditoría de acceso activa</td>
+              <td>D-01 person-db · P-01-P-04</td>
+              <td><span class="cia-3">3</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-4" style="font-size:10px;padding:3px 8px;"><strong>15</strong></span></td>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-03</strong></td>
+              <td>Ataque de fuerza bruta / credential stuffing al API Gateway HTTPS</td>
+              <td>Endpoint TCP 443 expuesto a internet; rate limiting solo en WAF (100 req/s)</td>
+              <td>S-01 ERP · VM-API-GW</td>
+              <td><span class="cia-4">4</span></td><td><span class="cia-4">4</span></td>
+              <td><span class="cia-4" style="font-size:10px;padding:3px 8px;"><strong>16</strong></span></td>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-04</strong></td>
+              <td>Inyección SQL (SQLi) a través de microservicios</td>
+              <td>Validación insuficiente de inputs si microservicio no usa ORM correctamente</td>
+              <td>D-01 · D-02 · D-03 (BDs)</td>
+              <td><span class="cia-3">3</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-4" style="font-size:10px;padding:3px 8px;"><strong>15</strong></span></td>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-05</strong></td>
+              <td>Compromiso de credenciales AD (phishing a usuarios)</td>
+              <td>Usuarios sin MFA; política de contraseñas sin verificación en tiempo real</td>
+              <td>S-02 Active Directory · SW-03 Samba</td>
+              <td><span class="cia-3">3</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-4" style="font-size:10px;padding:3px 8px;"><strong>15</strong></span></td>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-06</strong></td>
+              <td>Caída del ISP1/WAN1 primario</td>
+              <td>Enlace WAN primario sin garantía de uptime del proveedor</td>
+              <td>NW-01 ISP1 · S-01 ERP · S-03 VPN</td>
+              <td><span class="cia-3">3</span></td><td><span class="cia-4">4</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>12</strong></span></td>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-07</strong></td>
+              <td>Pérdida/fallo del backup diario pg_dump → S3</td>
+              <td>Dependencia del túnel VPN L2-AWS; sin alerta automática si backup falla</td>
+              <td>D-04 Backups S3</td>
+              <td><span class="cia-3">3</span></td><td><span class="cia-4">4</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>12</strong></span></td>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-08</strong></td>
+              <td>Misconfiguration de pfSense (error humano en reglas)</td>
+              <td>Sin proceso formal de change management; cambios sin respaldo previo</td>
+              <td>SW-01 pfSense · D-05 Config XML</td>
+              <td><span class="cia-3">3</span></td><td><span class="cia-4">4</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>12</strong></span></td>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-09</strong></td>
+              <td>Falla del hipervisor H3 (Backend: ms + BDs primarias)</td>
+              <td>Todos los microservicios y BDs primarias en un solo host físico</td>
+              <td>S-01 ERP · D-01 · D-02 · D-03</td>
+              <td><span class="cia-2">2</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>10</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-10</strong></td>
+              <td>Caída del pfSense-BORDE (hub VPN + firewall principal)</td>
+              <td>SPOF de toda la conectividad inter-local y filtrado de tráfico</td>
+              <td>SW-01 pfSense · S-03 VPN · S-01 ERP</td>
+              <td><span class="cia-2">2</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>10</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-11</strong></td>
+              <td>Interceptación de tráfico inter-local si VPN falla temporalmente</td>
+              <td>Breve ventana sin cifrado durante reconexión DPD del túnel</td>
+              <td>D-01 · D-02 · S-03 VPN</td>
+              <td><span class="cia-2">2</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>10</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-12</strong></td>
+              <td>Caída del DNS francos.local (DC1 sin failover)</td>
+              <td>Sin DC2 activo, el DNS deja de responder y el ERP falla</td>
+              <td>S-04 DNS · S-02 AD · S-01 ERP</td>
+              <td><span class="cia-2">2</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>10</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-13</strong></td>
+              <td>Exfiltración de datos via token JWT robado</td>
+              <td>Token de larga duración interceptado permite acceso ilegítimo al ERP</td>
+              <td>D-01 · D-02 · S-01 ERP</td>
+              <td><span class="cia-2">2</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>10</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-14</strong></td>
+              <td>Ataque DDoS al API Gateway / CloudFront</td>
+              <td>Saturación del endpoint HTTPS; WAF limitado a 100 req/s/IP</td>
+              <td>S-01 ERP · S-06 Frontend</td>
+              <td><span class="cia-2">2</span></td><td><span class="cia-4">4</span></td>
+              <td><span class="cia-2" style="font-size:10px;padding:3px 8px;"><strong>8</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-15</strong></td>
+              <td>Inyección de mensajes falsos en NATS (message broker)</td>
+              <td>NATS sin autenticación NKeys explícita; acceso desde VLAN40 interna</td>
+              <td>SW-05 NATS · S-01 ERP</td>
+              <td><span class="cia-2">2</span></td><td><span class="cia-4">4</span></td>
+              <td><span class="cia-2" style="font-size:10px;padding:3px 8px;"><strong>8</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-16</strong></td>
+              <td>Pérdida de conocimiento crítico del equipo TI</td>
+              <td>Conocimiento no documentado sobre configuración de la infraestructura</td>
+              <td>P-01 Equipo TI</td>
+              <td><span class="cia-3">3</span></td><td><span class="cia-3">3</span></td>
+              <td><span class="cia-2" style="font-size:10px;padding:3px 8px;"><strong>9</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Mitigar</td>
+            </tr>
+            <tr>
+              <td><strong>R-17</strong></td>
+              <td>Acceso físico no autorizado a hipervisores del lab UPeU</td>
+              <td>Control de acceso físico depende de políticas de UPeU, no del proyecto</td>
+              <td>HW-01/02 H1-H4</td>
+              <td><span class="cia-2">2</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>10</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Aceptar</td>
+            </tr>
+            <tr>
+              <td><strong>R-18</strong></td>
+              <td>Interrupción prolongada de energía en el laboratorio</td>
+              <td>Sin UPS ni grupo electrógeno bajo control del proyecto</td>
+              <td>HW-01/02/05</td>
+              <td><span class="cia-2">2</span></td><td><span class="cia-5">5</span></td>
+              <td><span class="cia-3" style="font-size:10px;padding:3px 8px;"><strong>10</strong></span></td>
+              <td><span class="b b-imp">MEDIO</span></td>
+              <td>Aceptar</td>
+            </tr>
+          </tbody>
+          <tfoot><tr><td colspan="9">18 riesgos · 8 ALTO (P×I: 12–16) · 10 MEDIO (P×I: 8–10) · 0 CRÍTICO · 0 BAJO. Sin riesgos críticos gracias a los controles de redundancia ya implementados (E1).</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="sub">
+        <div class="sub-title">2.4 Heat Map de riesgos (Probabilidad × Impacto)</div>
+        <table class="t">
+          <thead>
+            <tr>
+              <th style="text-align:center;width:80px;">P \ I →</th>
+              <th style="text-align:center;background:#EBF7F1;color:#1A7A4A;">1 — Mínimo</th>
+              <th style="text-align:center;background:#EBF7F1;color:#1A7A4A;">2 — Bajo</th>
+              <th style="text-align:center;background:#FEF8EC;color:#B7770D;">3 — Medio</th>
+              <th style="text-align:center;background:#FEF3E8;color:#C0592B;">4 — Alto</th>
+              <th style="text-align:center;background:#FDE8E8;color:#C0392B;">5 — Crítico</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:700;background:#EEF1F8;text-align:center;">5 — Muy alta</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=5<br>BAJO</td>
+              <td style="background:#FEF8EC;text-align:center;font-size:9px;">P×I=10<br>MEDIO</td>
+              <td style="background:#FEF8EC;text-align:center;font-size:9px;">P×I=15<br>MEDIO</td>
+              <td style="background:#FEF3E8;text-align:center;font-size:9px;">P×I=20<br>ALTO</td>
+              <td style="background:#FDE8E8;text-align:center;font-size:9px;">P×I=25<br>CRÍTICO</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;background:#EEF1F8;text-align:center;">4 — Alta</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=4</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=8</td>
+              <td style="background:#FEF8EC;text-align:center;font-size:9px;">P×I=12</td>
+              <td style="background:#FEF3E8;text-align:center;font-size:9px;">P×I=16<br><strong>R-03</strong></td>
+              <td style="background:#FDE8E8;text-align:center;font-size:9px;">P×I=20</td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;background:#EEF1F8;text-align:center;">3 — Media</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=3</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=6</td>
+              <td style="background:#FEF8EC;text-align:center;font-size:9px;">P×I=9<br><strong>R-16</strong></td>
+              <td style="background:#FEF3E8;text-align:center;font-size:9px;">P×I=12<br><strong>R-06 R-07 R-08</strong></td>
+              <td style="background:#FDE8E8;text-align:center;font-size:9px;">P×I=15<br><strong>R-01 R-02 R-04 R-05</strong></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;background:#EEF1F8;text-align:center;">2 — Baja</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=2</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=4</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=6</td>
+              <td style="background:#FEF8EC;text-align:center;font-size:9px;">P×I=8<br><strong>R-14 R-15</strong></td>
+              <td style="background:#FEF8EC;text-align:center;font-size:9px;">P×I=10<br><strong>R-09 R-10 R-11 R-12 R-13 R-17 R-18</strong></td>
+            </tr>
+            <tr>
+              <td style="font-weight:700;background:#EEF1F8;text-align:center;">1 — Muy baja</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=1</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=2</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=3</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=4</td>
+              <td style="background:#EBF7F1;text-align:center;font-size:9px;">P×I=5</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="font-size:9px;color:var(--muted);margin-top:4px;">Ningún riesgo alcanza nivel CRÍTICO (P×I ≥ 20) gracias a los controles de redundancia implementados en E1 (Dual-WAN, DC2, streaming replication, WAF).</p>
+      </div>
+
+      <div class="sub">
+        <div class="sub-title">2.5 Mapeo a NIST CSF v2.0 y plan de tratamiento</div>
+        <table class="t">
+          <thead>
+            <tr><th>ID</th><th>Riesgo (resumido)</th><th>Nivel</th><th>NIST CSF</th><th>Control implementado / Acción</th><th>Tratamiento</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>R-01</td><td>Ransomware en BDs PostgreSQL</td><td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td><td>PR.DS-1 · RC.RP</td><td>VLAN 50 aislada; acceso solo desde VLAN40 TCP 5432; streaming replication H4; pg_dump→S3 diario; Docker restart:always</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-02</td><td>Acceso no autorizado a datos personales</td><td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td><td>PR.AC-4 · DE.CM-3</td><td>Usuarios BD con mínimo privilegio (SELECT/INSERT/UPDATE solo); logs de auditoría PostgreSQL; VPN cifrado; cumplimiento Ley 29733</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-03</td><td>Fuerza bruta al API Gateway</td><td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td><td>PR.AC-1 · DE.AE-2</td><td>WAF ModSecurity rate limit 100 req/s/IP; JWT corta duración (15 min); lock-out tras 5 intentos fallidos en auth-ms</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-04</td><td>SQL Injection via microservicios</td><td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td><td>PR.DS-6 · DE.AE-2</td><td>WAF ModSecurity OWASP CRS bloquea SQLi; ORM TypeORM con queries parametrizadas en NestJS; validación de inputs en cada ms</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-05</td><td>Compromiso credenciales AD</td><td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td><td>PR.AC-1 · PR.AC-6</td><td>GPO: contraseña mínima 10 chars + complejidad + rotación 90 días; account lockout 5 intentos; auditoría login AD; MFA (TO-BE)</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-06</td><td>Caída ISP1/WAN1</td><td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td><td>PR.IP-9 · RS.RP-1</td><td>Dual-WAN pfSense implementado: ISP2 FortiGate 40F asume tráfico en &lt;10s automáticamente; DPD reconecta VPN por WAN2</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-07</td><td>Fallo backup pg_dump→S3</td><td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td><td>PR.IP-4 · DE.CM-4</td><td>CloudWatch Alarm: alerta si S3 PutObject count = 0 entre 22:00-23:00; Zabbix alerta si script backup falla; streaming replication como N1</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-08</td><td>Misconfiguration pfSense</td><td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">ALTO</span></td><td>PR.IP-1 · PR.IP-3</td><td>Backup XML pfSense ANTES de cada cambio; procedimiento de change management documentado (ITIL 4); entorno de test separado (futuro)</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-09</td><td>Falla hipervisor H3</td><td><span class="b b-imp">MEDIO</span></td><td>RC.RP-1 · PR.IP-4</td><td>H4 backup crítico: BDs réplica streaming (RPO &lt;5 min) + microservicios standby frío (RTO ≤30 min); snapshot ESXi diario</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-10</td><td>Caída pfSense-BORDE</td><td><span class="b b-imp">MEDIO</span></td><td>RS.MI-1 · RC.RP</td><td>Snapshot diario VM pfSense; L1/L3 operan localmente (RODC + FileServer) si VPN cae; futuro pfSense CARP HA</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-11</td><td>Interceptación tráfico inter-local</td><td><span class="b b-imp">MEDIO</span></td><td>PR.DS-2 · PR.DS-5</td><td>VPN IPSec IKEv2 AES-256-GCM siempre activo; DPD &lt;30s; datos sensibles solo viajan por VPN (reglas pfSense)</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-12</td><td>Caída DNS francos.local</td><td><span class="b b-imp">MEDIO</span></td><td>PR.IP-9 · RC.RP-1</td><td>DC2 en H4 réplica activa DNS; RODC DC3/DC4 en L1/L3; pfSense Unbound como DNS terciario caché</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-13</td><td>Exfiltración via JWT robado</td><td><span class="b b-imp">MEDIO</span></td><td>PR.AC-4 · PR.DS-5</td><td>JWT TTL 15 min + refresh token; revocación de tokens en auth-ms; logs de acceso por usuario; HTTPS obligatorio</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-14</td><td>Ataque DDoS</td><td><span class="b b-imp">MEDIO</span></td><td>PR.AC-5 · RS.MI-1</td><td>CloudFront absorbe tráfico (CDN distribuido); WAF rate limiting; Route 53 health check redirige si origen cae</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-15</td><td>Mensajes falsos en NATS</td><td><span class="b b-imp">MEDIO</span></td><td>PR.AC-4 · PR.DS-2</td><td>NATS en VLAN40 aislada; ALLOW solo VLAN30→VLAN40:4222; autenticación NKeys en NATS (configurar en S2)</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-16</td><td>Pérdida conocimiento TI</td><td><span class="b b-imp">MEDIO</span></td><td>PR.AT-1 · PR.IP-11</td><td>Documentación técnica completa: specs .md (H1-H4, L1-L3), runbooks operativos, PLAN_ENTREGABLES_ITI.md; repositorio GitHub</td><td><span class="b b-norm">Mitigar</span></td></tr>
+            <tr><td>R-17</td><td>Acceso físico no autorizado lab</td><td><span class="b b-imp">MEDIO</span></td><td>PR.AC-2</td><td>Control de acceso físico gestionado por UPeU. Fuera del alcance del proyecto. Riesgo aceptado con justificación documentada.</td><td><span class="b b-warn">Aceptar</span></td></tr>
+            <tr><td>R-18</td><td>Corte eléctrico prolongado</td><td><span class="b b-imp">MEDIO</span></td><td>PR.IP-9</td><td>UPS y grupo electrógeno gestionado por UPeU. Fuera del alcance del proyecto. Riesgo aceptado. TO-BE en infraestructura real: UPS APC + generador.</td><td><span class="b b-warn">Aceptar</span></td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="6">NIST CSF v2.0 dominios: PR=Protect · DE=Detect · RS=Respond · RC=Recover · ID=Identify. Controles de riesgos R-09 a R-12 ya cubiertos por la arquitectura de redundancia diseñada en E1 (CE0314).</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="ib ok">
+        <div class="ib-icon">✅</div>
+        <div class="ib-body">
+          <div class="ib-label">Resultado del análisis</div>
+          El análisis identifica <strong>18 riesgos</strong>: 8 de nivel ALTO y 10 de nivel MEDIO. <strong>Ningún riesgo alcanza nivel CRÍTICO</strong> porque la arquitectura de E1 ya implementa controles preventivos efectivos (Dual-WAN, streaming replication, DC2, WAF, RODC). De los 18 riesgos, <strong>16 se mitigan</strong> con controles técnicos y procedimentales, y <strong>2 se aceptan</strong> por estar fuera del control del proyecto (acceso físico y energía del laboratorio UPeU).
+        </div>
+      </div>
+
+    </div><!-- /criterio-body -->
+  </div><!-- /criterio §2 -->
 
   <!-- ══ §3 POLÍTICAS DE SEGURIDAD (placeholder) ══ -->
   <div class="criterio" id="s3">
