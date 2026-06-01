@@ -1077,24 +1077,312 @@
     </div><!-- /criterio-body -->
   </div><!-- /criterio §3 -->
 
-  <!-- ══ §4 ROLES Y RESPONSABILIDADES (placeholder) ══ -->
+  <!-- ══ §4 ROLES Y RESPONSABILIDADES ══ -->
   <div class="criterio" id="s4">
     <div class="criterio-header">
       <div class="criterio-num">4</div>
       <div class="criterio-info">
-        <div class="criterio-code">CE0324 · Criterio 4 de 5 · ISO 27001:2022 · Matriz RACI</div>
-        <div class="criterio-title">Roles y Responsabilidades</div>
-        <div class="criterio-sub">CISO · Admin Red · DBA · Admin Sistemas · Usuario Final · Matriz RACI</div>
+        <div class="criterio-code">CE0324 · Criterio 4 de 5 · ISO 27001:2022 A.6 · Matriz RACI</div>
+        <div class="criterio-title">Roles y Responsabilidades del SGSI</div>
+        <div class="criterio-sub">6 roles · Matriz RACI · Responsabilidades operativas · Vinculación ISO 27001</div>
       </div>
     </div>
     <div class="criterio-body">
-      <div class="placeholder">
-        <div class="ph-icon">🔄</div>
-        <div class="ph-title">En elaboración — CE0324</div>
-        <div class="ph-sub">Contenido: Definición de roles del SGSI (CISO, Administrador de Red, DBA, Administrador de Sistemas, Usuario Final) · Matriz RACI por proceso de seguridad · Organigrama de seguridad TI · Responsabilidades por proceso</div>
+
+      <!-- 4.1 Estructura organizacional -->
+      <div class="sub">
+        <div class="sub-title">4.1 Estructura organizacional de seguridad TI — Franco's SAC</div>
+        <table class="t">
+          <thead><tr><th>Rol SGSI</th><th>Persona / Área</th><th>Nivel</th><th>Responsabilidad principal</th><th>ISO 27001:2022</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Gerencia General</strong></td>
+              <td>Jorge Andrés Chavarri Centeno<br><small>Contacto Franco's SAC</small></td>
+              <td><span class="b b-crit">Estratégico</span></td>
+              <td>Aprobación de políticas · autorización de inversiones en seguridad · responsabilidad legal ante incidentes de datos</td>
+              <td>A.5.1, A.5.2 (Políticas)</td>
+            </tr>
+            <tr>
+              <td><strong>CISO</strong><br><small>Chief Information Security Officer</small></td>
+              <td>Ruben Mark Salazar<br><small>Director del Proyecto ITI</small></td>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">Táctico</span></td>
+              <td>Definición y mantenimiento del SGSI · gestión de riesgos · supervisión de políticas · reporte a Gerencia · coordinación ante incidentes</td>
+              <td>A.5, A.6, A.16, A.18</td>
+            </tr>
+            <tr>
+              <td><strong>Administrador de Red e Infraestructura</strong></td>
+              <td>Uziel Sauñe<br><small>Especialista ITI</small></td>
+              <td><span class="b b-imp">Operativo</span></td>
+              <td>Gestión de pfSense · VPN · VLANs · Cisco Catalyst 1000 · Dual-WAN · monitoreo Zabbix · configuraciones de red</td>
+              <td>A.13 (Redes), A.12.1</td>
+            </tr>
+            <tr>
+              <td><strong>Administrador de Sistemas</strong></td>
+              <td>Equipo TI<br><small>Asignado por proyecto</small></td>
+              <td><span class="b b-imp">Operativo</span></td>
+              <td>Gestión de hipervisores ESXi · VMs · Docker · Active Directory · snapshots · actualizaciones de SO y aplicaciones</td>
+              <td>A.12, A.14 (Operaciones)</td>
+            </tr>
+            <tr>
+              <td><strong>DBA</strong><br><small>Database Administrator</small></td>
+              <td>Equipo TI<br><small>Asignado por proyecto</small></td>
+              <td><span class="b b-imp">Operativo</span></td>
+              <td>Gestión de PostgreSQL 15 · streaming replication · backups pg_dump → S3 · usuarios y permisos de BD · integridad de datos</td>
+              <td>A.10 (Cifrado), A.12.3</td>
+            </tr>
+            <tr>
+              <td><strong>Usuario Final</strong></td>
+              <td>Empleados Franco's SAC<br><small>Ventas · Admin · Producción L1/L3</small></td>
+              <td><span class="b b-norm">Usuario</span></td>
+              <td>Uso del ERP conforme a POL-05 · reporte de incidentes · cumplimiento de contraseñas (POL-02) · no compartir credenciales</td>
+              <td>A.7 (RRHH), A.9.3</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
-  </div>
+
+      <!-- 4.2 Organigrama ASCII -->
+      <div class="sub">
+        <div class="sub-title">4.2 Organigrama de seguridad TI</div>
+        <div style="background:#0D1117;border-radius:8px;padding:18px 22px;margin:12px 0;overflow-x:auto;">
+          <div style="font-family:'Montserrat',sans-serif;font-size:9px;font-weight:700;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Figura 4.1 — Organigrama SGSI Franco's SAC</div>
+          <pre style="font-family:'Courier New',monospace;font-size:9.5px;color:#E6EDF3;line-height:1.55;">
+                    ┌────────────────────────────┐
+                    │     GERENCIA GENERAL       │  ← Responsabilidad legal
+                    │  Jorge A. Chavarri C.      │    Aprobación políticas
+                    └──────────────┬─────────────┘
+                                   │ reporta / aprueba
+                    ┌──────────────▼─────────────┐
+                    │           CISO              │  ← Define SGSI
+                    │    Ruben Mark Salazar       │    Gestiona riesgos
+                    │    (Director Proyecto ITI)  │    Coordina incidentes
+                    └───┬──────────┬──────────────┘
+                        │          │
+          ┌─────────────▼─┐   ┌───▼──────────────┐
+          │  Admin Red e  │   │  Admin Sistemas   │
+          │ Infraestructura│   │  + DBA            │
+          │  Uziel Sauñe  │   │  (Equipo TI)      │
+          │               │   │                   │
+          │ pfSense · VPN │   │ ESXi · Docker     │
+          │ VLANs · Switch│   │ AD · PostgreSQL    │
+          │ Zabbix · AWS  │   │ Backups · Parches  │
+          └───────────────┘   └───────────────────┘
+                    │                   │
+          ┌─────────▼───────────────────▼──────┐
+          │           USUARIOS FINALES          │
+          │   Ventas · Administración · Producción│
+          │   (L2 Sede Central · L1 · L3)       │
+          └──────────────────────────────────────┘</pre>
+        </div>
+      </div>
+
+      <!-- 4.3 Matriz RACI -->
+      <div class="sub">
+        <div class="sub-title">4.3 Matriz RACI — Procesos de seguridad</div>
+        <p style="font-size:9.5px;margin-bottom:8px;"><strong>R</strong> = Responsible (ejecuta) &nbsp;·&nbsp; <strong>A</strong> = Accountable (rinde cuentas) &nbsp;·&nbsp; <strong>C</strong> = Consulted (se consulta) &nbsp;·&nbsp; <strong>I</strong> = Informed (se informa)</p>
+        <table class="t">
+          <thead>
+            <tr>
+              <th>Proceso de seguridad</th>
+              <th style="text-align:center;">Gerencia</th>
+              <th style="text-align:center;">CISO</th>
+              <th style="text-align:center;">Admin Red</th>
+              <th style="text-align:center;">Admin Sis.</th>
+              <th style="text-align:center;">DBA</th>
+              <th style="text-align:center;">Usuario</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Definición y aprobación de políticas SGSI</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--navy);">I</td>
+            </tr>
+            <tr>
+              <td><strong>Gestión de accesos (alta/baja/modificación cuentas AD)</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--navy);">I</td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+              <td style="text-align:center;font-weight:800;color:var(--navy);">I</td>
+            </tr>
+            <tr>
+              <td><strong>Revisión trimestral de cuentas y accesos</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--navy);">I</td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+            </tr>
+            <tr>
+              <td><strong>Backup y recuperación de datos (pg_dump, snapshots)</strong></td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+            </tr>
+            <tr>
+              <td><strong>Prueba de restauración de backups (trimestral)</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--navy);">I</td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+            </tr>
+            <tr>
+              <td><strong>Gestión de parches y actualizaciones</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--navy);">I</td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+            </tr>
+            <tr>
+              <td><strong>Monitoreo continuo (Zabbix + Grafana + CloudWatch)</strong></td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+            </tr>
+            <tr>
+              <td><strong>Detección y clasificación de incidentes (P1–P4)</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--navy);">I</td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+            </tr>
+            <tr>
+              <td><strong>Respuesta y contención ante incidentes P1/P2</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--navy);">I</td>
+            </tr>
+            <tr>
+              <td><strong>Elaboración de RCA post-incidente</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--navy);">I</td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+            </tr>
+            <tr>
+              <td><strong>Evaluación de vulnerabilidades (CVE review)</strong></td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+            </tr>
+            <tr>
+              <td><strong>Capacitación de usuarios en seguridad (anual)</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+            </tr>
+            <tr>
+              <td><strong>Notificación a INDECOPI (brecha datos Ley 29733)</strong></td>
+              <td style="text-align:center;font-weight:800;color:var(--danger);">A</td>
+              <td style="text-align:center;font-weight:800;color:var(--ok);">R</td>
+              <td style="text-align:center;font-weight:800;color:var(--warn);">C</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+              <td style="text-align:center;color:var(--muted);">—</td>
+            </tr>
+          </tbody>
+          <tfoot><tr><td colspan="7">R=Responsible · A=Accountable (máximo 1 por fila) · C=Consulted · I=Informed · — = sin participación. El CISO es Accountable en la mayoría de procesos de seguridad (ISO 27001:2022 A.6.1).</td></tr></tfoot>
+        </table>
+      </div>
+
+      <!-- 4.4 Responsabilidades operativas -->
+      <div class="sub">
+        <div class="sub-title">4.4 Responsabilidades operativas por frecuencia</div>
+        <table class="t">
+          <thead>
+            <tr><th>Frecuencia</th><th>CISO (Ruben Mark)</th><th>Admin Red (Uziel)</th><th>Admin Sis. / DBA</th><th>Usuario Final</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="b b-hi" style="background:#FEF3E8;color:#C0592B;">Diaria</span></td>
+              <td>Revisar alertas Zabbix · revisar logs de acceso AD · verificar estado de incidentes abiertos</td>
+              <td>Verificar estado VPN L1-L2/L2-L3/L2-AWS · revisar logs WAF ModSecurity · confirmar Dual-WAN activo</td>
+              <td>Verificar replication lag H3→H4 (&lt;5min) · confirmar backup pg_dump del día anterior · revisar health checks Docker</td>
+              <td>Usar ERP con sus credenciales propias · reportar cualquier anomalía al Admin TI inmediatamente</td>
+            </tr>
+            <tr>
+              <td><span class="b b-warn">Semanal</span></td>
+              <td>Revisar informe de backups S3 · revisar CVEs nuevos publicados · actualizar registro de riesgos si aplica</td>
+              <td>Revisar logs de firewall pfSense completos · verificar config XML backups de pfSense (L1/L2/L3) · revisar SNMP polling Cisco Catalyst 1000</td>
+              <td>Confirmar llegada de OVF export a S3 (domingo) · revisar estado de snapshots ESXi · revisar logs de auditoría PostgreSQL</td>
+              <td>Verificar que su contraseña AD no está próxima a vencer · reportar cualquier incidente de la semana</td>
+            </tr>
+            <tr>
+              <td><span class="b b-imp">Mensual</span></td>
+              <td>Aplicar parches en ventana de mantenimiento (1er sábado) · revisar indicadores KPI de seguridad · reporte mensual a Gerencia</td>
+              <td>Aplicar parches pfSense y Cisco IOS · revisar y optimizar reglas ACL VLAN · revisar trunking 802.1Q y VLANs activas</td>
+              <td>Aplicar patches Ubuntu/Docker/PostgreSQL · revisar roles y permisos en todas las BDs · revisar capacidad VMFS6 y S3</td>
+              <td>Completar módulo de capacitación en seguridad (mensual primeros meses) · cumplir política POL-05</td>
+            </tr>
+            <tr>
+              <td><span class="b b-norm">Trimestral</span></td>
+              <td>Revisión y actualización de políticas SGSI · revisión de accesos y usuarios AD · informe ejecutivo a Gerencia</td>
+              <td>Auditoría de seguridad de red (ACLs, reglas firewall) · revisión de logs VPN 3 meses · test de failover Dual-WAN</td>
+              <td>Prueba de restauración de backup (restore pg_dump en ambiente aislado) · OVF export y verificación en S3 · revisión de índices y rendimiento BD</td>
+              <td>Recibir capacitación formal en seguridad de la información (política POL-05)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 4.5 Vinculación ISO 27001 -->
+      <div class="sub">
+        <div class="sub-title">4.5 Vinculación de roles con controles ISO 27001:2022</div>
+        <table class="t">
+          <thead>
+            <tr><th>Rol</th><th>Controles ISO 27001:2022 principales</th><th>Descripción del control</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Gerencia General</strong></td><td>A.5.1, A.5.2, A.5.4</td><td>Políticas de seguridad aprobadas por la dirección · responsabilidad de la dirección · roles y responsabilidades de seguridad</td></tr>
+            <tr><td><strong>CISO</strong></td><td>A.5.1, A.6.1, A.16.1, A.18.1, A.18.2</td><td>Gestión del SGSI · definición de roles · coordinación de incidentes · cumplimiento legal (Ley 29733) · revisiones independientes</td></tr>
+            <tr><td><strong>Admin Red e Infraestructura</strong></td><td>A.8.21, A.8.22, A.8.23, A.13.1, A.13.2</td><td>Segmentación de redes (VLANs) · filtrado de tráfico (pfSense ACLs) · separación de entornos · transferencia segura de información (VPN)</td></tr>
+            <tr><td><strong>Administrador de Sistemas</strong></td><td>A.8.8, A.8.19, A.12.1, A.12.4, A.12.6</td><td>Gestión de vulnerabilidades técnicas · instalación de software · operaciones seguras · registro de eventos · mantenimiento</td></tr>
+            <tr><td><strong>DBA</strong></td><td>A.8.3, A.8.10, A.10.1, A.12.3</td><td>Restricción de acceso a información (mínimo privilegio BD) · eliminación de información · controles criptográficos · copias de seguridad</td></tr>
+            <tr><td><strong>Usuario Final</strong></td><td>A.6.3, A.7.1, A.7.2, A.9.3</td><td>Concientización en seguridad · responsabilidades del empleado · uso aceptable de activos · responsabilidades de autenticación</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ib navy">
+        <div class="ib-icon">📋</div>
+        <div class="ib-body">
+          <div class="ib-label">Principio clave de la matriz RACI</div>
+          Cada proceso de seguridad tiene exactamente <strong>un único Accountable (A)</strong> — quien rinde cuentas ante la Gerencia. El CISO es Accountable en la mayoría de procesos de seguridad (ISO 27001:2022 A.6.1), con la Gerencia General asumiendo la A en decisiones de impacto legal o financiero (respuesta a brechas de datos, aprobación de políticas).
+        </div>
+      </div>
+
+    </div><!-- /criterio-body -->
+  </div><!-- /criterio §4 -->
 
   <!-- ══ §5 CALIDAD Y ÉTICA (placeholder) ══ -->
   <div class="criterio" id="s5">
