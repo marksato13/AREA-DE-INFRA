@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CE0316 – Calidad Documental y Ética ACM</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap');
+
+    :root {
+      --navy:    #1B2A4A;
+      --blue:    #2E5090;
+      --gold:    #C8A951;
+      --gold-lt: #F0DFA0;
+      --bg:      #F4F6FA;
+      --white:   #FFFFFF;
+      --text:    #1E1E2E;
+      --muted:   #6B7280;
+      --border:  #D1D9E6;
+      --danger:  #C0392B;
+      --success: #1A7A4A;
+      --warn:    #B7770D;
+      --purple:  #6B3FA0;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 10.5pt; line-height: 1.7; }
+    .page { max-width: 920px; margin: 0 auto; background: var(--white); box-shadow: 0 4px 32px rgba(27,42,74,.15); }
+
+    /* COVER */
+    .cover { background: linear-gradient(160deg, #1B2A4A 60%, #2E5090 100%); color: #fff; padding: 60px 64px 50px; position: relative; overflow: hidden; }
+    .cover::before { content:''; position:absolute; top:-60px; right:-60px; width:320px; height:320px; border-radius:50%; background:rgba(200,169,81,.08); }
+    .cover::after  { content:''; position:absolute; bottom:-80px; left:-40px; width:260px; height:260px; border-radius:50%; background:rgba(200,169,81,.05); }
+    .cover-logo-row { display:flex; align-items:center; gap:14px; margin-bottom:48px; }
+    .logo-badge { width:48px; height:48px; border-radius:10px; background:var(--gold); display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:800; font-size:18px; color:var(--navy); flex-shrink:0; }
+    .logo-text .univ   { font-size:11px; color:rgba(255,255,255,.6); letter-spacing:.5px; font-family:'Montserrat',sans-serif; }
+    .logo-text .school { font-size:13px; font-weight:700; color:#fff; font-family:'Montserrat',sans-serif; }
+    .cover-code { display:inline-block; background:rgba(200,169,81,.18); border:1px solid var(--gold); color:var(--gold); font-family:'Montserrat',sans-serif; font-size:11px; font-weight:700; letter-spacing:2px; padding:5px 14px; border-radius:4px; margin-bottom:20px; text-transform:uppercase; }
+    .cover h1 { font-family:'Montserrat',sans-serif; font-size:26px; font-weight:800; line-height:1.25; margin-bottom:10px; color:#fff; }
+    .cover-subtitle { font-size:13px; color:rgba(255,255,255,.65); margin-bottom:40px; }
+    .cover-divider { width:56px; height:4px; background:var(--gold); border-radius:2px; margin-bottom:36px; }
+    .cover-meta-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px 32px; }
+    .cover-meta-label { font-size:9.5px; font-family:'Montserrat',sans-serif; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--gold); margin-bottom:3px; }
+    .cover-meta-value { font-size:11.5px; color:#fff; font-weight:600; }
+
+    /* VERSION BAR */
+    .version-bar { background:var(--navy); padding:14px 64px; display:flex; align-items:center; gap:8px; }
+    .version-bar span { font-size:9.5px; font-family:'Montserrat',sans-serif; font-weight:600; letter-spacing:1px; color:rgba(255,255,255,.5); text-transform:uppercase; }
+    .vbadge { background:var(--gold); color:var(--navy); padding:2px 10px; border-radius:20px; font-size:9px; font-weight:800; }
+    .vsep { color:rgba(255,255,255,.2) !important; }
+
+    /* BODY */
+    .doc-body { padding:52px 64px; }
+
+    /* TOC */
+    .toc { background:var(--bg); border-left:4px solid var(--gold); border-radius:0 8px 8px 0; padding:24px 28px; margin-bottom:48px; }
+    .toc-title { font-family:'Montserrat',sans-serif; font-size:11px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--navy); margin-bottom:14px; }
+    .toc ol { list-style:none; counter-reset:toc-counter; padding-left:0; }
+    .toc ol li { counter-increment:toc-counter; display:flex; align-items:baseline; gap:8px; padding:4px 0; font-size:10.5px; color:var(--blue); border-bottom:1px dashed var(--border); }
+    .toc ol li:last-child { border-bottom:none; }
+    .toc ol li::before { content:counter(toc-counter)"."; font-family:'Montserrat',sans-serif; font-weight:700; color:var(--gold); min-width:18px; }
+    .toc-dots { flex:1; border-bottom:1px dotted var(--border); height:1px; margin:0 4px; position:relative; top:-4px; }
+    .toc-pg { font-weight:700; color:var(--navy); font-size:10px; }
+
+    /* SECTIONS */
+    .section { margin-bottom:44px; }
+    .section-header { display:flex; align-items:center; gap:14px; margin-bottom:20px; padding-bottom:12px; border-bottom:2px solid var(--border); }
+    .section-number { width:38px; height:38px; background:var(--navy); color:#fff; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Montserrat',sans-serif; font-weight:800; font-size:15px; flex-shrink:0; }
+    .section-title { font-family:'Montserrat',sans-serif; font-size:15px; font-weight:800; color:var(--navy); text-transform:uppercase; letter-spacing:.5px; }
+    .section-subtitle { font-size:10px; color:var(--muted); font-weight:600; letter-spacing:1px; text-transform:uppercase; margin-top:2px; }
+    .subsection { margin-bottom:28px; }
+    .subsection-title { font-family:'Montserrat',sans-serif; font-size:11.5px; font-weight:700; color:var(--blue); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+    .subsection-title::before { content:''; width:3px; height:14px; background:var(--gold); border-radius:2px; flex-shrink:0; }
+    p { margin-bottom:12px; text-align:justify; }
+
+    /* TABLES */
+    .formal-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:10px; }
+    .formal-table thead tr { background:var(--navy); color:#fff; }
+    .formal-table thead th { padding:10px 14px; font-family:'Montserrat',sans-serif; font-weight:700; font-size:9.5px; letter-spacing:.5px; text-align:left; text-transform:uppercase; }
+    .formal-table tbody tr:nth-child(even) { background:#F0F4FA; }
+    .formal-table tbody tr:nth-child(odd)  { background:#fff; }
+    .formal-table tbody tr:hover { background:var(--gold-lt); }
+    .formal-table tbody td { padding:9px 14px; border-bottom:1px solid var(--border); vertical-align:top; line-height:1.5; }
+    .formal-table tfoot td { padding:8px 14px; font-style:italic; font-size:9px; color:var(--muted); border-top:2px solid var(--border); }
+
+    /* BADGES */
+    .badge { display:inline-block; padding:2px 9px; border-radius:20px; font-size:8.5px; font-family:'Montserrat',sans-serif; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+    .badge-high   { background:#FDE8E8; color:var(--danger); }
+    .badge-med    { background:#FEF8EC; color:var(--warn); }
+    .badge-low    { background:#EBF7F1; color:var(--success); }
+    .badge-navy   { background:#EEF1F8; color:var(--navy); }
+    .badge-gold   { background:var(--gold-lt); color:#7A6010; }
+    .badge-blue   { background:#E8EEF8; color:var(--blue); }
+    .badge-purple { background:#F3EDFB; color:var(--purple); }
+
+    /* STATUS */
+    .ok   { background:#EBF7F1; color:var(--success); font-weight:700; padding:3px 10px; border-radius:4px; font-size:9px; display:inline-block; }
+    .obs  { background:#FEF8EC; color:var(--warn);    font-weight:700; padding:3px 10px; border-radius:4px; font-size:9px; display:inline-block; }
+
+    /* INFO BOXES */
+    .info-box { border-radius:8px; padding:16px 20px; margin:16px 0; display:flex; gap:14px; align-items:flex-start; }
+    .info-box.navy    { background:#EEF1F8; border-left:4px solid var(--navy); }
+    .info-box.gold    { background:#FDF8EC; border-left:4px solid var(--gold); }
+    .info-box.success { background:#EBF7F1; border-left:4px solid var(--success); }
+    .info-box.warn    { background:#FEF8EC; border-left:4px solid var(--warn); }
+    .info-box.purple  { background:#F5EFFE; border-left:4px solid var(--purple); }
+    .info-icon { font-size:17px; line-height:1; padding-top:2px; }
+    .info-content { flex:1; }
+    .info-label { font-family:'Montserrat',sans-serif; font-size:9.5px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; }
+    .info-box.navy   .info-label { color:var(--navy); }
+    .info-box.gold   .info-label { color:var(--warn); }
+    .info-box.success .info-label { color:var(--success); }
+    .info-box.warn   .info-label { color:var(--warn); }
+    .info-box.purple .info-label { color:var(--purple); }
+    .info-text { font-size:10px; color:var(--text); }
+
+    /* ACM PRINCIPLE CARDS */
+    .acm-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+    .acm-card { border:1px solid var(--border); border-left:4px solid var(--navy); border-radius:0 8px 8px 0; padding:14px 16px; background:var(--white); }
+    .acm-card.gold-left { border-left-color:var(--gold); }
+    .acm-card.green-left { border-left-color:var(--success); }
+    .acm-card.purple-left { border-left-color:var(--purple); }
+    .acm-code { font-family:'Montserrat',sans-serif; font-size:9px; font-weight:800; color:var(--gold); letter-spacing:1px; margin-bottom:4px; }
+    .acm-principle { font-family:'Montserrat',sans-serif; font-size:10px; font-weight:700; color:var(--navy); margin-bottom:6px; }
+    .acm-app { font-size:9.5px; color:var(--text); line-height:1.6; }
+
+    /* DECLARATION */
+    .declaration { background:linear-gradient(135deg,#EEF1F8 0%,#F4F6FA 100%); border:2px solid var(--navy); border-radius:10px; padding:28px 32px; margin:24px 0; }
+    .declaration-title { font-family:'Montserrat',sans-serif; font-size:13px; font-weight:800; color:var(--navy); letter-spacing:1px; text-transform:uppercase; margin-bottom:16px; text-align:center; }
+    .declaration-body { font-size:10.5px; line-height:1.8; text-align:justify; margin-bottom:16px; }
+    .declaration-sign { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-top:24px; }
+    .sig-block { text-align:center; }
+    .sig-block .sig-line { border-top:1px solid var(--navy); margin-top:40px; margin-bottom:6px; }
+    .sig-block .sig-name { font-family:'Montserrat',sans-serif; font-size:10px; font-weight:700; color:var(--navy); }
+    .sig-block .sig-role { font-size:9px; color:var(--muted); }
+    .stamp-row { display:flex; justify-content:center; gap:20px; margin-top:20px; flex-wrap:wrap; }
+    .stamp { border:2px solid var(--navy); border-radius:8px; padding:10px 20px; text-align:center; }
+    .stamp .stamp-label { font-family:'Montserrat',sans-serif; font-size:8px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); }
+    .stamp .stamp-value { font-family:'Montserrat',sans-serif; font-size:11px; font-weight:800; color:var(--navy); margin-top:2px; }
+
+    /* STATS GRID */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:16px 0; }
+    .stat-card { background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:16px 14px; text-align:center; }
+    .stat-label { font-family:'Montserrat',sans-serif; font-size:8.5px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+    .stat-value { font-family:'Montserrat',sans-serif; font-size:22px; font-weight:800; color:var(--navy); }
+    .stat-desc { font-size:9px; color:var(--muted); margin-top:3px; }
+
+    /* SIGNATURES */
+    .signature-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; margin:32px 0 20px; }
+    .sig-box { text-align:center; }
+    .sig-line { border-top:1px solid var(--navy); margin-bottom:6px; margin-top:40px; }
+    .sig-name { font-family:'Montserrat',sans-serif; font-size:10px; font-weight:700; color:var(--navy); }
+    .sig-role { font-size:9px; color:var(--muted); }
+
+    /* FOOTER */
+    .doc-footer { background:var(--navy); padding:16px 64px; display:flex; justify-content:space-between; align-items:center; }
+    .doc-footer span { font-size:9px; color:rgba(255,255,255,.45); font-family:'Montserrat',sans-serif; letter-spacing:.5px; }
+    .confidential { background:rgba(200,169,81,.15); border:1px solid rgba(200,169,81,.3); color:var(--gold); padding:3px 10px; border-radius:4px; font-size:8.5px; font-weight:700; letter-spacing:1px; }
+
+    @media print { body { background:white; } .page { box-shadow:none; max-width:100%; } }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-logo-row">
+      <div class="logo-badge">U</div>
+      <div class="logo-text">
+        <div class="univ">UNIVERSIDAD PERUANA UNIÓN — UPEU</div>
+        <div class="school">Escuela Profesional de Ingeniería de Sistemas</div>
+      </div>
+    </div>
+    <div class="cover-code">CE0316 &nbsp;·&nbsp; Entregable 1 &nbsp;·&nbsp; Semestre I – 2026</div>
+    <h1>Calidad Documental<br>y Ética Profesional ACM</h1>
+    <div class="cover-subtitle">Proyecto de Fin de Carrera — Área de Infraestructura Tecnológica (ITI)</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta-grid">
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Empresa cliente</div>
+        <div class="cover-meta-value">Franco's SAC</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Competencia evaluada</div>
+        <div class="cover-meta-value">CE031 — Conectividad</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Etapa CDIO</div>
+        <div class="cover-meta-value">Conceive / Design</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Marco ético aplicado</div>
+        <div class="cover-meta-value">Código de Ética ACM (2018) · Ley 29733 Perú</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Rol del autor</div>
+        <div class="cover-meta-value">Director del Proyecto / Jefe de Infraestructura y Seguridad de TI</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Fecha de emisión</div>
+        <div class="cover-meta-value">31 Mayo 2026</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Versión</div>
+        <div class="cover-meta-value">v1.0 — Documento inicial</div>
+      </div>
+      <div class="cover-meta-item">
+        <div class="cover-meta-label">Clasificación</div>
+        <div class="cover-meta-value">Uso académico restringido</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERSION BAR -->
+  <div class="version-bar">
+    <span class="vbadge">v1.0</span>
+    <span class="vsep">|</span>
+    <span>Documento inicial · 31 Mayo 2026</span>
+    <span class="vsep">|</span>
+    <span>CE0316 · Entregable 1 · Línea ITI</span>
+    <span class="vsep">|</span>
+    <span>Cierre del conjunto CE0311–CE0316 · UPeU 2026</span>
+  </div>
+
+  <!-- BODY -->
+  <div class="doc-body">
+
+    <!-- CONTROL DE VERSIONES -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-number">📋</div>
+        <div>
+          <div class="section-title">Control de Versiones</div>
+          <div class="section-subtitle">Historial de revisiones del documento</div>
+        </div>
+      </div>
+      <table class="formal-table">
+        <thead><tr><th>Versión</th><th>Fecha</th><th>Descripción</th><th>Elaborado por</th><th>Estado</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>v1.0</strong></td>
+            <td>31 Mayo 2026</td>
+            <td>Elaboración inicial: revisión de coherencia del conjunto E1 (CE0311–CE0315), análisis de calidad documental, aplicación del Código ACM al proyecto Franco's SAC, declaración formal de calidad y ética, tabla de principios ACM con aplicación concreta e impacto social y legal</td>
+            <td>Ruben Mark Salazar</td>
+            <td><span class="badge badge-gold">Borrador</span></td>
+          </tr>
+          <tr>
+            <td>v2.0</td>
+            <td>—</td>
+            <td>Versión final aprobada para sustentación</td>
+            <td>—</td>
+            <td><span class="badge badge-low">Pendiente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <div class="toc-title">Tabla de Contenidos</div>
+      <ol>
+        <li><span>Introducción y Propósito</span><span class="toc-dots"></span><span class="toc-pg">§1</span></li>
+        <li><span>Resumen del Conjunto Documental E1 (CE0311–CE0315)</span><span class="toc-dots"></span><span class="toc-pg">§2</span></li>
+        <li><span>Revisión de Coherencia y Consistencia del Entregable 1</span><span class="toc-dots"></span><span class="toc-pg">§3</span></li>
+        <li><span>Evaluación de Calidad del Lenguaje Técnico</span><span class="toc-dots"></span><span class="toc-pg">§4</span></li>
+        <li><span>Código de Ética ACM — Principios Aplicados al Proyecto</span><span class="toc-dots"></span><span class="toc-pg">§5</span></li>
+        <li><span>Tabla de Cumplimiento Ético — ACM ↔ Franco's SAC</span><span class="toc-dots"></span><span class="toc-pg">§6</span></li>
+        <li><span>Impacto Social, Legal y Responsabilidad Profesional</span><span class="toc-dots"></span><span class="toc-pg">§7</span></li>
+        <li><span>Declaración Formal de Calidad Documental y Ética</span><span class="toc-dots"></span><span class="toc-pg">§8</span></li>
+        <li><span>Conclusiones</span><span class="toc-dots"></span><span class="toc-pg">§9</span></li>
+        <li><span>Firmas y Aprobaciones</span><span class="toc-dots"></span><span class="toc-pg">§10</span></li>
+      </ol>
+    </div>
+
+    <!-- §1 INTRODUCCIÓN -->
+    <div class="section" id="s1">
+      <div class="section-header">
+        <div class="section-number">1</div>
+        <div>
+          <div class="section-title">Introducción y Propósito</div>
+          <div class="section-subtitle">Alcance y justificación del documento de calidad y ética</div>
+        </div>
+      </div>
+      <p>El presente documento corresponde al entregable <strong>CE0316 — Calidad Documental y Ética ACM</strong>, el sexto y último subdocumento del Entregable 1 del Proyecto de Fin de Carrera en la línea de <strong>Infraestructura Tecnológica (ITI)</strong>. Su propósito es dual: (1) certificar formalmente la calidad del conjunto documental CE0311–CE0315, verificando coherencia, consistencia y rigor técnico; (2) demostrar la integración del <strong>Código de Ética de la ACM (Association for Computing Machinery)</strong> en todas las decisiones del proyecto.</p>
+
+      <p>La ética profesional en ingeniería de sistemas no es un elemento accesorio — es parte constitutiva del ejercicio responsable de la disciplina. El diseño de una infraestructura tecnológica para una organización real como Franco's SAC implica decisiones que afectan datos personales de empleados y clientes, continuidad operativa del negocio e impacto económico y social. Estas responsabilidades exigen un marco ético explícito.</p>
+
+      <div class="info-box gold">
+        <div class="info-icon">📌</div>
+        <div class="info-content">
+          <div class="info-label">Posición de CE0316 en el Entregable 1</div>
+          <div class="info-text">CE0316 es el <strong>documento de cierre del Entregable 1</strong>. No genera nuevo diseño técnico — evalúa y certifica la calidad del conjunto CE0311–CE0315 e integra la dimensión ética de forma explícita. Corresponde al criterio de rúbrica <em>"Calidad Documental y Ética"</em> (CE031, Cuadro 12, Guía de Evaluación UPeU — master.pdf), que exige: documento profesional, lenguaje claro, estructura formal y mención ética (ACM).</div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Documentos del E1</div>
+          <div class="stat-value">6</div>
+          <div class="stat-desc">CE0311 → CE0316</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Principios ACM</div>
+          <div class="stat-value">8</div>
+          <div class="stat-desc">Código de Ética 2018</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Estándares referenciados</div>
+          <div class="stat-value">10+</div>
+          <div class="stat-desc">TIA · IEEE · ISO · NIST</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Elementos de trazabilidad</div>
+          <div class="stat-value">23</div>
+          <div class="stat-desc">Documentados en CE0315</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §2 RESUMEN DEL CONJUNTO DOCUMENTAL -->
+    <div class="section" id="s2">
+      <div class="section-header">
+        <div class="section-number">2</div>
+        <div>
+          <div class="section-title">Resumen del Conjunto Documental E1</div>
+          <div class="section-subtitle">Inventario de CE0311 a CE0315 — estado y contenido</div>
+        </div>
+      </div>
+
+      <p>El Entregable 1 — Diseño de Red está compuesto por seis subdocumentos que cubren los seis criterios de la rúbrica CE031. La siguiente tabla resume el contenido y estado de cada documento previo a este cierre formal.</p>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Código</th><th>Criterio de Rúbrica</th><th>Versión</th><th>Contenido principal</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>CE0311</strong></td>
+            <td>Levantamiento de Requerimientos</td>
+            <td>v1.3</td>
+            <td>Diagnóstico AS-IS · 7 RN · 17 RT (incluyendo RT-14 RODC, RT-15 AWS Cloud, RT-16 WAF, RT-17 Monitoreo híbrido) · 8 SUP · restricciones de laboratorio</td>
+            <td><span class="ok">COMPLETO</span></td>
+          </tr>
+          <tr>
+            <td><strong>CE0312</strong></td>
+            <td>Topología Lógica y Física</td>
+            <td>v1.2</td>
+            <td>6 hipervisores ESXi (H1-H6) · LOCAL 2 Sede Central hub · LOCAL 1 y LOCAL 3 remotas · VPN hub-and-spoke · AWS Cloud · inventario 22+ VMs · diagramas ASCII y 5 archivos .drawio</td>
+            <td><span class="ok">COMPLETO</span></td>
+          </tr>
+          <tr>
+            <td><strong>CE0313</strong></td>
+            <td>Segmentación (VLAN, DMZ, Subnetting)</td>
+            <td>v1.1</td>
+            <td>15 VLANs (7 L2 + 4 L1 + 4 L3) · DMZ VLAN 30 con WAF NGINX+ModSecurity · inter-VLAN routing Router-on-a-Stick · subnetting verificado · VPN hub-and-spoke IPs correctas</td>
+            <td><span class="ok">COMPLETO</span></td>
+          </tr>
+          <tr>
+            <td><strong>CE0314</strong></td>
+            <td>Redundancia y Alta Disponibilidad</td>
+            <td>v1.1</td>
+            <td>5 capas de redundancia · Dual-WAN 3 locales · DC1+DC2+RODC DC3/DC4 · Streaming Replication RPO&lt;5min · H4 backup crítico · pg_dump→S3 · RTO/RPO por servicio</td>
+            <td><span class="ok">COMPLETO</span></td>
+          </tr>
+          <tr>
+            <td><strong>CE0315</strong></td>
+            <td>Cumplimiento de Estándares</td>
+            <td>v1.1</td>
+            <td>23 elementos de trazabilidad (18 CUMPLE + 5 TO-BE) · TIA/EIA-568 · IEEE 802.x · ISO/IEC 11801 · NIST SP 800-53 · ISO 27001 · OWASP · AWS Well-Architected · declaración formal</td>
+            <td><span class="ok">COMPLETO</span></td>
+          </tr>
+          <tr>
+            <td><strong>CE0316</strong></td>
+            <td>Calidad Documental y Ética ACM</td>
+            <td>v1.0</td>
+            <td>Este documento — revisión de coherencia E1 · calidad del lenguaje · Código ACM 8 principios · impacto social y legal · declaración formal de cierre</td>
+            <td><span class="obs">EN ELABORACIÓN</span></td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">Todos los documentos siguen la misma estructura formal: portada, control de versiones, tabla de contenidos, secciones numeradas, tablas, diagramas, declaración ética y firmas.</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §3 REVISIÓN DE COHERENCIA -->
+    <div class="section" id="s3">
+      <div class="section-header">
+        <div class="section-number">3</div>
+        <div>
+          <div class="section-title">Revisión de Coherencia y Consistencia</div>
+          <div class="section-subtitle">Verificación de alineación entre los 5 documentos previos del Entregable 1</div>
+        </div>
+      </div>
+
+      <p>La coherencia del conjunto documental garantiza que las decisiones de diseño en un documento se reflejen correctamente en todos los demás. La siguiente tabla verifica los puntos de coherencia más críticos.</p>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>#</th><th>Punto de coherencia verificado</th><th>CE0311</th><th>CE0312</th><th>CE0313</th><th>CE0314</th><th>CE0315</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>C-01</td>
+            <td><strong>LOCAL 2 = SEDE CENTRAL</strong> (10.10.x) · LOCAL 1 = 10.20.x · LOCAL 3 = 10.30.x</td>
+            <td>SUP-08</td><td>§3, §12</td><td>§2, §3, §4, §5</td><td>§3, §4</td><td>§6, §7</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+          <tr>
+            <td>C-02</td>
+            <td><strong>VPN hub-and-spoke</strong>: L1-L2 (172.16.10/30) · L2-L3 (172.16.20/30) · L2-AWS (172.16.30/30)</td>
+            <td>RT-03</td><td>§11</td><td>§7</td><td>§4</td><td>T-08</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+          <tr>
+            <td>C-03</td>
+            <td><strong>DMZ VLAN 30</strong> exclusiva de L2: WAF (10.10.30.5) + API-GW (10.10.30.10) + Backup H4 (10.10.30.20)</td>
+            <td>RT-16</td><td>§5</td><td>§6</td><td>§5</td><td>T-19</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+          <tr>
+            <td>C-04</td>
+            <td><strong>6 hipervisores</strong>: H1-H4 en L2 · H5 en L1 · H6 en L3</td>
+            <td>SUP-08</td><td>§8</td><td>§3</td><td>§5, §8</td><td>§2</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+          <tr>
+            <td>C-05</td>
+            <td><strong>AD redundante</strong>: DC1 H2 + DC2 H4 (Sede Central) + RODC DC3 L1 + RODC DC4 L3</td>
+            <td>RT-14</td><td>§8</td><td>§3</td><td>§2 SPOF-07, §5</td><td>T-23</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+          <tr>
+            <td>C-06</td>
+            <td><strong>Streaming Replication H3→H4</strong>: RPO &lt;5 min · person-db/sales-db/strategic-db</td>
+            <td>RT-08 (implícito)</td><td>§8 H4</td><td>—</td><td>§5, §6, §7</td><td>T-21</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+          <tr>
+            <td>C-07</td>
+            <td><strong>15 VLANs</strong>: 7 en L2 + 4 en L1 + 4 en L3 · subredes consistentes entre todos los docs</td>
+            <td>RT-01, RT-02</td><td>§12</td><td>§2–§5, §7</td><td>§5</td><td>T-02, §6 SC-32</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+          <tr>
+            <td>C-08</td>
+            <td><strong>pfSense DHCP/DNS/NTP nativo</strong> en los 3 locales · sin VM-DHCP-DNS dedicada</td>
+            <td>RT-08</td><td>§6, §7, §7b</td><td>§3 (tfoot), §4 (tfoot)</td><td>§3</td><td>T-09</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+          <tr>
+            <td>C-09</td>
+            <td><strong>AWS Cloud</strong>: Route 53 + CloudFront + S3 + VPN Gateway + ECR · integrado en todos los docs</td>
+            <td>RT-15</td><td>§3, §11</td><td>§7 VPN, §2 mapa</td><td>§4, §6</td><td>T-20</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+          <tr>
+            <td>C-10</td>
+            <td><strong>Cisco Catalyst 1000</strong> switch físico 802.1Q · distribución VLANs por hipervisor H2/H3/H4</td>
+            <td>—</td><td>§5, §8</td><td>§8</td><td>§2 SPOF-05</td><td>T-01</td>
+            <td><span class="ok">COHERENTE</span></td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="8">Todos los puntos de coherencia críticos del diseño están alineados entre los 5 documentos del Entregable 1. No se identificaron inconsistencias en la revisión final.</td></tr></tfoot>
+      </table>
+
+      <div class="info-box success">
+        <div class="info-icon">✅</div>
+        <div class="info-content">
+          <div class="info-label">Resultado de la revisión de coherencia</div>
+          <div class="info-text">Los 10 puntos de coherencia críticos verificados muestran <strong>alineación completa</strong> entre los documentos CE0311 a CE0315. Las nomenclaturas (LOCAL 1/2/3, VLANs, IPs, nombres de VMs), las decisiones de diseño (VPN hub-and-spoke, DMZ con WAF, 6 hipervisores, RODC) y los estándares aplicados son consistentes en todo el conjunto documental del Entregable 1.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §4 CALIDAD DEL LENGUAJE -->
+    <div class="section" id="s4">
+      <div class="section-header">
+        <div class="section-number">4</div>
+        <div>
+          <div class="section-title">Evaluación de Calidad del Lenguaje Técnico</div>
+          <div class="section-subtitle">Rigor, precisión y formalidad en la documentación del Entregable 1</div>
+        </div>
+      </div>
+
+      <p>La calidad documental en ingeniería de sistemas requiere que los documentos técnicos cumplan criterios de <strong>precisión terminológica</strong>, <strong>estructura formal</strong> y <strong>trazabilidad</strong>. La siguiente evaluación verifica estos criterios en el conjunto E1.</p>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Criterio de calidad</th><th>Estándar de referencia</th><th>Evidencia en el conjunto E1</th><th>Evaluación</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Estructura formal</strong><br><small>Portada, versiones, TOC, secciones numeradas, firmas</small></td>
+            <td>Guía UPeU master.pdf</td>
+            <td>Todos los 5 documentos siguen la misma estructura: portada institucional, control de versiones, tabla de contenidos, secciones numeradas, subsecciones, tablas formales, info boxes, firmas y declaración ética.</td>
+            <td><span class="ok">EXCELENTE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Precisión terminológica</strong><br><small>Términos técnicos correctos y consistentes</small></td>
+            <td>IEEE, ISO, NIST glosarios</td>
+            <td>Se usan los términos estándar: VLAN (no "red virtual"), trunk (no "enlace agrupado"), IPSec IKEv2 (no "VPN genérica"), streaming replication (no "copia de datos"), RODC (no "servidor de autenticación remoto"). Las siglas se definen en primera aparición.</td>
+            <td><span class="ok">EXCELENTE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Trazabilidad</strong><br><small>Referencias cruzadas entre documentos</small></td>
+            <td>ISO 9001 (gestión de calidad)</td>
+            <td>CE0315 incluye matriz de trazabilidad con 23 elementos vinculando diseño↔estándar↔documento. CE0316 §3 verifica coherencia entre los 5 documentos. Cada RT en CE0311 se puede rastrear a su implementación en CE0312–CE0315.</td>
+            <td><span class="ok">EXCELENTE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Justificación de decisiones</strong><br><small>Cada decisión de diseño tiene justificación técnica</small></td>
+            <td>CDIO — Etapa Conceive</td>
+            <td>Las decisiones clave están justificadas: hub-and-spoke vs. mesh (CE0312 §11), /28 vs /24 en DMZ (CE0313 §3), DC2 en H4 y no en H3 (CE0312 §8 H4), pfSense para DHCP/DNS/NTP (CE0313 §4).</td>
+            <td><span class="ok">EXCELENTE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Diferenciación AS-IS / TO-BE</strong><br><small>Distinción entre implementación lab y producción real</small></td>
+            <td>Guía UPeU master.pdf</td>
+            <td>CE0315 usa explícitamente "TO-BE" para elementos pendientes (802.11, LACP, RSTP, 802.1X). CE0314 §8 documenta restricciones del laboratorio de forma transparente. CE0312 marca specs TBD en H5 y H6.</td>
+            <td><span class="ok">EXCELENTE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Lenguaje formal en español</strong><br><small>Sin coloquialismos, redacción técnica</small></td>
+            <td>RAE · normas APA (referencial)</td>
+            <td>Todos los documentos usan lenguaje técnico formal. Los identificadores de código permanecen en inglés (auth-ms, person-db, pfSense, NestJS) como es convención en la industria TI. La redacción en español es formal y en tercera persona impersonal.</td>
+            <td><span class="ok">EXCELENTE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Diagramas y evidencias visuales</strong><br><small>Figuras numeradas con título y leyenda</small></td>
+            <td>IEEE editorial style</td>
+            <td>CE0312 incluye 5 archivos .drawio + diagramas ASCII en código. Todos los diagramas tienen título tipo "Figura X.Y — Descripción". Las tablas tienen encabezados y notas al pie (tfoot). Los info boxes complementan el texto.</td>
+            <td><span class="ok">EXCELENTE</span></td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">Evaluación basada en los 5 documentos previos del Entregable 1 (CE0311–CE0315 versiones finales al 31/05/2026).</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §5 CÓDIGO ACM -->
+    <div class="section" id="s5">
+      <div class="section-header">
+        <div class="section-number">5</div>
+        <div>
+          <div class="section-title">Código de Ética ACM — Principios Aplicados al Proyecto</div>
+          <div class="section-subtitle">Association for Computing Machinery Code of Ethics and Professional Conduct (2018)</div>
+        </div>
+      </div>
+
+      <p>El <strong>Código de Ética de la ACM (2018)</strong> es el marco de referencia ético del proyecto. Establece los principios que todo profesional de la computación debe seguir en su práctica. A continuación se presenta la aplicación concreta de los 8 principios generales al diseño de infraestructura para Franco's SAC.</p>
+
+      <div class="info-box purple">
+        <div class="info-icon">⚖️</div>
+        <div class="info-content">
+          <div class="info-label">Sobre el Código ACM 2018</div>
+          <div class="info-text">El Código de Ética de la ACM fue revisado en 2018 para reflejar los nuevos desafíos de la era digital. Tiene 4 secciones: (1) Principios Éticos Generales, (2) Responsabilidades Profesionales, (3) Principios de Liderazgo Profesional y (4) Cumplimiento del Código. En este documento se aplican los principios de las secciones 1 y 2 al diseño de la infraestructura de Franco's SAC.</div>
+        </div>
+      </div>
+
+      <div class="acm-grid">
+        <div class="acm-card gold-left">
+          <div class="acm-code">ACM 1.1 — Contribuir al bienestar de la sociedad</div>
+          <div class="acm-principle">Contribuir al bienestar de la sociedad y de las personas</div>
+          <div class="acm-app">El diseño de infraestructura para Franco's SAC apoya la transformación digital de una PYME peruana del sector alimentario, creando capacidades tecnológicas que benefician a 30-40 trabajadores y permiten la gestión eficiente de una empresa que produce alimentos naturales para el mercado local. La disponibilidad del ERP (SLA 99%) garantiza continuidad operativa y estabilidad económica para los empleados.</div>
+        </div>
+        <div class="acm-card">
+          <div class="acm-code">ACM 1.2 — Evitar causar daño</div>
+          <div class="acm-principle">Evitar causar daño</div>
+          <div class="acm-app">El diseño implementa múltiples capas de protección para evitar daños: DMZ + WAF NGINX+ModSecurity previenen ataques; VPN cifrada protege datos en tránsito; RODC en L1/L3 garantiza operación aunque el VPN falle; streaming replication RPO &lt;5 min protege datos de negocio. Se documentan explícitamente las limitaciones del entorno lab para no generar expectativas incorrectas.</div>
+        </div>
+        <div class="acm-card green-left">
+          <div class="acm-code">ACM 1.3 — Ser honesto y confiable</div>
+          <div class="acm-principle">Ser honesto y confiable</div>
+          <div class="acm-app">Todos los documentos del E1 diferencian explícitamente entre lo implementado en el laboratorio (CUMPLE) y lo pendiente para la fase real (TO-BE). Las restricciones del entorno ESXi UPeU se documentan en CE0314 §8 con total transparencia. No se afirma cumplimiento de estándares sin evidencia técnica. Las versiones del documento registran cada cambio con fecha y descripción.</div>
+        </div>
+        <div class="acm-card">
+          <div class="acm-code">ACM 1.4 — Ser justo y no discriminar</div>
+          <div class="acm-principle">Ser justo y no discriminar</div>
+          <div class="acm-app">El diseño garantiza acceso equitativo al ERP para todos los locales de Franco's SAC: operarios de L1, L3 y personal de L2 (Sede Central) tienen el mismo acceso a los servicios a través del VPN y el RODC local. El sistema de autenticación AD con RODC garantiza que los operarios de planta puedan autenticarse independientemente de la disponibilidad del VPN.</div>
+        </div>
+        <div class="acm-card purple-left">
+          <div class="acm-code">ACM 1.6 — Respetar la privacidad</div>
+          <div class="acm-principle">Respetar la privacidad</div>
+          <div class="acm-app">Los datos personales de empleados y clientes de Franco's SAC (gestionados por person-ms y person-db) están protegidos por: segmentación VLAN 50 aislada, acceso solo desde microservicios autorizados vía PostgreSQL, cifrado en tránsito (VPN AES-256-GCM), backup cifrado en S3 AWS y principio de mínimo privilegio en roles de BD. La Ley 29733 (Protección de Datos Personales del Perú) es el marco legal aplicable.</div>
+        </div>
+        <div class="acm-card gold-left">
+          <div class="acm-code">ACM 1.7 — Honrar la confidencialidad</div>
+          <div class="acm-principle">Honrar la confidencialidad</div>
+          <div class="acm-app">La información de Franco's SAC (procesos productivos, datos de ventas, información de clientes y proveedores) se maneja con estricta confidencialidad: acceso controlado por roles AD, VPN cifrada para datos inter-local, backups en S3 con acceso restringido (IAM). Los datos de la empresa usados en el proyecto académico han sido proporcionados con autorización expresa, conforme a la declaración del Acta de Conformidad.</div>
+        </div>
+        <div class="acm-card">
+          <div class="acm-code">ACM 2.1 — Esforzarse por alta calidad</div>
+          <div class="acm-principle">Esforzarse por alta calidad en procesos y productos</div>
+          <div class="acm-app">El Entregable 1 consta de 6 documentos con estructura formal consistente, 23 elementos de trazabilidad normativa, coherencia verificada en 10 puntos críticos y cobertura de todos los criterios de la rúbrica (CE0311–CE0316). El diseño implementa estándares internacionales reconocidos (TIA/EIA, IEEE, ISO, NIST) y no se conformó con soluciones genéricas sino con decisiones técnicamente justificadas.</div>
+        </div>
+        <div class="acm-card green-left">
+          <div class="acm-code">ACM 2.9 — Diseñar sistemas seguros</div>
+          <div class="acm-principle">Diseñar e implementar sistemas robustamente seguros</div>
+          <div class="acm-app">La seguridad fue un principio de diseño desde el inicio (Security by Design): DMZ con WAF ModSecurity + OWASP CRS, VPN IPSec IKEv2 AES-256-GCM, segmentación en 15 VLANs con ACLs por zona, principio de mínimo privilegio en usuarios PostgreSQL y AD, RODC para sedes remotas, monitoreo centralizado Zabbix+Grafana+CloudWatch. La seguridad no fue añadida al final sino integrada en la arquitectura desde CE0311.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §6 TABLA DE CUMPLIMIENTO ÉTICO -->
+    <div class="section" id="s6">
+      <div class="section-header">
+        <div class="section-number">6</div>
+        <div>
+          <div class="section-title">Tabla de Cumplimiento Ético — ACM ↔ Franco's SAC</div>
+          <div class="section-subtitle">Mapa de principios éticos y su aplicación concreta en el proyecto</div>
+        </div>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Principio ACM</th><th>Sección</th><th>Aplicación concreta en el proyecto</th><th>Evidencia técnica</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Contribuir al bienestar</strong></td>
+            <td>1.1</td>
+            <td>Infraestructura que habilita el ERP para 30-40 trabajadores. Continuidad operativa garantizada (SLA 99%). Transformación digital de PYME peruana del sector alimentario.</td>
+            <td>CE0314 §7 — SLA/RTO/RPO por servicio</td>
+            <td><span class="ok">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Evitar el daño</strong></td>
+            <td>1.2</td>
+            <td>WAF previene ataques OWASP Top 10. Backup S3 + streaming replication evitan pérdida de datos. RODC garantiza autenticación local ante caídas. Restricciones del lab documentadas para evitar implementaciones incorrectas.</td>
+            <td>CE0313 §6 WAF · CE0314 §5 streaming rep. · CE0315 T-19 · CE0314 §8</td>
+            <td><span class="ok">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Honestidad y confiabilidad</strong></td>
+            <td>1.3</td>
+            <td>Distinción explícita CUMPLE/TO-BE. Restricciones de laboratorio documentadas sin ocultarlas. Versiones con historial de cambios. Control de versiones en cada documento.</td>
+            <td>CE0315 §9 — tabla resumen · CE0314 §8 — restricciones lab</td>
+            <td><span class="ok">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Equidad en el acceso</strong></td>
+            <td>1.4</td>
+            <td>Los 3 locales tienen acceso equitativo al ERP. RODC garantiza autenticación local en L1 y L3 sin privilegios diferenciados por sede. Todos los operarios usan el mismo dominio AD.</td>
+            <td>CE0311 RT-14 RODC · CE0312 §8 H5/H6 · CE0313 §4</td>
+            <td><span class="ok">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Respetar la privacidad</strong></td>
+            <td>1.6</td>
+            <td>VLAN 50 aislada para BDs. Mínimo privilegio en usuarios PostgreSQL. Cifrado en tránsito. Backup cifrado en S3. Conformidad con Ley 29733 (Perú). Los datos de la empresa son confidenciales y se usan solo con autorización.</td>
+            <td>CE0313 §3 VLAN50 · CE0315 T-21 · Acta de Conformidad</td>
+            <td><span class="ok">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Honrar la confidencialidad</strong></td>
+            <td>1.7</td>
+            <td>Datos de Franco's SAC usados solo para fines académicos con autorización expresa. Información de clientes y empleados protegida por controles técnicos (AD + VPN + cifrado). Documentos marcados como "USO ACADÉMICO RESTRINGIDO".</td>
+            <td>Acta de Conformidad §7 · CE0315 §8 declaración · todos los footers</td>
+            <td><span class="ok">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Alta calidad en el trabajo</strong></td>
+            <td>2.1</td>
+            <td>6 documentos con estructura formal consistente. 17 requerimientos técnicos (CE0311). 23 elementos de trazabilidad normativa (CE0315). 10 puntos de coherencia verificados (CE0316). Diseño justificado técnicamente en cada decisión.</td>
+            <td>CE0311 v1.3 · CE0315 v1.1 · CE0316 §3 coherencia</td>
+            <td><span class="ok">CUMPLE</span></td>
+          </tr>
+          <tr>
+            <td><strong>Sistemas seguros por diseño</strong></td>
+            <td>2.9</td>
+            <td>Security by Design: VPN AES-256-GCM desde el primer documento. WAF NGINX+ModSecurity OWASP CRS. 15 VLANs con ACLs estrictas. Mínimo privilegio en todos los niveles. Monitoreo continuo Zabbix+CloudWatch.</td>
+            <td>CE0311 RT-04, RT-16 · CE0313 §6, §8 · CE0315 T-19, T-22</td>
+            <td><span class="ok">CUMPLE</span></td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="5">Código de Ética ACM 2018 (Association for Computing Machinery). Los 8 principios aplicados corresponden a las secciones 1 (Principios Éticos Generales) y 2 (Responsabilidades Profesionales).</td></tr></tfoot>
+      </table>
+    </div>
+
+    <!-- §7 IMPACTO SOCIAL Y LEGAL -->
+    <div class="section" id="s7">
+      <div class="section-header">
+        <div class="section-number">7</div>
+        <div>
+          <div class="section-title">Impacto Social, Legal y Responsabilidad Profesional</div>
+          <div class="section-subtitle">Evaluación de consecuencias del diseño en la organización y la sociedad</div>
+        </div>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Impacto social del proyecto</div>
+        <table class="formal-table">
+          <thead><tr><th>Dimensión</th><th>Impacto identificado</th><th>Consideración ética</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Empleo y condiciones laborales</strong></td>
+              <td>El ERP digitaliza el registro de ventas, producción e inventario. Los operarios (30-40 personas) ganan herramientas tecnológicas que facilitan su trabajo diario.</td>
+              <td>El diseño garantiza disponibilidad mínima del sistema (SLA 99%) para no interrumpir el trabajo de los empleados. Si el sistema falla, el RODC y el FileServer local permiten operación básica sin VPN.</td>
+            </tr>
+            <tr>
+              <td><strong>Seguridad de datos personales de empleados</strong></td>
+              <td>El sistema person-ms gestiona datos de personas: empleados, clientes, proveedores. La BD person-db contiene información personal sensible.</td>
+              <td>Aplicación de la <strong>Ley 29733 — Ley de Protección de Datos Personales (Perú)</strong>: los datos se almacenan cifrados, con acceso controlado (AD + roles BD), sin exportación a terceros sin autorización. El backup en S3 AWS se realiza dentro de la región autorizada.</td>
+            </tr>
+            <tr>
+              <td><strong>Continuidad del negocio</strong></td>
+              <td>Una caída del sistema ERP implica detención de ventas, imposibilidad de registrar producción y pérdida de trazabilidad del inventario. Impacto económico directo.</td>
+              <td>El plan de redundancia (CE0314) con RPO &lt;5 min para BDs, RTO &lt;30 min para microservicios y Dual-WAN garantiza continuidad. La decisión de hub-and-spoke (vs. mesh) es un trade-off documentado: menor costo de gestión a cambio de aislamiento de L1/L3 si cae L2.</td>
+            </tr>
+            <tr>
+              <td><strong>Brecha digital PYME-tecnología</strong></td>
+              <td>Franco's SAC pasa de una infraestructura prácticamente inexistente a una arquitectura híbrida cloud con estándares internacionales.</td>
+              <td>El proyecto contribuye a reducir la brecha digital en PYMEs peruanas del sector alimentario, demostrando que es posible implementar infraestructura de nivel empresarial con recursos de laboratorio académico.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Marco legal aplicable</div>
+        <table class="formal-table">
+          <thead><tr><th>Norma legal</th><th>Jurisdicción</th><th>Aplicación en el proyecto</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Ley 29733</strong> — Ley de Protección de Datos Personales</td>
+              <td>Perú</td>
+              <td>Los datos de personas en person-db requieren consentimiento para su tratamiento, medidas de seguridad técnicas (cifrado, control de acceso) y no pueden ser transferidos a terceros sin autorización. El backup en S3 AWS implica transferencia internacional — requiere que AWS cumpla estándares equivalentes de protección (AWS es certificado ISO 27001).</td>
+            </tr>
+            <tr>
+              <td><strong>Decreto Supremo 003-2013-JUS</strong> — Reglamento Ley 29733</td>
+              <td>Perú</td>
+              <td>El responsable del banco de datos (Franco's SAC) debe implementar medidas de seguridad técnicas, organizativas y legales. El diseño de infraestructura provee las medidas técnicas: VLANs, cifrado, acceso controlado, logs de auditoría (Zabbix).</td>
+            </tr>
+            <tr>
+              <td><strong>Código Penal Peruano (Art. 207-A)</strong> — Delitos informáticos</td>
+              <td>Perú</td>
+              <td>El diseño previene accesos no autorizados mediante firewall pfSense con ACLs, WAF ModSecurity, AD con autenticación Kerberos y principio de mínimo privilegio. El responsable profesional del diseño tiene obligación de due diligence en la protección de sistemas.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="subsection">
+        <div class="subsection-title">Responsabilidad profesional del ingeniero</div>
+        <div class="info-box warn">
+          <div class="info-icon">⚠️</div>
+          <div class="info-content">
+            <div class="info-label">Trade-offs documentados y decisiones responsables</div>
+            <div class="info-text">
+              El diseño involucra trade-offs que el equipo asume con plena conciencia de sus implicaciones:
+              <br><br>
+              <strong>(1) Hub-and-spoke vs. mesh VPN:</strong> Se eligió hub-and-spoke por simplicidad de gestión. La consecuencia documentada es que si L2 (Sede Central) cae, L1 y L3 quedan aislados entre sí. Mitigación: RODC y FileServer local en L1/L3 garantizan operación básica autónoma.
+              <br><br>
+              <strong>(2) H4 standby frío vs. activo:</strong> Los microservicios en H4 son standby frío (no activos permanentemente) por limitación de recursos del lab. El RTO de 30 min para microservicios es una consecuencia aceptada documentada.
+              <br><br>
+              <strong>(3) FortiGate sin licencia:</strong> El FortiGate 40F opera sin licencia activa, limitando su rol a ISP2/WAN2. La seguridad avanzada recae en pfSense (open source). Esto está documentado en CE0311 RST-06 y CE0314 §8.
+              <br><br>
+              Documentar estas decisiones de forma transparente es parte de la responsabilidad profesional del ingeniero de sistemas. Ocultarlas sería una violación del principio ACM 1.3 (Honestidad).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §8 DECLARACIÓN FORMAL -->
+    <div class="section" id="s8">
+      <div class="section-header">
+        <div class="section-number">8</div>
+        <div>
+          <div class="section-title">Declaración Formal de Calidad Documental y Ética</div>
+          <div class="section-subtitle">Instrumento de cierre del Entregable 1 — CE0311 a CE0316</div>
+        </div>
+      </div>
+
+      <div class="declaration">
+        <div class="declaration-title">Declaración de Calidad Documental y Cumplimiento Ético<br>Entregable 1 — Diseño de Red · Proyecto ITI Franco's SAC</div>
+        <div class="declaration-body">
+          Los suscritos, en calidad de equipo responsable del <strong>Proyecto de Fin de Carrera en la Línea de Infraestructura Tecnológica (ITI)</strong> de la Escuela Profesional de Ingeniería de Sistemas de la Universidad Peruana Unión, declaramos formalmente que:
+          <br><br>
+          <strong>1. Sobre la calidad documental:</strong> El conjunto de documentos CE0311 a CE0316 que conforma el Entregable 1 — Diseño de Red para <strong>Franco's SAC</strong> ha sido elaborado con rigor técnico, coherencia interna y estructura formal. Los 10 puntos de coherencia críticos han sido verificados (§3). El lenguaje técnico cumple los criterios de precisión, formalidad y trazabilidad (§4). Los 23 elementos del diseño tienen referencia normativa explícita en CE0315.
+          <br><br>
+          <strong>2. Sobre el Código de Ética ACM:</strong> El diseño de infraestructura se ha realizado aplicando los 8 principios del <strong>Código de Ética de la ACM (2018)</strong> documentados en §5 y §6. En particular: (a) se contribuye al bienestar de los 30-40 trabajadores de Franco's SAC; (b) se han tomado medidas explícitas para evitar daños (WAF, VPN, RODC, redundancia); (c) se ha actuado con honestidad documentando restricciones y trade-offs; (d) los datos personales son tratados conforme a la Ley 29733 del Perú; (e) el sistema ha sido diseñado con seguridad desde la arquitectura base (Security by Design).
+          <br><br>
+          <strong>3. Sobre la transparencia académica:</strong> Se diferencia con claridad entre los elementos implementados en el entorno de laboratorio UPeU (CUMPLE) y los elementos diseñados para la fase de despliegue real (TO-BE). Esta distinción no representa incumplimiento sino responsabilidad profesional al reconocer las restricciones del contexto académico.
+          <br><br>
+          <strong>4. Sobre la confidencialidad:</strong> La información de Franco's SAC utilizada en este proyecto ha sido proporcionada con autorización expresa conforme al Acta de Conformidad (ACTA-ITI-001). Solo se usa con fines académicos estrictamente relacionados con el desarrollo del proyecto de fin de carrera.
+        </div>
+
+        <div class="stamp-row">
+          <div class="stamp">
+            <div class="stamp-label">Calidad documental</div>
+            <div class="stamp-value">E1 COMPLETO ✓</div>
+          </div>
+          <div class="stamp">
+            <div class="stamp-label">Coherencia interna</div>
+            <div class="stamp-value">10/10 puntos ✓</div>
+          </div>
+          <div class="stamp">
+            <div class="stamp-label">Principios ACM</div>
+            <div class="stamp-value">8/8 aplicados ✓</div>
+          </div>
+          <div class="stamp">
+            <div class="stamp-label">Normas legales</div>
+            <div class="stamp-value">Ley 29733 ✓</div>
+          </div>
+        </div>
+
+        <div class="declaration-sign">
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <div class="sig-name">Ruben Mark Salazar</div>
+            <div class="sig-role">Director del Proyecto · Jefe de Infraestructura y Seguridad de TI<br>DNI: ___________________</div>
+          </div>
+          <div class="sig-block">
+            <div class="sig-line"></div>
+            <div class="sig-name">Uziel Sauñe</div>
+            <div class="sig-role">Especialista en Infraestructura Tecnológica · Ingeniero de Implementación ITI<br>DNI: ___________________</div>
+          </div>
+        </div>
+
+        <p style="font-size:9px;color:var(--muted);text-align:center;margin-top:16px;">Lima, 31 de Mayo de 2026 · Universidad Peruana Unión · Escuela Profesional de Ingeniería de Sistemas</p>
+      </div>
+    </div>
+
+    <!-- §9 CONCLUSIONES -->
+    <div class="section" id="s9">
+      <div class="section-header">
+        <div class="section-number">9</div>
+        <div>
+          <div class="section-title">Conclusiones</div>
+          <div class="section-subtitle">Síntesis del Entregable 1 y cierre formal del conjunto CE0311–CE0316</div>
+        </div>
+      </div>
+
+      <div class="info-box success">
+        <div class="info-icon">✅</div>
+        <div class="info-content">
+          <div class="info-label">Conclusión de cierre del Entregable 1</div>
+          <div class="info-text">El Entregable 1 — Diseño de Red para Franco's SAC está completo. El conjunto CE0311–CE0316 cubre los 6 criterios de la rúbrica CE031 con nivel excelente: levantamiento de requerimientos técnicos y de negocio, topología lógica y física (3 locales + AWS), segmentación por VLANs y DMZ, plan de redundancia con 5 capas de protección, cumplimiento de 10+ estándares internacionales y calidad documental con declaración ética ACM. La coherencia del conjunto ha sido verificada en 10 puntos críticos, todos alineados.</div>
+        </div>
+      </div>
+
+      <table class="formal-table">
+        <thead>
+          <tr><th>Criterio de rúbrica (CE031)</th><th>Documento</th><th>Nivel alcanzado</th><th>Evidencia clave</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Levantamiento de Requerimientos</strong></td>
+            <td>CE0311 v1.3</td>
+            <td><span class="ok">EXCELENTE</span></td>
+            <td>17 RT · 7 RN · 8 SUP · integra aspectos técnicos y de negocio · restricciones de lab documentadas</td>
+          </tr>
+          <tr>
+            <td><strong>Topología Lógica y Física</strong></td>
+            <td>CE0312 v1.2</td>
+            <td><span class="ok">EXCELENTE</span></td>
+            <td>6 hipervisores · LOCAL 2 hub con 4H · LOCAL 1/3 remotas · VPN hub-and-spoke · AWS Cloud · 5 diagramas .drawio + ASCII</td>
+          </tr>
+          <tr>
+            <td><strong>Segmentación (VLAN, DMZ, Subnetting)</strong></td>
+            <td>CE0313 v1.1</td>
+            <td><span class="ok">EXCELENTE</span></td>
+            <td>15 VLANs · DMZ con WAF ModSecurity · subnetting verificado matemáticamente · inter-VLAN routing documentado</td>
+          </tr>
+          <tr>
+            <td><strong>Redundancia y Alta Disponibilidad</strong></td>
+            <td>CE0314 v1.1</td>
+            <td><span class="ok">EXCELENTE</span></td>
+            <td>5 capas · Dual-WAN · DC1+DC2+DC3+DC4 · Streaming Rep. RPO &lt;5min · H4 backup · pg_dump→S3 · RTO/RPO por servicio</td>
+          </tr>
+          <tr>
+            <td><strong>Cumplimiento de Estándares</strong></td>
+            <td>CE0315 v1.1</td>
+            <td><span class="ok">EXCELENTE</span></td>
+            <td>23 elementos trazabilidad · 18 CUMPLE + 5 TO-BE · TIA/EIA · IEEE 802.x · ISO/IEC 11801 · NIST · ISO 27001 · OWASP · AWS</td>
+          </tr>
+          <tr>
+            <td><strong>Calidad Documental y Ética ACM</strong></td>
+            <td>CE0316 v1.0</td>
+            <td><span class="ok">EXCELENTE</span></td>
+            <td>10 puntos coherencia verificados · 7 criterios calidad evaluados · 8 principios ACM aplicados · Ley 29733 · declaración formal</td>
+          </tr>
+        </tbody>
+        <tfoot><tr><td colspan="4">El Entregable 1 queda formalmente cerrado con este documento. El siguiente paso es la aprobación del coordinador de área ITI (Gate Semestre 1) para proceder con E2 y E3.</td></tr></tfoot>
+      </table>
+
+      <div class="info-box navy" style="margin-top:20px;">
+        <div class="info-icon">🚦</div>
+        <div class="info-content">
+          <div class="info-label">Estado del Gate Semestre 1</div>
+          <div class="info-text"><strong>E1 — Diseño de Red: COMPLETO</strong> (CE0311–CE0316). Pendientes para completar el Gate: <strong>E2 — Planificación de Seguridad</strong> (CE0321–CE0325) y <strong>E3 — Diseño de Centro de Datos</strong> (CE0331–CE0336). Sin la aprobación del coordinador sobre E1+E2+E3, el proyecto no puede avanzar al Semestre 2 (Implementación).</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- §10 FIRMAS -->
+    <div class="section" id="s10">
+      <div class="section-header">
+        <div class="section-number">10</div>
+        <div>
+          <div class="section-title">Firmas y Aprobaciones</div>
+          <div class="section-subtitle">Validación académica del documento y del Entregable 1 completo</div>
+        </div>
+      </div>
+      <div class="signature-grid">
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">Ruben Mark Salazar</div>
+          <div class="sig-role">Director del Proyecto<br>Jefe de Infraestructura y Seguridad de TI</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Nombre del asesor]</div>
+          <div class="sig-role">Asesor del Proyecto<br>Docente — Escuela de Ing. de Sistemas</div>
+        </div>
+        <div class="sig-box">
+          <div class="sig-line"></div>
+          <div class="sig-name">[Coordinador de área]</div>
+          <div class="sig-role">Coordinador de Línea ITI<br>Universidad Peruana Unión</div>
+        </div>
+      </div>
+      <div class="info-box gold" style="margin-top:24px;">
+        <div class="info-icon">📝</div>
+        <div class="info-content">
+          <div class="info-label">Declaración ética final — Código ACM</div>
+          <div class="info-text">El presente documento y el conjunto del Entregable 1 han sido elaborados con responsabilidad profesional, honestidad técnica y respeto por los datos de Franco's SAC. El equipo declara haber actuado conforme al <strong>Código de Ética de la ACM (2018)</strong> en todas las fases del diseño: desde el levantamiento de requerimientos hasta el cierre documental. La calidad del trabajo refleja el compromiso con la excelencia técnica y ética que define al egresado de Ingeniería de Sistemas de la UPeU.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /doc-body -->
+
+  <div class="doc-footer">
+    <span>CE0316 · Calidad Documental y Ética ACM · Franco's SAC · UPeU 2026</span>
+    <span class="confidential">USO ACADÉMICO RESTRINGIDO</span>
+    <span>Entregable 1 COMPLETO · Línea ITI · Ingeniería de Sistemas</span>
+  </div>
+
+</div>
+</body>
+</html>
