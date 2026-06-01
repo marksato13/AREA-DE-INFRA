@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>E1 — Diseño de Red | Franco's SAC · ITI UPeU 2026</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap');
+    :root {
+      --navy:#1B2A4A; --blue:#2E5090; --gold:#C8A951; --gold-lt:#F0DFA0;
+      --bg:#F4F6FA; --white:#FFFFFF; --text:#1E1E2E; --muted:#6B7280;
+      --border:#D1D9E6; --success:#1A7A4A; --warn:#B7770D;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Open Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+    /* HEADER */
+    .header{background:linear-gradient(160deg,var(--navy) 60%,var(--blue) 100%);color:#fff;padding:48px 64px 40px;position:relative;overflow:hidden;}
+    .header::before{content:'';position:absolute;top:-60px;right:-60px;width:320px;height:320px;border-radius:50%;background:rgba(200,169,81,.08);}
+    .header-top{display:flex;align-items:center;gap:14px;margin-bottom:32px;}
+    .logo{width:44px;height:44px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:800;font-size:17px;color:var(--navy);flex-shrink:0;}
+    .inst{font-family:'Montserrat',sans-serif;}
+    .inst .univ{font-size:10px;color:rgba(255,255,255,.55);letter-spacing:.5px;}
+    .inst .school{font-size:12px;font-weight:700;color:#fff;}
+    .header-badge{display:inline-block;background:rgba(200,169,81,.2);border:1px solid var(--gold);color:var(--gold);font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:4px 12px;border-radius:4px;margin-bottom:14px;text-transform:uppercase;}
+    .header h1{font-family:'Montserrat',sans-serif;font-size:28px;font-weight:800;margin-bottom:6px;}
+    .header-sub{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:28px;}
+    .header-divider{width:48px;height:3px;background:var(--gold);border-radius:2px;margin-bottom:24px;}
+    .header-meta{display:flex;gap:32px;flex-wrap:wrap;}
+    .meta-item .lbl{font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:2px;}
+    .meta-item .val{font-size:11px;color:#fff;font-weight:600;}
+
+    /* STATUS BAR */
+    .status-bar{background:var(--navy);padding:12px 64px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+    .sbar-item{display:flex;align-items:center;gap:8px;font-size:9px;font-family:'Montserrat',sans-serif;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:rgba(255,255,255,.5);}
+    .sbar-dot{width:8px;height:8px;border-radius:50%;}
+    .sbar-dot.done{background:#1A7A4A;}
+    .sbar-dot.pending{background:#B7770D;}
+    .sbar-count{background:var(--gold);color:var(--navy);font-size:10px;font-weight:800;padding:1px 8px;border-radius:10px;margin-left:4px;}
+
+    /* MAIN */
+    .main{max-width:1000px;margin:0 auto;padding:40px 32px;}
+
+    /* PROGRESS */
+    .progress-section{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:24px 28px;margin-bottom:32px;}
+    .progress-title{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin-bottom:16px;}
+    .progress-bar-wrap{background:#EEF1F8;border-radius:8px;height:10px;overflow:hidden;margin-bottom:8px;}
+    .progress-bar-fill{background:linear-gradient(90deg,var(--success),#2ECC71);height:100%;border-radius:8px;transition:width .4s;}
+    .progress-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);font-family:'Montserrat',sans-serif;font-weight:700;}
+
+    /* CARDS GRID */
+    .cards-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:32px;}
+    .doc-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:box-shadow .2s,transform .2s;text-decoration:none;color:inherit;display:block;}
+    .doc-card:hover{box-shadow:0 8px 24px rgba(27,42,74,.15);transform:translateY(-2px);}
+    .doc-card .card-top{padding:16px 18px 12px;border-bottom:1px solid var(--border);}
+    .doc-card .card-code{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:800;letter-spacing:1px;color:var(--gold);margin-bottom:4px;}
+    .doc-card .card-title{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:var(--navy);line-height:1.3;margin-bottom:6px;}
+    .doc-card .card-status{display:inline-block;padding:2px 9px;border-radius:10px;font-size:8px;font-family:'Montserrat',sans-serif;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
+    .status-done{background:#EBF7F1;color:var(--success);}
+    .status-pending{background:#FEF8EC;color:var(--warn);}
+    .doc-card .card-body{padding:12px 18px 16px;}
+    .doc-card .card-version{font-size:9px;color:var(--muted);font-family:'Montserrat',sans-serif;font-weight:600;margin-bottom:8px;}
+    .doc-card .card-desc{font-size:9.5px;color:var(--text);line-height:1.6;}
+    .doc-card .card-cta{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:9px;font-family:'Montserrat',sans-serif;font-weight:700;color:var(--blue);letter-spacing:.5px;text-transform:uppercase;}
+    .doc-card .card-cta::after{content:'→';}
+    .doc-card.done .card-top{border-left:4px solid var(--success);}
+    .doc-card.pending .card-top{border-left:4px solid var(--warn);}
+
+    /* DIAGRAMAS SECTION */
+    .section-title{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:800;color:var(--navy);letter-spacing:.5px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+    .section-title::before{content:'';width:4px;height:18px;background:var(--gold);border-radius:2px;}
+
+    .diagrams-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px;}
+    .diagram-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;transition:background .15s;}
+    .diagram-card:hover{background:var(--gold-lt);}
+    .diagram-icon{font-size:22px;flex-shrink:0;}
+    .diagram-info .d-name{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+    .diagram-info .d-desc{font-size:9px;color:var(--muted);}
+
+    /* SPECS SECTION */
+    .specs-list{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:32px;}
+    .spec-card{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:12px 14px;text-decoration:none;color:inherit;transition:background .15s;}
+    .spec-card:hover{background:#EEF1F8;}
+    .spec-card .s-code{font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:800;color:var(--blue);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px;}
+    .spec-card .s-title{font-family:'Montserrat',sans-serif;font-size:10px;font-weight:700;color:var(--navy);}
+
+    /* RUBRICA */
+    .rubrica-table{width:100%;border-collapse:collapse;margin-bottom:32px;font-size:10px;}
+    .rubrica-table thead tr{background:var(--navy);color:#fff;}
+    .rubrica-table thead th{padding:10px 14px;font-family:'Montserrat',sans-serif;font-size:9px;font-weight:700;text-align:left;letter-spacing:.5px;text-transform:uppercase;}
+    .rubrica-table tbody tr:nth-child(even){background:#F0F4FA;}
+    .rubrica-table tbody td{padding:9px 14px;border-bottom:1px solid var(--border);vertical-align:top;}
+    .score{display:inline-block;padding:2px 8px;border-radius:10px;font-size:8px;font-family:'Montserrat',sans-serif;font-weight:800;}
+    .score-ex{background:#EBF7F1;color:var(--success);}
+
+    /* FOOTER */
+    .footer{background:var(--navy);padding:16px 64px;display:flex;justify-content:space-between;align-items:center;margin-top:40px;}
+    .footer span{font-size:8.5px;color:rgba(255,255,255,.4);font-family:'Montserrat',sans-serif;letter-spacing:.5px;}
+    .footer .badge{background:rgba(200,169,81,.15);border:1px solid rgba(200,169,81,.3);color:var(--gold);padding:3px 10px;border-radius:4px;font-size:8px;font-weight:700;letter-spacing:1px;}
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="logo">U</div>
+      <div class="inst">
+        <div class="univ">UNIVERSIDAD PERUANA UNIÓN — UPEU</div>
+        <div class="school">Escuela Profesional de Ingeniería de Sistemas · Línea ITI</div>
+      </div>
+    </div>
+    <div class="header-badge">E1 · Entregable 1 · Semestre I – 2026</div>
+    <h1>Diseño de Red</h1>
+    <div class="header-sub">Proyecto de Fin de Carrera — Área de Infraestructura Tecnológica (ITI) · Franco's SAC</div>
+    <div class="header-divider"></div>
+    <div class="header-meta">
+      <div class="meta-item"><div class="lbl">Empresa</div><div class="val">Franco's SAC</div></div>
+      <div class="meta-item"><div class="lbl">Competencia</div><div class="val">CE031 — Conectividad</div></div>
+      <div class="meta-item"><div class="lbl">Etapa CDIO</div><div class="val">Conceive</div></div>
+      <div class="meta-item"><div class="lbl">Estándares</div><div class="val">TIA/EIA-568 · IEEE 802.x · ISO/IEC 11801</div></div>
+      <div class="meta-item"><div class="lbl">Fecha de cierre</div><div class="val">31 Mayo 2026</div></div>
+      <div class="meta-item"><div class="lbl">Estado</div><div class="val">✅ COMPLETO — 6/6 documentos</div></div>
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="sbar-item"><span class="sbar-dot done"></span>Documentos completos<span class="sbar-count">6</span></div>
+    <div class="sbar-item"><span class="sbar-dot done"></span>Diagramas .drawio<span class="sbar-count">5</span></div>
+    <div class="sbar-item"><span class="sbar-dot done"></span>Specs técnicos .md<span class="sbar-count">6</span></div>
+    <div class="sbar-item"><span class="sbar-dot done"></span>Elementos trazabilidad<span class="sbar-count">23</span></div>
+    <div class="sbar-item"><span class="sbar-dot done"></span>Principios ACM<span class="sbar-count">8/8</span></div>
+  </div>
+
+  <div class="main">
+
+    <!-- PROGRESS -->
+    <div class="progress-section">
+      <div class="progress-title">Progreso del Entregable 1 — Diseño de Red</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" style="width:100%"></div>
+      </div>
+      <div class="progress-labels">
+        <span>0%</span>
+        <span style="color:var(--success);font-size:11px;">✅ 100% — E1 COMPLETO · Listo para revisión del coordinador</span>
+        <span>100%</span>
+      </div>
+    </div>
+
+    <!-- DOCUMENTOS -->
+    <div class="section-title">Documentos del Entregable 1</div>
+    <div class="cards-grid">
+
+      <a class="doc-card done" href="CE0311_Levantamiento_Requerimientos.html">
+        <div class="card-top">
+          <div class="card-code">CE0311</div>
+          <div class="card-title">Levantamiento de Requerimientos Técnicos y de Negocio</div>
+          <span class="card-status status-done">✅ Completo</span>
+        </div>
+        <div class="card-body">
+          <div class="card-version">Versión v1.3 · 31 Mayo 2026</div>
+          <div class="card-desc">Diagnóstico AS-IS · 17 RT (incluyendo RT-14 RODC, RT-15 AWS, RT-16 WAF, RT-17 Monitoreo híbrido) · 7 RN · 8 SUP · 6 restricciones de laboratorio</div>
+          <div class="card-cta">Abrir documento</div>
+        </div>
+      </a>
+
+      <a class="doc-card done" href="CE0312_Topologia_Logica_Fisica.html">
+        <div class="card-top">
+          <div class="card-code">CE0312</div>
+          <div class="card-title">Diseño de Topología Lógica y Física</div>
+          <span class="card-status status-done">✅ Completo</span>
+        </div>
+        <div class="card-body">
+          <div class="card-version">Versión v1.2 · 31 Mayo 2026</div>
+          <div class="card-desc">6 hipervisores ESXi · LOCAL 2 Sede Central hub (H1-H4) · LOCAL 1/L3 remotas · VPN hub-and-spoke · AWS Cloud · 22+ VMs · 5 diagramas .drawio</div>
+          <div class="card-cta">Abrir documento</div>
+        </div>
+      </a>
+
+      <a class="doc-card done" href="CE0313_Segmentacion_Red.html">
+        <div class="card-top">
+          <div class="card-code">CE0313</div>
+          <div class="card-title">Segmentación de Red (VLAN · DMZ · Subnetting)</div>
+          <span class="card-status status-done">✅ Completo</span>
+        </div>
+        <div class="card-body">
+          <div class="card-version">Versión v1.1 · 31 Mayo 2026</div>
+          <div class="card-desc">15 VLANs · DMZ VLAN30 con WAF NGINX+ModSecurity · subnetting verificado · inter-VLAN routing Router-on-a-Stick · VPN hub-and-spoke IPs correctas</div>
+          <div class="card-cta">Abrir documento</div>
+        </div>
+      </a>
+
+      <a class="doc-card done" href="CE0314_Redundancia_Alta_Disponibilidad.html">
+        <div class="card-top">
+          <div class="card-code">CE0314</div>
+          <div class="card-title">Plan de Redundancia y Alta Disponibilidad</div>
+          <span class="card-status status-done">✅ Completo</span>
+        </div>
+        <div class="card-body">
+          <div class="card-version">Versión v1.1 · 31 Mayo 2026</div>
+          <div class="card-desc">5 capas redundancia · Dual-WAN 3 locales · DC1+DC2+RODC DC3/DC4 · Streaming Replication RPO&lt;5min · H4 backup crítico · pg_dump→S3 AWS · RTO/RPO por servicio</div>
+          <div class="card-cta">Abrir documento</div>
+        </div>
+      </a>
+
+      <a class="doc-card done" href="CE0315_Cumplimiento_Estandares.html">
+        <div class="card-top">
+          <div class="card-code">CE0315</div>
+          <div class="card-title">Cumplimiento de Estándares de Conectividad</div>
+          <span class="card-status status-done">✅ Completo</span>
+        </div>
+        <div class="card-body">
+          <div class="card-version">Versión v1.1 · 31 Mayo 2026</div>
+          <div class="card-desc">23 elementos trazabilidad (18 CUMPLE + 5 TO-BE) · TIA/EIA-568 · IEEE 802.x · ISO/IEC 11801 · NIST SP 800-53 · ISO 27001 · OWASP · AWS Well-Architected</div>
+          <div class="card-cta">Abrir documento</div>
+        </div>
+      </a>
+
+      <a class="doc-card done" href="CE0316_Calidad_Documental_Etica.html">
+        <div class="card-top">
+          <div class="card-code">CE0316</div>
+          <div class="card-title">Calidad Documental y Ética ACM</div>
+          <span class="card-status status-done">✅ Completo</span>
+        </div>
+        <div class="card-body">
+          <div class="card-version">Versión v1.0 · 31 Mayo 2026</div>
+          <div class="card-desc">10 puntos coherencia verificados · 8 principios ACM aplicados · Ley 29733 Perú · impacto social y legal · trade-offs documentados · declaración formal de cierre E1</div>
+          <div class="card-cta">Abrir documento</div>
+        </div>
+      </a>
+
+    </div>
+
+    <!-- DIAGRAMAS -->
+    <div class="section-title">Diagramas Técnicos (.drawio)</div>
+    <div class="diagrams-grid">
+      <a class="diagram-card" href="../DIAGRAMAS/CE0312_Arquitectura_Hibrida_Global.drawio">
+        <div class="diagram-icon">🗺️</div>
+        <div class="diagram-info">
+          <div class="d-name">CE0312 — Arquitectura Híbrida Global</div>
+          <div class="d-desc">On-premises (3 locales) + AWS Cloud — vista completa del proyecto</div>
+        </div>
+      </a>
+      <a class="diagram-card" href="../DIAGRAMAS/CE0312_Topologia_Fisica_Local1.drawio">
+        <div class="diagram-icon">🖥️</div>
+        <div class="diagram-info">
+          <div class="d-name">Topología Física — LOCAL 1</div>
+          <div class="d-desc">Planta de Producción 1 · ESXi Host 5 · pfSense-L1</div>
+        </div>
+      </a>
+      <a class="diagram-card" href="../DIAGRAMAS/CE0312_Topologia_Fisica_Local2.drawio">
+        <div class="diagram-icon">🏢</div>
+        <div class="diagram-info">
+          <div class="d-name">Topología Física — LOCAL 2 (Sede Central)</div>
+          <div class="d-desc">Hub · H1-H4 · Cisco Catalyst 1000 · AP WiFi</div>
+        </div>
+      </a>
+      <a class="diagram-card" href="../DIAGRAMAS/CE0312_Topologia_Fisica_Global.drawio">
+        <div class="diagram-icon">🌐</div>
+        <div class="diagram-info">
+          <div class="d-name">Topología Física Global</div>
+          <div class="d-desc">Vista global de los 3 locales + VPN hub-and-spoke</div>
+        </div>
+      </a>
+      <a class="diagram-card" href="../DIAGRAMAS/CE0312_Topologia_Logica_Local1_y_Local2.drawio">
+        <div class="diagram-icon">📐</div>
+        <div class="diagram-info">
+          <div class="d-name">Topología Lógica — VLANs y Zonas</div>
+          <div class="d-desc">Segmentación lógica · VLANs · inter-VLAN routing</div>
+        </div>
+      </a>
+      <a class="diagram-card" href="../DIAGRAMAS/CE0312_Arquitectura_vSwitches_Host1.drawio">
+        <div class="diagram-icon">⚙️</div>
+        <div class="diagram-info">
+          <div class="d-name">Arquitectura vSwitches — ESXi H1</div>
+          <div class="d-desc">vSwitch0 · vSwitchWAN2 · vSwitchLAN · port groups</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- SPECS -->
+    <div class="section-title">Especificaciones Técnicas (.md)</div>
+    <div class="specs-list">
+      <a class="spec-card" href="../DIAGRAMAS/spec/H1_Borde_Red_VPN.md">
+        <div class="s-code">H1 — Borde</div>
+        <div class="s-title">pfSense-BORDE · WAF · API GW · Cisco Catalyst 1000 · VPN Hub · Dual-WAN</div>
+      </a>
+      <a class="spec-card" href="../DIAGRAMAS/spec/H2_Servicios_Sede_Central.md">
+        <div class="s-code">H2 — Servicios</div>
+        <div class="s-title">AD DC1+DC2 · NTP · FileServer · VM-MONITOR</div>
+      </a>
+      <a class="spec-card" href="../DIAGRAMAS/spec/H3_Backend_Microservicios.md">
+        <div class="s-code">H3 — Backend</div>
+        <div class="s-title">NATS + microservicios NestJS + PostgreSQL · redundancia 2 niveles</div>
+      </a>
+      <a class="spec-card" href="../DIAGRAMAS/spec/H4_Backup_Critico.md">
+        <div class="s-code">H4 — Backup</div>
+        <div class="s-title">DC2 réplica · standby frío ms · BDs streaming replication · S3</div>
+      </a>
+      <a class="spec-card" href="../DIAGRAMAS/spec/L1_L3_Sedes_Remotas.md">
+        <div class="s-code">L1 / L3 — Remotas</div>
+        <div class="s-title">pfSense liviano · RODC DC3/DC4 · FileServer + Zabbix agent</div>
+      </a>
+      <a class="spec-card" href="../DIAGRAMAS/spec/VM_MONITOR_Zabbix_Grafana_CloudWatch.md">
+        <div class="s-code">VM-MONITOR</div>
+        <div class="s-title">Zabbix + Grafana + CloudWatch · Docker Compose · monitoreo híbrido</div>
+      </a>
+    </div>
+
+    <!-- RÚBRICA -->
+    <div class="section-title">Rúbrica de Evaluación — CE031 (master.pdf)</div>
+    <table class="rubrica-table">
+      <thead>
+        <tr><th>Criterio</th><th>Documento</th><th>Versión</th><th>Nivel estimado</th><th>Evidencia clave</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Levantamiento de Requerimientos</strong><br><small>Completo, integra técnico y negocio, evidencia detallada</small></td>
+          <td>CE0311</td><td>v1.3</td>
+          <td><span class="score score-ex">EXCELENTE 18–20</span></td>
+          <td>17 RT · 7 RN · 8 SUP · RT-14/15/16/17 nuevos · 6 locales referenciados</td>
+        </tr>
+        <tr>
+          <td><strong>Topología Lógica y Física</strong><br><small>Diagramas claros, precisos, justificación de cada decisión</small></td>
+          <td>CE0312</td><td>v1.2</td>
+          <td><span class="score score-ex">EXCELENTE 18–20</span></td>
+          <td>5 diagramas .drawio · 6 hipervisores · hub-and-spoke · AWS Cloud · 22+ VMs</td>
+        </tr>
+        <tr>
+          <td><strong>Segmentación (VLAN, DMZ, Subnetting)</strong><br><small>Implementación detallada, estándares correctos, ejemplos concretos</small></td>
+          <td>CE0313</td><td>v1.1</td>
+          <td><span class="score score-ex">EXCELENTE 18–20</span></td>
+          <td>15 VLANs · DMZ con WAF · subnetting matemático · 23 elementos trazabilidad</td>
+        </tr>
+        <tr>
+          <td><strong>Redundancia y Alta Disponibilidad</strong><br><small>Soluciones robustas, análisis de SPOFs, respaldo documentado</small></td>
+          <td>CE0314</td><td>v1.1</td>
+          <td><span class="score score-ex">EXCELENTE 18–20</span></td>
+          <td>5 capas · RPO&lt;5min · DC2+RODC · H4 backup · pg_dump→S3 · RTO por servicio</td>
+        </tr>
+        <tr>
+          <td><strong>Cumplimiento de Estándares</strong><br><small>Referencias explícitas y aplicación correcta a todos los elementos</small></td>
+          <td>CE0315</td><td>v1.1</td>
+          <td><span class="score score-ex">EXCELENTE 18–20</span></td>
+          <td>23 trazabilidad · TIA/EIA · IEEE · ISO/IEC 11801 · NIST · ISO 27001 · OWASP</td>
+        </tr>
+        <tr>
+          <td><strong>Calidad Documental y Ética</strong><br><small>Profesional, lenguaje claro, estructura formal, mención ética ACM</small></td>
+          <td>CE0316</td><td>v1.0</td>
+          <td><span class="score score-ex">EXCELENTE 18–20</span></td>
+          <td>10 coherencia · 8 ACM · Ley 29733 · declaración formal · impacto social</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  <div class="footer">
+    <span>E1 — Diseño de Red · Franco's SAC · ITI UPeU 2026 · CE031</span>
+    <span class="badge">E1 COMPLETO ✅</span>
+    <span>6/6 documentos · 31 Mayo 2026</span>
+  </div>
+
+</body>
+</html>
