@@ -800,24 +800,282 @@
     </div><!-- /criterio-body -->
   </div><!-- /criterio §2 -->
 
-  <!-- ══ §3 POLÍTICAS DE SEGURIDAD (placeholder) ══ -->
+  <!-- ══ §3 POLÍTICAS DE SEGURIDAD ══ -->
   <div class="criterio" id="s3">
     <div class="criterio-header">
       <div class="criterio-num">3</div>
       <div class="criterio-info">
-        <div class="criterio-code">CE0323 · Criterio 3 de 5 · ISO 27001:2022 Anexo A</div>
+        <div class="criterio-code">CE0323 · Criterio 3 de 5 · ISO 27001:2022 Anexo A · NIST CSF v2.0</div>
         <div class="criterio-title">Políticas de Seguridad</div>
-        <div class="criterio-sub">Control de Acceso · Contraseñas · Backups · Parches · Uso Aceptable · Incidentes</div>
+        <div class="criterio-sub">6 políticas formales · Control de Acceso · Contraseñas · Backup · Parches · Uso Aceptable · Incidentes</div>
       </div>
     </div>
     <div class="criterio-body">
-      <div class="placeholder">
-        <div class="ph-icon">🔄</div>
-        <div class="ph-title">En elaboración — CE0323</div>
-        <div class="ph-sub">Contenido: 6 políticas formales (Control de Acceso, Contraseñas, Backup/Recuperación, Parches, Uso Aceptable, Respuesta a Incidentes) · Cada política con objetivo, alcance, procedimiento e indicador de cumplimiento · Alineación ISO 27001 Anexo A y NIST CSF</div>
+
+      <div class="sub">
+        <div class="sub-title">3.0 Marco general de políticas</div>
+        <p>Las políticas de seguridad de Franco's SAC son el conjunto de reglas formales que establecen cómo deben protegerse los activos de información identificados en CE0321 y cómo se mitigan los riesgos analizados en CE0322. Cada política incluye: objetivo, alcance, responsable, procedimiento, indicador de cumplimiento y referencia normativa.</p>
+        <table class="t" style="margin-bottom:4px;">
+          <thead><tr><th>Política</th><th>ISO 27001:2022</th><th>NIST CSF v2.0</th><th>Riesgos que mitiga</th></tr></thead>
+          <tbody>
+            <tr><td>POL-01 Control de Acceso</td><td>A.9 Access Control</td><td>PR.AC-1, PR.AC-3, PR.AC-4</td><td>R-02, R-05, R-13</td></tr>
+            <tr><td>POL-02 Gestión de Contraseñas</td><td>A.9.4.3 Password Mgmt</td><td>PR.AC-1, PR.AC-6</td><td>R-03, R-05</td></tr>
+            <tr><td>POL-03 Backup y Recuperación</td><td>A.12.3, A.17.1</td><td>PR.IP-4, RC.RP-1</td><td>R-01, R-07, R-09</td></tr>
+            <tr><td>POL-04 Gestión de Parches</td><td>A.12.6 Technical Vuln. Mgmt</td><td>PR.IP-12, DE.CM-8</td><td>R-01, R-04</td></tr>
+            <tr><td>POL-05 Uso Aceptable de TI</td><td>A.8, A.9.3</td><td>PR.AT-1</td><td>R-02, R-05, R-16</td></tr>
+            <tr><td>POL-06 Respuesta a Incidentes</td><td>A.16 Incident Mgmt</td><td>RS.RP-1, RS.CO-2, RC.RP-1</td><td>R-01 a R-15</td></tr>
+          </tbody>
+        </table>
       </div>
-    </div>
-  </div>
+
+      <!-- POL-01 -->
+      <div class="sub">
+        <div class="sub-title">3.1 POL-01 — Política de Control de Acceso (IAM)</div>
+        <table class="t">
+          <thead><tr><th style="width:160px;">Campo</th><th>Contenido</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Objetivo</strong></td><td>Garantizar que únicamente los usuarios autorizados accedan a los recursos TI de Franco's SAC, conforme a su rol y aplicando el principio de mínimo privilegio.</td></tr>
+            <tr><td><strong>Alcance</strong></td><td>Todos los sistemas: ERP (API Gateway + microservicios), Active Directory francos.local, bases de datos PostgreSQL, hipervisores ESXi, pfSense y AWS Cloud. Aplica a empleados, contratistas y equipo TI.</td></tr>
+            <tr><td><strong>Responsable</strong></td><td>CISO / Administrador TI — Ruben Mark Salazar</td></tr>
+            <tr><td><strong>Procedimiento</strong></td>
+            <td>
+              <strong>1. Grupos AD por área:</strong> OU=Produccion, OU=Ventas, OU=Administracion, OU=TI — acceso granular por grupo.<br>
+              <strong>2. Mínimo privilegio:</strong> cada usuario solo accede a los recursos necesarios para su función. Los operarios de L1/L3 acceden solo al módulo ERP correspondiente.<br>
+              <strong>3. Cuentas de servicio:</strong> cada microservicio tiene su propio usuario BD con permisos SELECT/INSERT/UPDATE únicamente (no DROP, ALTER, CREATE).<br>
+              <strong>4. Sin cuentas compartidas:</strong> queda prohibido compartir credenciales entre usuarios. Cada empleado tiene su cuenta AD individual.<br>
+              <strong>5. Gestión del ciclo de vida:</strong> nuevos usuarios → solicitud formal → alta en AD → asignación de grupo → acceso activo. Bajas → desactivación de cuenta AD en las primeras 24h tras la desvinculación.<br>
+              <strong>6. Revisión trimestral:</strong> el Admin TI revisa todos los accesos activos y elimina los innecesarios. Frecuencia: cada 90 días.<br>
+              <strong>7. Acceso privilegiado (TI):</strong> acceso SSH a hipervisores y pfSense solo desde VLAN 10 (Admin) o VLAN 99 (MGMT). MFA obligatorio para acceso remoto (TO-BE Semestre 2).
+            </td></tr>
+            <tr><td><strong>Indicadores de cumplimiento</strong></td>
+            <td>
+              • % cuentas revisadas en el último trimestre ≥ 100%<br>
+              • Número de cuentas compartidas detectadas = 0<br>
+              • Tiempo de desactivación de cuenta al dar de baja ≤ 24h<br>
+              • Número de accesos no autorizados detectados por Zabbix = 0
+            </td></tr>
+            <tr><td><strong>Referencia normativa</strong></td><td>ISO 27001:2022 A.9 (Access Control) · NIST CSF PR.AC-1, PR.AC-3, PR.AC-4 · Ley 29733 Art. 11 (tratamiento de datos)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- POL-02 -->
+      <div class="sub">
+        <div class="sub-title">3.2 POL-02 — Política de Gestión de Contraseñas</div>
+        <table class="t">
+          <thead><tr><th style="width:160px;">Campo</th><th>Contenido</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Objetivo</strong></td><td>Asegurar que todas las contraseñas de los sistemas de Franco's SAC sean suficientemente robustas para resistir ataques de fuerza bruta y diccionario.</td></tr>
+            <tr><td><strong>Alcance</strong></td><td>Todos los usuarios del dominio francos.local (empleados, operarios, equipo TI) y cuentas de servicio de microservicios y bases de datos.</td></tr>
+            <tr><td><strong>Responsable</strong></td><td>CISO / Administrador TI — GPO aplicada automáticamente via Active Directory</td></tr>
+            <tr><td><strong>Procedimiento</strong></td>
+            <td>
+              <strong>Requisitos de complejidad (GPO):</strong><br>
+              • Longitud mínima: 10 caracteres<br>
+              • Debe contener: mayúscula, minúscula, número y símbolo (al menos 1 de cada)<br>
+              • No puede contener: nombre de usuario, nombre real, palabras de diccionario<br><br>
+              <strong>Ciclo de vida:</strong><br>
+              • Rotación obligatoria cada 90 días (GPO Password Age = 90)<br>
+              • Historial: últimas 12 contraseñas recordadas (no reutilización)<br>
+              • Primera vez: usuario debe cambiar contraseña en el primer login<br><br>
+              <strong>Protección ante ataques:</strong><br>
+              • Bloqueo de cuenta tras 5 intentos fallidos (GPO Lockout Threshold = 5)<br>
+              • Duración del bloqueo: 30 minutos (GPO Lockout Duration = 30)<br>
+              • Observación contador: reinicia cada 30 min (Observation Window = 30)<br><br>
+              <strong>Cuentas especiales:</strong><br>
+              • Cuentas de servicio (microservicios, BD): contraseñas de 20+ caracteres alfanuméricas aleatorias, rotación cada 180 días, sin caducidad automática (gestionadas manualmente por Admin TI)<br>
+              • Cuentas de administrador ESXi/pfSense: contraseñas de 16+ caracteres, solo conocidas por el equipo TI
+            </td></tr>
+            <tr><td><strong>Indicadores de cumplimiento</strong></td>
+            <td>
+              • % usuarios con contraseña vencida = 0<br>
+              • Número de cuentas bloqueadas por semana (métrica de referencia, alerta si &gt;5/semana)<br>
+              • % cuentas de servicio con contraseña actualizada en los últimos 180 días = 100%
+            </td></tr>
+            <tr><td><strong>Referencia normativa</strong></td><td>ISO 27001:2022 A.9.4.3 · NIST CSF PR.AC-1, PR.AC-6 · NIST SP 800-63B (Autenticación digital)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- POL-03 -->
+      <div class="sub">
+        <div class="sub-title">3.3 POL-03 — Política de Backup y Recuperación</div>
+        <table class="t">
+          <thead><tr><th style="width:160px;">Campo</th><th>Contenido</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Objetivo</strong></td><td>Garantizar la disponibilidad y recuperabilidad de los datos críticos de Franco's SAC ante fallos, desastres o incidentes de seguridad, cumpliendo los objetivos RPO y RTO definidos.</td></tr>
+            <tr><td><strong>Alcance</strong></td><td>Bases de datos PostgreSQL (person-db, sales-invent-db, strategic-db), configuraciones de pfSense (3 locales), VMs críticas (H1-H4), imágenes Docker (ECR).</td></tr>
+            <tr><td><strong>Responsable</strong></td><td>DBA / Administrador de Sistemas — ejecución automática vía scripts cron</td></tr>
+            <tr><td><strong>Procedimiento</strong></td>
+            <td>
+              <table class="t" style="margin:0;">
+                <thead><tr><th>Nivel</th><th>Tipo</th><th>Frecuencia</th><th>Hora</th><th>Destino</th><th>Retención</th><th>RPO</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>N1</strong></td><td>Streaming Replication PostgreSQL</td><td>Continua</td><td>24/7</td><td>H4 réplica activa</td><td>Permanente</td><td>&lt;5 min</td></tr>
+                  <tr><td><strong>N2</strong></td><td>Snapshot ESXi VMs críticas</td><td>Diaria</td><td>23:00</td><td>VMFS6 local H1-H4</td><td>7 días</td><td>24h</td></tr>
+                  <tr><td><strong>N3</strong></td><td>pg_dump → S3 AWS (3 BDs)</td><td>Diaria</td><td>22:00</td><td>S3 francos-db-backups/</td><td>30 días</td><td>24h</td></tr>
+                  <tr><td><strong>N4</strong></td><td>OVF Export VMs → S3 AWS</td><td>Semanal</td><td>Dom 02:00</td><td>S3 francos-vm-exports/</td><td>4 semanas</td><td>7 días</td></tr>
+                  <tr><td><strong>N5</strong></td><td>Backup XML pfSense (3 locales)</td><td>Semanal + cambios</td><td>—</td><td>S3 + VM-MONITOR</td><td>30 días</td><td>7 días</td></tr>
+                </tbody>
+              </table>
+              <br><strong>Prueba de restauración:</strong> obligatoria trimestralmente. Procedimiento: restore de pg_dump en ambiente aislado → verificar integridad → documentar resultado y fecha. RTO objetivo: BDs ≤ 30 min · VMs ≤ 4h.
+            </td></tr>
+            <tr><td><strong>Indicadores de cumplimiento</strong></td>
+            <td>
+              • % backups N3 completados exitosamente (CloudWatch S3 PutObject) = 100% diario<br>
+              • Replication lag H3→H4 medido por Zabbix &lt; 5 minutos en todo momento<br>
+              • Última prueba de restauración ≤ 90 días<br>
+              • RTO alcanzado en la última prueba ≤ objetivo definido
+            </td></tr>
+            <tr><td><strong>Referencia normativa</strong></td><td>ISO 27001:2022 A.12.3 · A.17.1 · NIST CSF PR.IP-4, RC.RP-1 · NIST SP 800-34 (Contingency Planning)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- POL-04 -->
+      <div class="sub">
+        <div class="sub-title">3.4 POL-04 — Política de Gestión de Parches y Actualizaciones</div>
+        <table class="t">
+          <thead><tr><th style="width:160px;">Campo</th><th>Contenido</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Objetivo</strong></td><td>Mantener todos los sistemas de Franco's SAC actualizados para mitigar vulnerabilidades conocidas (CVEs), minimizando la ventana de exposición a ataques.</td></tr>
+            <tr><td><strong>Alcance</strong></td><td>Sistema operativo Ubuntu Server 24.04 LTS, Docker Engine + imágenes de contenedores, pfSense 2.7 CE, Samba AD-DC, PostgreSQL 15, NATS 2.x, NGINX+ModSecurity, Zabbix/Grafana.</td></tr>
+            <tr><td><strong>Responsable</strong></td><td>Administrador TI / Administrador de Sistemas</td></tr>
+            <tr><td><strong>Procedimiento</strong></td>
+            <td>
+              <strong>Clasificación y tiempos de respuesta:</strong><br>
+              • <strong>Crítico (CVSS ≥ 9.0):</strong> parchear en ≤ 72 horas. Ventana de emergencia fuera del horario laboral si es necesario.<br>
+              • <strong>Alto (CVSS 7.0–8.9):</strong> parchear en ≤ 15 días en la próxima ventana de mantenimiento.<br>
+              • <strong>Medio/Bajo (CVSS &lt; 7.0):</strong> parchear en la ventana mensual de mantenimiento.<br><br>
+              <strong>Ventana de mantenimiento:</strong><br>
+              • Programada: primer sábado de cada mes, 02:00–06:00 hrs (fuera del horario laboral 08:00-18:00)<br>
+              • Notificación previa: 72 horas antes a la Gerencia<br>
+              • Rollback plan: snapshot ESXi antes de cada actualización crítica<br><br>
+              <strong>Procedimiento de aplicación:</strong><br>
+              1. Identificar CVEs aplicables (consulta NVD/NIST mensual)<br>
+              2. Clasificar por severidad y componente afectado<br>
+              3. Tomar snapshot ESXi de VMs afectadas<br>
+              4. Aplicar parche en ventana de mantenimiento<br>
+              5. Verificar funcionamiento post-actualización (health checks)<br>
+              6. Documentar: versión anterior, versión nueva, fecha, responsable<br><br>
+              <strong>Fuentes de referencia:</strong> NVD (nvd.nist.gov) · USN Ubuntu Security Notices · pfSense Security Advisories · Docker CVE DB
+            </td></tr>
+            <tr><td><strong>Indicadores de cumplimiento</strong></td>
+            <td>
+              • CVEs críticos (CVSS ≥ 9.0) pendientes &gt; 72h = 0<br>
+              • CVEs altos pendientes &gt; 15 días = 0<br>
+              • % sistemas con versión de software documentada y actualizada = 100%<br>
+              • Ventanas de mantenimiento ejecutadas según calendario = 100%
+            </td></tr>
+            <tr><td><strong>Referencia normativa</strong></td><td>ISO 27001:2022 A.12.6 (Technical Vulnerability Management) · NIST CSF PR.IP-12, DE.CM-8 · CIS Benchmark Ubuntu 24.04</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- POL-05 -->
+      <div class="sub">
+        <div class="sub-title">3.5 POL-05 — Política de Uso Aceptable de Recursos TI</div>
+        <table class="t">
+          <thead><tr><th style="width:160px;">Campo</th><th>Contenido</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Objetivo</strong></td><td>Definir el uso apropiado de los recursos tecnológicos de Franco's SAC para proteger la confidencialidad, integridad y disponibilidad de la información.</td></tr>
+            <tr><td><strong>Alcance</strong></td><td>Todos los empleados, operarios, contratistas y visitantes que utilicen recursos TI de Franco's SAC (ERP, red WiFi, workstations, VPN).</td></tr>
+            <tr><td><strong>Responsable</strong></td><td>Gerencia General — comunicación · CISO — control y monitoreo</td></tr>
+            <tr><td><strong>Procedimiento</strong></td>
+            <td>
+              <strong>Uso permitido:</strong><br>
+              • Recursos TI exclusivamente para actividades laborales de Franco's SAC<br>
+              • Acceso al ERP únicamente con credenciales propias del dominio francos.local<br>
+              • Descarga de archivos relacionados con el trabajo desde fuentes autorizadas<br><br>
+              <strong>Uso prohibido:</strong><br>
+              • Compartir credenciales de acceso (AD, ERP) con otros usuarios<br>
+              • Instalar software no autorizado en workstations del dominio<br>
+              • Acceder a sistemas de Franco's SAC desde dispositivos personales no autorizados<br>
+              • Almacenar información confidencial fuera de los sistemas aprobados (person-db, sales-db)<br>
+              • Usar la red de Franco's SAC para actividades personales no relacionadas al trabajo<br>
+              • Eludir controles de seguridad (VPN, firewall, VLAN)<br><br>
+              <strong>BYOD (Bring Your Own Device):</strong><br>
+              • Dispositivos personales NO se conectan a VLAN 20 sin autorización previa del Admin TI<br>
+              • En caso de autorización: el dispositivo debe tener antivirus activo y OS actualizado<br><br>
+              <strong>Violaciones y consecuencias:</strong><br>
+              • Violación menor: advertencia formal documentada<br>
+              • Violación mayor: suspensión de acceso + proceso disciplinario<br>
+              • Violación grave (divulgación de datos): rescisión de contrato + posible acción legal (Ley 29733)
+            </td></tr>
+            <tr><td><strong>Indicadores de cumplimiento</strong></td>
+            <td>
+              • % empleados capacitados en la política (anual) = 100%<br>
+              • Número de violaciones reportadas por trimestre (tendencia decreciente)<br>
+              • Número de accesos con credenciales compartidas detectados por Zabbix = 0
+            </td></tr>
+            <tr><td><strong>Referencia normativa</strong></td><td>ISO 27001:2022 A.8 (Asset Management), A.9.3 (User Responsibilities) · NIST CSF PR.AT-1 · Ley 29733 (Perú)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- POL-06 -->
+      <div class="sub">
+        <div class="sub-title">3.6 POL-06 — Política de Respuesta a Incidentes de Seguridad</div>
+        <table class="t">
+          <thead><tr><th style="width:160px;">Campo</th><th>Contenido</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Objetivo</strong></td><td>Establecer el procedimiento formal para detectar, clasificar, contener, erradicar y recuperarse de incidentes de seguridad, minimizando el impacto en las operaciones de Franco's SAC.</td></tr>
+            <tr><td><strong>Alcance</strong></td><td>Todos los sistemas de Franco's SAC (ERP, AD, BDs, red, infraestructura) y todos los locales (L1, L2, L3). Aplica ante cualquier evento que comprometa la CIA de los activos.</td></tr>
+            <tr><td><strong>Responsable</strong></td><td>CISO (coordinación) · Admin TI (respuesta técnica) · Gerencia (decisiones ejecutivas y comunicación externa)</td></tr>
+            <tr><td><strong>Clasificación de incidentes:</strong></td>
+            <td>
+              <table class="t" style="margin:0;">
+                <thead><tr><th>Prioridad</th><th>Criterio</th><th>Tiempo de respuesta</th><th>Ejemplos</th></tr></thead>
+                <tbody>
+                  <tr><td><span class="b b-hi">P1 — Crítico</span></td><td>Impacto total en operaciones · ERP inaccesible · datos comprometidos</td><td>&lt; 1 hora</td><td>Ransomware BDs · caída total ERP · filtración masiva datos</td></tr>
+                  <tr><td><span class="b b-warn">P2 — Alto</span></td><td>Impacto significativo · servicio degradado · riesgo inminente</td><td>&lt; 4 horas</td><td>Caída pfSense · VPN caída · acceso no autorizado detectado</td></tr>
+                  <tr><td><span class="b b-imp">P3 — Medio</span></td><td>Impacto parcial · servicio funcional con limitaciones</td><td>&lt; 24 horas</td><td>Alerta Zabbix · backup fallido · alerta WAF</td></tr>
+                  <tr><td><span class="b b-norm">P4 — Bajo</span></td><td>Sin impacto operativo · evento informativo</td><td>&lt; 72 horas</td><td>Intentos de login fallidos · parche pendiente</td></tr>
+                </tbody>
+              </table>
+            </td></tr>
+            <tr><td><strong>Procedimiento (6 fases)</strong></td>
+            <td>
+              <strong>1. DETECCIÓN:</strong> Zabbix/Grafana alerta automática · Usuario reporta a Admin TI · CloudWatch alerta AWS<br>
+              <strong>2. CLASIFICACIÓN:</strong> Admin TI determina prioridad P1-P4 en ≤ 15 min<br>
+              <strong>3. CONTENCIÓN:</strong><br>
+              &nbsp;&nbsp;• P1/P2: Aislar VLAN afectada en pfSense (bloquear interfaz) · revocar credenciales comprometidas · desconectar VM afectada<br>
+              &nbsp;&nbsp;• Preservar evidencia: logs Zabbix + pfSense syslog + PostgreSQL audit logs + capturas de pantalla<br>
+              <strong>4. ERRADICACIÓN:</strong> identificar causa raíz · eliminar malware/acceso · aplicar parche<br>
+              <strong>5. RECUPERACIÓN:</strong> restaurar desde N1 streaming replication (BDs) o N2 snapshot (VMs) · verificar integridad · reactivar servicio<br>
+              <strong>6. POST-INCIDENTE:</strong><br>
+              &nbsp;&nbsp;• RCA (Root Cause Analysis) completado en ≤ 5 días hábiles<br>
+              &nbsp;&nbsp;• Informe de incidente documentado en Zabbix<br>
+              &nbsp;&nbsp;• Actualizar políticas/controles si es necesario<br><br>
+              <strong>Cadena de escalamiento:</strong><br>
+              Usuario → Admin TI (15 min) → CISO (30 min) → Gerencia General (P1: inmediato, P2: 2h)<br><br>
+              <strong>Comunicación externa (si aplica):</strong><br>
+              • Brecha de datos personales: notificar a INDECOPI ≤ 72 horas (Ley 29733 Art. 26 D.S. 003-2013-JUS)<br>
+              • Notificación a afectados: ≤ 5 días hábiles si hay riesgo para sus derechos
+            </td></tr>
+            <tr><td><strong>Indicadores de cumplimiento</strong></td>
+            <td>
+              • MTTR P1 (tiempo medio de resolución incidentes críticos) ≤ 4h<br>
+              • MTTR P2 ≤ 8h · MTTR P3 ≤ 48h<br>
+              • % incidentes con RCA completado en 5 días = 100%<br>
+              • Número de incidentes recurrentes del mismo tipo = 0 (tras corrección)<br>
+              • Tiempo de notificación a Gerencia en P1 ≤ 30 min
+            </td></tr>
+            <tr><td><strong>Referencia normativa</strong></td><td>ISO 27001:2022 A.16 (Incident Management) · NIST CSF RS.RP-1, RS.CO-2, RS.MI-1, RC.RP-1 · Ley 29733 Art. 26 · D.S. 003-2013-JUS</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="ib ok">
+        <div class="ib-icon">✅</div>
+        <div class="ib-body">
+          <div class="ib-label">Cobertura de las 6 políticas</div>
+          Las 6 políticas cubren los <strong>14 riesgos a mitigar</strong> identificados en CE0322. POL-01 (acceso) y POL-02 (contraseñas) mitigan los riesgos de acceso no autorizado (R-02, R-03, R-05). POL-03 (backups) cubre los riesgos de pérdida de datos (R-01, R-07, R-09). POL-04 (parches) reduce la probabilidad de exploits conocidos (R-01, R-04). POL-05 y POL-06 cierran el ciclo de concientización y respuesta ante cualquier incidente.
+        </div>
+      </div>
+
+    </div><!-- /criterio-body -->
+  </div><!-- /criterio §3 -->
 
   <!-- ══ §4 ROLES Y RESPONSABILIDADES (placeholder) ══ -->
   <div class="criterio" id="s4">
