@@ -1,0 +1,1855 @@
+%! TEX program = xelatex
+% ============================================================
+%  PLANTILLA BASE — · Ing. de Sistemas
+%  Compilar:  xelatex → bibtex → xelatex → xelatex
+% ============================================================
+
+\documentclass[11pt, a4paper, oneside]{report}
+
+% ── Fuentes y codificación ───────────────────────────────
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setmonofont{Consolas}
+\usepackage{babel}
+\babelprovide[import, main]{spanish}
+\usepackage{tabularx}
+\usepackage{hyperref}
+\usepackage{pdflscape}
+\usepackage{lscape}
+\usepackage{tikz}
+% ── Márgenes ────────────────────────────────────────────
+\usepackage{geometry}
+\geometry{
+  top    = 2.54cm,
+  bottom = 2.54cm,
+  left   = 3.00cm,
+  right  = 2.54cm,
+}
+\setlength{\headheight}{14.5pt}
+
+% ── Interlineado y párrafo ───────────────────────────────
+\usepackage{setspace}
+\setstretch{1.5}
+\usepackage{parskip}
+\setlength{\parindent}{1.25cm}
+
+% ── Figuras y tablas ────────────────────────────────────
+\usepackage{float}
+
+% ── Colores UPeU ────────────────────────────────────────
+\usepackage[table]{xcolor}
+\definecolor{upeu_dark}{HTML}{1A3A6B}
+\definecolor{upeu_mid}{HTML}{2E75B6}
+\definecolor{upeu_light}{HTML}{D6E4F0}
+\definecolor{upeu_gold}{HTML}{B8860B}
+\definecolor{body_gray}{HTML}{404040}
+\definecolor{hint_gray}{HTML}{9E9E9E}
+% ── Severidad de riesgo (usado en CE0321-CE0325) ─────────
+\definecolor{sev_critico}{HTML}{C0392B}
+\definecolor{sev_alto}{HTML}{C0592B}
+\definecolor{sev_medio}{HTML}{B7770D}
+\definecolor{sev_bajo}{HTML}{1A7A4A}
+\definecolor{sev_normal}{HTML}{6B7280}
+\definecolor{diag_bg}{HTML}{0D1117}
+
+% ── Encabezado y pie ────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{%
+  {\color{body_gray}\small\itshape }%
+  {\color{upeu_dark}\small\bfseries Ingeniería de Sistemas · UPeU}%
+}
+\renewcommand{\headrule}{{\color{upeu_mid}\rule{\headwidth}{0.8pt}}}
+\fancyfoot[L]{\scriptsize\textcolor{upeu_mid}{E2 -- Planificación de Seguridad de la Información · Franco's SAC}}
+\fancyfoot[R]{{\color{body_gray}\small Página \thepage}}
+\renewcommand{\footrule}{{\color{upeu_mid}\rule{\headwidth}{0.8pt}}}
+
+% PARCHE: Obliga a todas las páginas (incluyendo capítulos e índice) a ser Fancy
+\makeatletter
+\let\ps@plain\ps@fancy
+\makeatother
+
+% ── Títulos / secciones ──────────────────────────────────
+\usepackage{titlesec}
+
+% Capitulo  (Heading 1)
+\titleformat{\chapter}[display]
+  {\thispagestyle{empty}\normalfont\centering\vspace*{\fill}}
+  {\color{upeu_mid}\bfseries\fontsize{20}{30}\selectfont CAPÍTULO \thechapter}
+  {0.05cm}
+  {\color{upeu_dark}\bfseries\fontsize{30}{40}\selectfont}
+  [\vspace*{\fill}\newpage]
+
+\titlespacing{\chapter}{0pt}{0pt}{0pt}
+
+% Seccion  (Heading 2)
+\titleformat{\section}[hang]
+  {\normalfont\bfseries\large\color{upeu_dark}}
+  {\thesection}{0.7em}{}
+\titlespacing{\section}{0pt}{14pt}{6pt}
+
+% Subseccion  (Heading 3)
+\titleformat{\subsection}[hang]
+  {\normalfont\bfseries\normalsize\color{upeu_mid}\itshape}
+  {\thesubsection}{0.7em}{}
+\titlespacing{\subsection}{0pt}{10pt}{4pt}
+
+% Sub-subseccion  (Heading 4)
+\titleformat{\subsubsection}[hang]
+  {\normalfont\bfseries\normalsize\color{body_gray}}
+  {\thesubsubsection}{0.7em}{}
+\titlespacing{\subsubsection}{0pt}{8pt}{2pt}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% ── Índice: forzar mismo formato que \chapter ────────────
+% FIX: \contentsname usa \chapter* internamente, lo que omite
+%      el \titleformat definido arriba. Con \addtocontents y
+%      \renewcommand forzamos el título con el estilo correcto.
+\usepackage{tocloft}
+\renewcommand{\cfttoctitlefont}{\normalfont\bfseries\Large\color{upeu_dark}}
+\renewcommand{\cftaftertoctitle}{%
+}
+\setlength{\cftbeforetoctitleskip}{10pt}
+\setlength{\cftaftertoctitleskip}{16pt}
+
+\renewcommand{\cftchapfont}{\bfseries\color{upeu_dark}}
+\renewcommand{\cftsecfont}{\color{body_gray}}
+\renewcommand{\cftsubsecfont}{\small\color{body_gray}}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+% ── Graficos ────────────────────────────────────────────
+\usepackage{graphicx}
+\graphicspath{{./img/}}
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}  % por si acaso también para tablas
+
+% ── Tablas ──────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xltabular}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+% Columnas con centrado vertical
+\newcolumntype{M}[1]{>{\raggedright\arraybackslash}m{#1}}
+\newcolumntype{N}[1]{>{\centering\arraybackslash}m{#1}}
+
+% ── Listas ──────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist{noitemsep, topsep=4pt}
+
+% ── Citas IEEE ──────────────────────────────────────────
+\usepackage[numbers]{natbib}
+\bibliographystyle{ieeetr}
+
+% ── Hipervinculos ────────────────────────────────────────
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = upeu_dark,
+  urlcolor   = upeu_mid,
+  citecolor  = upeu_mid,
+  pdftitle   = {E2 -- Planificacion de Seguridad de la Informacion -- Franco's SAC -- ITI UPeU 2026},
+  pdfauthor  = {Salazar Tocas, Ruben Mark; Sauñe Fernandez, Uziel Elias},
+}
+
+% ── Captions ────────────────────────────────────────────
+\usepackage{caption}
+\captionsetup{
+  font      = small,
+  labelfont = {bf, color=upeu_dark},
+  textfont  = {color=body_gray},
+  skip      = 4pt,
+  labelsep  = period
+}
+
+\addto\captionsspanish{%
+  \renewcommand{\tablename}{Tabla}%
+  \renewcommand{\figurename}{Figura}%
+}
+
+% ── Codigo fuente ────────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle   = \ttfamily\small,
+  keywordstyle = \bfseries\color{upeu_dark},
+  commentstyle = \itshape\color{hint_gray},
+  stringstyle  = \color{upeu_mid},
+  frame        = single,
+  rulecolor    = \color{upeu_mid},
+  breaklines   = true,
+  numbers      = left,
+  numberstyle  = \tiny\color{hint_gray},
+}
+
+\usepackage{microtype}
+\usepackage{amsmath}
+
+% ── Estilo para diagramas ASCII (fondo oscuro, Consolas) ────
+\lstdefinestyle{diagrama}{
+  basicstyle    = {\ttfamily\scriptsize\color[HTML]{E6EDF3}},
+  backgroundcolor = \color{diag_bg},
+  frame         = single,
+  rulecolor     = \color{diag_bg},
+  numbers       = none,
+  breaklines    = false,
+  keepspaces    = true,
+}
+
+% ── Caja de nota / info-box ──────────────────────────────────
+\newenvironment{notabox}[1]{%
+  \vspace{6pt}\noindent\colorbox{upeu_light}{%
+  \begin{minipage}{\dimexpr\textwidth-2\fboxsep\relax}%
+  \vspace{4pt}\textcolor{upeu_dark}{\textbf{#1}}\\[2pt]\small%
+}{\vspace{4pt}\end{minipage}}\vspace{6pt}}
+
+% TEMPORAL: placeholder hasta que las imágenes estén en img/
+\setkeys{Gin}{draft=true}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ── PORTADA ─────────────────────────────────────────────────
+\begin{titlepage}
+  \pagestyle{empty}
+  \centering
+
+  \vspace*{\fill}
+
+  {\color{upeu_dark}\bfseries\Large UNIVERSIDAD PERUANA UNIÓN}\\[5pt]
+  {\color{body_gray}\large Facultad de Ingeniería y Arquitectura}\\[3pt]
+  {\color{body_gray}\normalsize Escuela Profesional de Ingeniería de Sistemas}
+
+  \vspace{12pt}
+
+  \includegraphics[width=6.5cm]{img/logo-upeu.png}\\[10pt]
+
+  % ── Nombre del proyecto ──
+  {\color{upeu_mid}\bfseries\normalsize CE032}\\
+  {\color{upeu_dark}\bfseries\large Entregable 2: Planificación de Seguridad de la Información}\\[4pt]
+
+  \vspace{0.3cm}
+
+  % ── Curso y Docente ──
+  \begin{tabular}{@{}ll@{}}
+    {\color{upeu_dark}\bfseries Área:}    & {\color{body_gray} Infraestructura Tecnologica} \\[4pt]
+    {\color{upeu_dark}\bfseries Asesor:} & {\color{body_gray} Mg. Fernando Asin} \\
+  \end{tabular}
+
+  \vspace{0.3cm}
+
+  {\color{upeu_dark}\bfseries Integrantes:}\\[6pt]
+
+  \begin{tabular}{@{}|l|@{}}
+    \arrayrulecolor{upeu_dark}
+    \rowcolor{upeu_dark}
+    {\color{white}\bfseries\small Integrante} \\ \hline
+    {\color{body_gray}\small Salazar Tocas, Rubén Mark} \\ \hline
+    {\color{body_gray}\small Chavarri Centeno, Jorge Andrés} \\ \hline
+    {\color{body_gray}\small Sauñe Fernandez, Uziel Elias} \\ \hline
+    {\color{body_gray}\small Pedraza Perez, Joshua Josue} \\ \hline
+    {\color{body_gray}\small Lanche Cerro, Hilter Piero} \\ \hline
+    {\color{body_gray}\small Rivera Matias, Joel Joshep} \\ \hline
+    {\color{body_gray}\small Evan Chacon} \\ \hline
+    {\color{body_gray}\small Ramos Turpo, Roxwell Jesus} \\ \hline
+    {\color{body_gray}\small Vallejos Cotrina, Pamela} \\ \hline
+    {\color{body_gray}\small Vergara, Veronica Lisseth} \\ \hline
+  \end{tabular}
+
+  \vspace{0.6cm}
+  {\color{body_gray} Junio, 2026}
+
+  \vspace*{\fill}
+
+\end{titlepage}
+
+% ── CONTROL DE VERSIONES ────────────────────────────────────
+\newpage
+
+\thispagestyle{empty}
+\vspace*{\fill}
+
+{\centering
+% {\color{upeu_dark}\bfseries\Large Control de Versiones}\\[0.4cm]
+
+\begin{tabular}{@{}|C{1.5cm}|C{2.2cm}|L{3cm}|L{5cm}|C{2cm}|@{}}
+
+  \arrayrulecolor{upeu_dark}
+
+  \rowcolor{upeu_dark}
+  {\color{white}\bfseries\small Versión} &
+  {\color{white}\bfseries\small Fecha} &
+  {\color{white}\bfseries\small Autor} &
+  {\color{white}\bfseries\small Descripción} &
+  {\color{white}\bfseries\small Estado} \\  \hline
+
+  \small v1.0 & \small 31/05/2026 & \small Salazar Tocas, R. & \small Creación inicial: CE0321--CE0325 completos & \small Aprobado \\ \hline
+  \small v1.1 & \small 01/06/2026 & \small Sauñe Fernandez, U. & \small Referencias normativas (9 docs) y eliminación de anexo redundante & \small Aprobado \\ \hline
+
+\end{tabular}
+\par}
+
+\vspace*{\fill}
+% ── INDICE ──────────────────────────────────────────────────
+\newpage
+\pagestyle{fancy}
+\pagenumbering{roman}
+\tableofcontents
+% \listoffigures    % descomenta si usas figuras
+% \listoftables     % descomenta si usas tablas
+\clearpage
+\pagenumbering{arabic}
+
+% ============================================================
+% EMPIEZA LA REDACCION
+% ============================================================
+
+\newpage
+\pagestyle{fancy} % Esto lo vuelve a activar para el Capítulo 1 en adelante
+
+% ============================================================
+%  ENTREGABLE 2 — PLANIFICACIÓN DE SEGURIDAD DE LA INFORMACIÓN
+% ============================================================
+
+\chapter{CE0321 - Identificación y Valoración de Activos de Información}
+
+\newpage
+\section{Metodología de identificación y valoración de activos}
+
+La planificación de la seguridad de la información para Franco's SAC se inicia con la identificación de los activos que sostienen la operación del negocio. Un activo, en el sentido de \citet{iso27005}, es cualquier elemento que tiene valor para la organización y que, por lo tanto, requiere protección frente a amenazas que puedan comprometer su confidencialidad, integridad o disponibilidad.
+
+Para este entregable se reconocen seis categorías de activos: datos e información, servicios y procesos de negocio, software de infraestructura, hardware, infraestructura de red y personas. Esta clasificación sigue la estructura del Anexo B de \citet{iso27005}, que diferencia entre activos primarios --información y procesos-- y activos secundarios --los elementos técnicos y humanos que sostienen a los primeros.
+
+La valoración de cada activo se realiza mediante el modelo CIA (\textit{Confidentiality}, \textit{Integrity}, \textit{Availability}), en una escala de 1 a 5 para cada dimensión. Esta valoración es el insumo directo del análisis de riesgos desarrollado en el CE0322, ya que un activo con valor alto exige un tratamiento de riesgo más exigente que uno de valor bajo.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.2cm}|L{2.4cm}|X|@{}}
+\caption{Escala de valoración CIA aplicada a los activos de Franco's SAC}
+\label{tab:escala_valoracion_cia} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Significado} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Significado} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small 5} & {\small\textcolor{sev_critico}{\textbf{Crítico}}} & {\small La pérdida o el compromiso del activo paraliza completamente las operaciones del negocio.} \\ \hline
+{\small 4} & {\small\textcolor{sev_alto}{\textbf{Alto}}} & {\small Impacto severo: pérdida económica significativa o daño legal y reputacional grave.} \\ \hline
+{\small 3} & {\small\textcolor{sev_medio}{\textbf{Medio}}} & {\small Impacto importante pero recuperable en el corto plazo.} \\ \hline
+{\small 2} & {\small\textcolor{sev_bajo}{\textbf{Bajo}}} & {\small Impacto menor; la operación puede continuar con una degradación leve.} \\ \hline
+{\small 1} & {\small\textcolor{sev_normal}{\textbf{Mínimo}}} & {\small Sin impacto operativo significativo.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+El valor final de cada activo se calcula como el máximo entre sus tres dimensiones: $\text{Valor} = \max(C, I, A)$. A partir de este valor se aplica la siguiente clasificación: valor 5 equivale a \textbf{crítico}, valor 4 a \textbf{alto}, valor 3 a \textbf{importante} y valores 1--2 a \textbf{normal}. Esta regla evita que un activo con una sola dimensión crítica --por ejemplo, disponibilidad-- sea subestimado por tener confidencialidad o integridad bajas.
+
+\section{Inventario de activos primarios: datos e información}
+
+Los activos de datos e información constituyen el núcleo del ERP de Franco's SAC. Incluyen las bases de datos operativas PostgreSQL, los respaldos generados a partir de ellas y las configuraciones que permiten reconstruir la infraestructura ante un incidente. Estos activos concentran los valores CIA más altos del inventario porque su pérdida o corrupción afecta directamente la continuidad del negocio y, en el caso de datos personales, genera responsabilidad legal conforme a la Ley N.\textsuperscript{o} 29733.
+
+\begin{notabox}{Detalle completo}
+El inventario con nombre del activo, propietario, clasificación, valores de Confidencialidad, Integridad y Disponibilidad (CIA) y nivel de criticidad figura en el \textbf{Anexo~A} (pág.~\pageref{anex:activos_datos}).
+\end{notabox}
+\section{Inventario de activos primarios: servicios y procesos de negocio}
+
+Los servicios y procesos de negocio representan la operación visible de Franco's SAC: el ERP (frontend Angular + API Gateway + microservicios NestJS), la autenticación corporativa vía Active Directory, la conectividad VPN hub-and-spoke entre sedes, la resolución de nombres (DNS interno), el monitoreo centralizado Wazuh y los respaldos automatizados a S3. Su indisponibilidad no implica pérdida de datos pero sí interrupción del proceso de negocio.
+
+\begin{notabox}{Detalle completo}
+El inventario con valoración CIA y criticidad de cada servicio figura en el \textbf{Anexo~B} (pág.~\pageref{anex:activos_servicios}).
+\end{notabox}
+\section{Inventario de activos secundarios: software, hardware, red y personas}
+
+Los activos secundarios sostienen técnica y humanamente a los activos primarios. Se agrupan en cuatro subcategorías: \textbf{software de infraestructura} (VMware ESXi 8.0, pfSense CE 2.7, Windows Server 2022, Docker, Wazuh, Veeam), \textbf{hardware} (5 hipervisores, switches gestionables, FortiGate 40F, router Cisco), \textbf{infraestructura de red} (VLANs, túneles VPN, port groups ESXi) y \textbf{personas} (6 roles del SGSI con nivel de criticidad según su conocimiento operativo).
+
+\begin{notabox}{Detalle completo}
+Los inventarios detallados con valoración CIA de software, hardware, red y personas figuran en el \textbf{Anexo~C} (pág.~\pageref{anex:activos_secundarios}).
+\end{notabox}
+\section{Síntesis del inventario y activos críticos prioritarios}
+
+El inventario consolidado reúne 28 activos distribuidos en las seis categorías descritas: nueve activos alcanzan valor 5 (crítico), diez alcanzan valor 4 (alto) y los nueve restantes se ubican en valor 3 o menor (importante o normal). Esta distribución confirma que la infraestructura de Franco's SAC concentra su criticidad en un núcleo reducido de activos --las bases de datos del ERP, el directorio activo, pfSense y los hipervisores de la Sede Central-- y no de manera uniforme en todo el inventario.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{1.4cm}|L{3.2cm}|L{2.2cm}|X|@{}}
+\caption{Activos más críticos del inventario, en orden de prioridad}
+\label{tab:top_activos_criticos} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Prioridad} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Categoría} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Justificación de la criticidad} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Prioridad} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Categoría} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Justificación de la criticidad} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small 1.\textsuperscript{o}} & {\small person-db (D-01)} & {\small Datos} & {\small Contiene datos personales sujetos a la Ley N.\textsuperscript{o} 29733. Su compromiso implica sanción legal, pérdida de confianza y paralización del microservicio de autenticación.} \\ \hline
+{\small 2.\textsuperscript{o}} & {\small pfSense 2.7 CE (SW-01)} & {\small Software} & {\small Concentra todos los túneles VPN. Si falla, Local 1 y Local 3 quedan aislados, se pierde la salida a Internet y el ERP deja de ser accesible externamente.} \\ \hline
+{\small 3.\textsuperscript{o}} & {\small ERP completo (S-01)} & {\small Servicio} & {\small Proceso de negocio principal; su caída paraliza ventas, inventario y producción.} \\ \hline
+{\small 4.\textsuperscript{o}} & {\small Active Directory (S-02)} & {\small Servicio} & {\small Sin AD, ningún usuario puede autenticarse en el dominio. Impacta a la totalidad de los trabajadores.} \\ \hline
+{\small 5.\textsuperscript{o}} & {\small sales-invent-db} & {\small Datos} & {\small Base de datos operativa del negocio; su corrupción implica pérdida del historial de ventas e inventario.} \\ \hline
+{\small 6.\textsuperscript{o}} & {\small ESXi H1--H3 (HW-01/02)} & {\small Hardware} & {\small Hipervisores que alojan toda la infraestructura de la Sede Central; su falla implica la caída de todos los servicios.} \\ \hline
+{\small 7.\textsuperscript{o}} & {\small Samba AD-DC 4.x (SW-03)} & {\small Software} & {\small Motor del directorio activo. Su corrupción implica pérdida de credenciales y políticas, sin réplica on-premises tras la eliminación del antiguo hipervisor de respaldo.} \\ \hline
+{\small 8.\textsuperscript{o}} & {\small ISP1 / WAN1 (NW-01)} & {\small Red} & {\small Enlace WAN primario. Sin Internet, la VPN cae, CloudFront se vuelve inaccesible y el ERP solo opera dentro de la LAN.} \\ \hline
+{\small 9.\textsuperscript{o}} & {\small Respaldos en S3 AWS (D-04)} & {\small Datos} & {\small Última línea de defensa y origen de los datos consolidados en AWS RDS Multi-AZ. Sin estos respaldos, un desastre sería irrecuperable.} \\ \hline
+{\small 10.\textsuperscript{o}} & {\small Cisco Catalyst 1000 (HW-05)} & {\small Hardware} & {\small Switch de distribución entre H1, H2 y H3; su falla desconecta a todos los hipervisores de la Sede Central.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+Este inventario, estructurado conforme al Anexo B de \citet{iso27005}, constituye el insumo directo del análisis de riesgos desarrollado en el siguiente capítulo. La valoración CIA asignada a cada activo permite priorizar qué amenazas y vulnerabilidades deben evaluarse primero, evitando que el análisis de riesgos se realice sobre una base genérica desconectada de la infraestructura real de Franco's SAC.
+
+\chapter{CE0322 - Análisis y Tratamiento de Riesgos de Seguridad}
+
+\newpage
+\section{Metodología de análisis de riesgos}
+
+El análisis de riesgos de Franco's SAC se desarrolla conforme a la metodología cualitativa-cuantitativa de \citet{iso27005} y se mapea a los cinco dominios del \citet{nistcsf} (\textit{Identify}, \textit{Protect}, \textit{Detect}, \textit{Respond}, \textit{Recover}). Cada riesgo identificado parte de un activo del inventario desarrollado en el CE0321 y se evalúa combinando dos variables: la probabilidad de ocurrencia y el impacto sobre el negocio si la amenaza se materializa.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.2cm}|L{1.4cm}|X|@{}}
+\caption{Escalas de probabilidad e impacto del análisis de riesgos}
+\label{tab:escalas_probabilidad_impacto} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Variable} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Escala} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Niveles (1 a 5)} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Variable} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Escala} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Niveles (1 a 5)} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Probabilidad (P)} & {\small 1--5} & {\small 1 Muy baja \quad 2 Baja \quad 3 Media \quad 4 Alta \quad 5 Muy alta} \\ \hline
+{\small Impacto (I)} & {\small 1--5} & {\small 1 Mínimo \quad 2 Bajo \quad 3 Medio \quad 4 Alto \quad 5 Crítico} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+El nivel de riesgo se calcula como $\text{Nivel} = P \times I$, con un rango posible de 1 a 25. La clasificación resultante se interpreta de la siguiente manera: \textcolor{sev_critico}{\textbf{crítico}} entre 20 y 25, \textcolor{sev_alto}{\textbf{alto}} entre 12 y 19, \textcolor{sev_medio}{\textbf{medio}} entre 6 y 11, y \textcolor{sev_bajo}{\textbf{bajo}} entre 1 y 5. Para cada riesgo se define además una opción de tratamiento: \textbf{mitigar} (reducir P o I mediante controles), \textbf{transferir} (seguro o tercero), \textbf{aceptar} (riesgo residual documentado y comunicado a la Gerencia) o \textbf{evitar} (eliminar el activo o proceso asociado).
+
+\section{Matriz de riesgos identificados}
+
+El análisis identifica \textbf{18 riesgos} sobre la infraestructura de Franco's SAC. Cada riesgo combina una amenaza con una vulnerabilidad sobre uno o más activos del CE0321. Los riesgos de mayor nivel (crítico/alto) se concentran en el acceso no autorizado a BD, la denegación de servicio al ERP, la pérdida de respaldos y el compromiso de credenciales administrativas. Todos los riesgos tienen al menos un control asociado en el plan de tratamiento.
+
+\begin{notabox}{Detalle completo}
+La matriz con ID de riesgo, activo afectado, amenaza, vulnerabilidad, probabilidad, impacto, nivel de riesgo y control propuesto figura en el \textbf{Anexo~D} (pág.~\pageref{anex:matriz_riesgos}).
+\end{notabox}
+\section{Mapeo a los dominios del NIST CSF y plan de tratamiento}
+
+Cada riesgo se vincula a una o más subcategorías del NIST CSF, ordenando los controles según su función: \textit{Govern} (gobernanza de riesgo), \textit{Protect} (controles preventivos), \textit{Detect} (monitoreo y alertas), \textit{Respond} (respuesta a incidentes) y \textit{Recover} (recuperación). Esta vinculación es el puente entre el análisis de riesgos (CE0322) y las políticas de seguridad formales (CE0323).
+
+\begin{notabox}{Detalle completo}
+La tabla de mapeo riesgo--función NIST CSF--subcategoría--control aplicado figura en el \textbf{Anexo~E} (pág.~\pageref{anex:nist_tratamiento}).
+\end{notabox}
+\chapter{CE0323 - Políticas de Seguridad de la Información}
+
+\newpage
+\section{Marco general de las políticas de seguridad}
+
+Las políticas de seguridad de Franco's SAC traducen en reglas formales los activos identificados en el CE0321 y los riesgos analizados en el CE0322. Cada política se redacta siguiendo una misma estructura --objetivo, alcance, responsable, procedimiento, indicadores de cumplimiento y referencia normativa-- conforme a los lineamientos del Anexo A de \citet{iso27001}.
+
+Se definen seis políticas que, en conjunto, cubren los quince riesgos a mitigar identificados en el CE0322: control de acceso, gestión de contraseñas, respaldo y recuperación, gestión de parches, uso aceptable de los recursos de TI y respuesta a incidentes de seguridad.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{4.2cm}|L{2.6cm}|L{2.6cm}|X|@{}}
+\caption{Políticas de seguridad y su relación con ISO 27001:2022 y el NIST CSF}
+\label{tab:marco_general_politicas} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Política} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small ISO 27001:2022} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small NIST CSF v2.0} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Riesgos que mitiga} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Política} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small ISO 27001:2022} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small NIST CSF v2.0} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Riesgos que mitiga} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small POL-01 -- Control de acceso} & {\small A.9} & {\small PR.AC-1, PR.AC-3, PR.AC-4} & {\small R-02, R-05, R-13} \\ \hline
+{\small POL-02 -- Gestión de contraseñas} & {\small A.9.4.3} & {\small PR.AC-1, PR.AC-6} & {\small R-03, R-05} \\ \hline
+{\small POL-03 -- Respaldo y recuperación} & {\small A.12.3, A.17.1} & {\small PR.IP-4, RC.RP-1} & {\small R-01, R-07, R-09} \\ \hline
+{\small POL-04 -- Gestión de parches} & {\small A.12.6} & {\small PR.IP-12, DE.CM-8} & {\small R-01, R-04} \\ \hline
+{\small POL-05 -- Uso aceptable de TI} & {\small A.8, A.9.3} & {\small PR.AT-1} & {\small R-02, R-05, R-16} \\ \hline
+{\small POL-06 -- Respuesta a incidentes} & {\small A.16} & {\small RS.RP-1, RS.CO-2, RC.RP-1} & {\small R-01 a R-15} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\section{POL-01 — Política de control de acceso}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.6cm}|X|@{}}
+\caption{Política de control de acceso (POL-01)}
+\label{tab:pol01_control_acceso} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Objetivo} & {\small Garantizar que únicamente los usuarios autorizados accedan a los recursos de TI de Franco's SAC, conforme a su rol y aplicando el principio de mínimo privilegio.} \\ \hline
+
+{\small Alcance} & {\small Todos los sistemas: ERP (API Gateway y microservicios), Active Directory \texttt{francos.local}, bases de datos PostgreSQL, hipervisores ESXi, pfSense y AWS Cloud. Aplica a empleados, contratistas y al equipo de TI.} \\ \hline
+
+{\small Responsable} & {\small Ruben Mark Salazar, con apoyo de Uziel Sauñe Fernandez.} \\ \hline
+
+{\small Procedimiento} & {\small Se organizan grupos de Active Directory por área (producción, ventas, administración, TI) para un acceso granular. Cada usuario accede únicamente a los recursos necesarios para su función; los operarios de Local 1 y Local 3 acceden solo al módulo del ERP correspondiente. Cada microservicio dispone de su propio usuario de base de datos con permisos de lectura, inserción y actualización únicamente, sin privilegios de eliminación, alteración o creación de estructuras. Queda prohibido compartir credenciales entre usuarios. El ciclo de vida de las cuentas sigue un flujo definido: solicitud formal, alta en Active Directory, asignación de grupo y acceso activo; las bajas desactivan la cuenta dentro de las primeras 24 horas tras la desvinculación. El administrador de TI revisa trimestralmente todos los accesos activos y elimina los innecesarios. El acceso privilegiado por SSH a los hipervisores y a pfSense se restringe a la VLAN 10 de administración o a la VLAN 99 de gestión, con autenticación multifactor planificada para el segundo semestre.} \\ \hline
+
+{\small Indicadores de cumplimiento} & {\small Porcentaje de cuentas revisadas en el último trimestre igual al 100\%; número de cuentas compartidas detectadas igual a cero; tiempo de desactivación de cuenta al darse la baja menor o igual a 24 horas; accesos no autorizados detectados por Wazuh iguales a cero.} \\ \hline
+
+{\small Referencia normativa} & {\small ISO 27001:2022 A.9 \citep{iso27001}; NIST CSF PR.AC-1, PR.AC-3, PR.AC-4 \citep{nistcsf}; Ley N.\textsuperscript{o} 29733, artículo 11 \citep{ley29733}.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\section{POL-02 — Política de gestión de contraseñas}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.6cm}|X|@{}}
+\caption{Política de gestión de contraseñas (POL-02)}
+\label{tab:pol02_contrasenas} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Objetivo} & {\small Asegurar que todas las contraseñas de los sistemas de Franco's SAC sean suficientemente robustas frente a ataques de fuerza bruta y diccionario.} \\ \hline
+
+{\small Alcance} & {\small Todos los usuarios del dominio \texttt{francos.local} y las cuentas de servicio de los microservicios y las bases de datos.} \\ \hline
+
+{\small Responsable} & {\small Ruben Mark Salazar en la direccion y aprobacion; Joshua Josue Pedraza Perez en la aplicacion tecnica mediante directivas de grupo en Active Directory.} \\ \hline
+
+{\small Procedimiento} & {\small La directiva exige una longitud mínima de diez caracteres, con al menos una mayúscula, una minúscula, un número y un símbolo, sin admitir el nombre de usuario ni palabras de diccionario. La rotación es obligatoria cada 90 días, con un historial de las últimas doce contraseñas para evitar reutilización; en el primer ingreso el usuario debe cambiar su contraseña. Como protección ante ataques, la cuenta se bloquea tras cinco intentos fallidos durante 30 minutos, con una ventana de observación que se reinicia cada 30 minutos. Las cuentas de servicio --microservicios y bases de datos-- usan contraseñas aleatorias de 20 o más caracteres, con rotación cada 180 días gestionada manualmente por el administrador de TI; las cuentas administrativas de ESXi y pfSense usan contraseñas de 16 o más caracteres conocidas solo por el equipo de TI.} \\ \hline
+
+{\small Indicadores de cumplimiento} & {\small Porcentaje de usuarios con contraseña vencida igual a cero; número de cuentas bloqueadas por semana, como métrica de referencia con alerta si supera cinco por semana; porcentaje de cuentas de servicio con contraseña actualizada en los últimos 180 días igual al 100\%.} \\ \hline
+
+{\small Referencia normativa} & {\small ISO 27001:2022 A.9.4.3 \citep{iso27001}; NIST CSF PR.AC-1, PR.AC-6 \citep{nistcsf}; NIST SP 800-63B, Guía de Identidad Digital \citep{nist80063b}.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\section{POL-03 — Política de respaldo y recuperación}
+
+La política de respaldo y recuperación organiza los mecanismos de protección de datos en cinco niveles complementarios, desde la disponibilidad continua en AWS hasta los respaldos semanales de configuración de red.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{1.1cm}|L{3.6cm}|L{1.6cm}|L{1.3cm}|L{2.6cm}|L{1.4cm}|L{1cm}|@{}}
+\caption{Niveles del procedimiento de respaldo de la política POL-03}
+\label{tab:pol03_niveles_respaldo} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Tipo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Frecuencia} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Hora} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Destino} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Retención} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small RPO} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Tipo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Frecuencia} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Hora} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Destino} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Retención} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small RPO} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small N1} & {\small AWS RDS Multi-AZ (intra-AWS)} & {\small Continua} & {\small 24/7} & {\small VPC de recuperación, alimentada por N3} & {\small Permanente} & {\small \(\leq 24\) h} \\ \hline
+{\small N2} & {\small \textit{Snapshot} ESXi de VM críticas} & {\small Diaria} & {\small 23:00} & {\small VMFS6 local en H1--H3} & {\small 7 días} & {\small 24 h} \\ \hline
+{\small N3} & {\small \texttt{pg\_dump} hacia S3 AWS (3 BD)} & {\small Diaria} & {\small 22:00} & {\small \texttt{francos-db-backups/}} & {\small 30 días} & {\small 24 h} \\ \hline
+{\small N4} & {\small Exportación OVF de VM hacia S3} & {\small Semanal} & {\small Domingo, 02:00} & {\small \texttt{francos-vm-exports/}} & {\small 4 semanas} & {\small 7 días} \\ \hline
+{\small N5} & {\small Respaldo XML de pfSense (3 locales)} & {\small Semanal y ante cambios} & {\small --} & {\small S3 y servidor de monitoreo} & {\small 30 días} & {\small 7 días} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.6cm}|X|@{}}
+\caption{Objetivo, alcance y referencia normativa de la política POL-03}
+\label{tab:pol03_complemento} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Objetivo} & {\small Garantizar la disponibilidad y recuperabilidad de los datos críticos de Franco's SAC ante fallos, desastres o incidentes de seguridad, cumpliendo los objetivos de RPO y RTO definidos.} \\ \hline
+
+{\small Alcance} & {\small Bases de datos PostgreSQL (\textit{person-db}, \textit{sales-invent-db}, \textit{strategic-db}), configuraciones de pfSense en los tres locales, máquinas virtuales críticas de H1 a H3 e imágenes Docker en ECR.} \\ \hline
+
+{\small Responsable} & {\small Administrador de bases de datos / Administrador de Sistemas, mediante ejecución automática por scripts \textit{cron}.} \\ \hline
+
+{\small Prueba de restauración} & {\small Obligatoria de forma trimestral: restauración del respaldo \texttt{pg\_dump} en un ambiente aislado, verificación de integridad y documentación del resultado y la fecha. El RTO objetivo es menor o igual a 30 minutos para bases de datos y menor o igual a 4 horas para máquinas virtuales.} \\ \hline
+
+{\small Indicadores de cumplimiento} & {\small Porcentaje de respaldos N3 completados exitosamente igual al 100\% diario; respaldo \texttt{pg\_dump} completado antes de las 23:00, medido por Wazuh; última prueba de restauración con una antigüedad menor o igual a 90 días; RTO alcanzado en la última prueba dentro del objetivo definido.} \\ \hline
+
+{\small Referencia normativa} & {\small ISO 27001:2022 A.12.3 y A.17.1 \citep{iso27001}; NIST CSF PR.IP-4, RC.RP-1 \citep{nistcsf}; NIST SP 800-34, Planificación de Contingencia \citep{nist80034}.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\section{POL-04 — Política de gestión de parches y actualizaciones}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.6cm}|X|@{}}
+\caption{Política de gestión de parches y actualizaciones (POL-04)}
+\label{tab:pol04_parches} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Objetivo} & {\small Mantener todos los sistemas de Franco's SAC actualizados para mitigar vulnerabilidades conocidas, minimizando la ventana de exposición a ataques.} \\ \hline
+
+{\small Alcance} & {\small Ubuntu Server 24.04 LTS, Docker Engine y las imágenes de contenedores, pfSense 2.7 CE, Samba AD-DC, PostgreSQL 15, NATS 2.x, NGINX con ModSecurity y Wazuh.} \\ \hline
+
+{\small Responsable} & {\small Ruben Mark Salazar en la direccion tecnica; Joshua Josue Pedraza Perez, Hilter Piero Lanche Cerro y Joel Joshep Rivera Matias en la ejecucion operativa.} \\ \hline
+
+{\small Procedimiento} & {\small Las vulnerabilidades se clasifican por severidad CVSS: las críticas, con puntaje mayor o igual a 9.0, se parchean dentro de 72 horas, incluso en una ventana de emergencia fuera del horario laboral; las altas, entre 7.0 y 8.9, se parchean dentro de 15 días en la siguiente ventana de mantenimiento; las medias y bajas, por debajo de 7.0, se parchean en la ventana mensual. La ventana de mantenimiento programada es el primer sábado de cada mes, de 02:00 a 06:00 horas, con notificación previa a la Gerencia 72 horas antes y un plan de reversión basado en \textit{snapshot} de ESXi antes de cada actualización crítica. El procedimiento de aplicación sigue cinco pasos: identificar las vulnerabilidades aplicables consultando fuentes oficiales, clasificarlas por severidad y componente afectado, tomar \textit{snapshot} de las VM afectadas, aplicar el parche en la ventana correspondiente y verificar el funcionamiento mediante pruebas de salud, documentando la versión anterior, la nueva versión, la fecha y el responsable.} \\ \hline
+
+{\small Indicadores de cumplimiento} & {\small Vulnerabilidades críticas pendientes por más de 72 horas iguales a cero; vulnerabilidades altas pendientes por más de 15 días iguales a cero; porcentaje de sistemas con versión documentada y actualizada igual al 100\%; ventanas de mantenimiento ejecutadas según calendario iguales al 100\%.} \\ \hline
+
+{\small Referencia normativa} & {\small ISO 27001:2022 A.12.6, Gestión de Vulnerabilidades Técnicas \citep{iso27001}; NIST CSF PR.IP-12, DE.CM-8 \citep{nistcsf}; CIS Benchmark para Ubuntu 24.04.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\section{POL-05 — Política de uso aceptable de los recursos de TI}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.6cm}|X|@{}}
+\caption{Política de uso aceptable de los recursos de TI (POL-05)}
+\label{tab:pol05_uso_aceptable} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Objetivo} & {\small Definir el uso apropiado de los recursos tecnológicos de Franco's SAC para proteger la confidencialidad, integridad y disponibilidad de la información.} \\ \hline
+
+{\small Alcance} & {\small Todos los empleados, operarios, contratistas y visitantes que utilicen recursos de TI de Franco's SAC: ERP, red WiFi, estaciones de trabajo y VPN.} \\ \hline
+
+{\small Responsable} & {\small Jorge Andres Chavarri Centeno, en la comunicacion y enlace organizacional; Ruben Mark Salazar, en el control y monitoreo.} \\ \hline
+
+{\small Procedimiento} & {\small El uso permitido se limita a actividades laborales de Franco's SAC, con acceso al ERP únicamente mediante credenciales propias del dominio \texttt{francos.local}. Queda prohibido compartir credenciales, instalar software no autorizado en las estaciones del dominio, acceder a los sistemas desde dispositivos personales no autorizados, almacenar información confidencial fuera de los sistemas aprobados y eludir los controles de seguridad de VPN, \textit{firewall} o VLAN. Los dispositivos personales no se conectan a la VLAN 20 sin autorización previa del administrador de TI y, de autorizarse, deben contar con antivirus activo y sistema operativo actualizado. Las violaciones se gradúan en tres niveles: una violación menor genera una advertencia formal documentada; una violación mayor implica suspensión de acceso y proceso disciplinario; una violación grave, como la divulgación de datos, puede implicar rescisión de contrato y acción legal conforme a la Ley N.\textsuperscript{o} 29733.} \\ \hline
+
+{\small Indicadores de cumplimiento} & {\small Porcentaje de empleados capacitados anualmente en la política igual al 100\%; número de violaciones reportadas por trimestre, con tendencia decreciente esperada; accesos con credenciales compartidas detectados por Wazuh iguales a cero.} \\ \hline
+
+{\small Referencia normativa} & {\small ISO 27001:2022 A.8 y A.9.3 \citep{iso27001}; NIST CSF PR.AT-1 \citep{nistcsf}; Ley N.\textsuperscript{o} 29733 \citep{ley29733}.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\section{POL-06 — Política de respuesta a incidentes de seguridad}
+
+La política de respuesta a incidentes clasifica cada evento en cuatro niveles de prioridad, cada uno con un tiempo de respuesta máximo definido.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.2cm}|X|L{1.8cm}|L{3.6cm}|@{}}
+\caption{Clasificación de incidentes de la política POL-06}
+\label{tab:pol06_clasificacion_incidentes} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Prioridad} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Criterio} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Tiempo de respuesta} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Ejemplos} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Prioridad} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Criterio} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Tiempo de respuesta} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Ejemplos} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small \textcolor{sev_critico}{\textbf{P1 -- Crítico}}} & {\small Impacto total en las operaciones; ERP inaccesible; datos comprometidos.} & {\small \(< 1\) hora} & {\small \textit{Ransomware} en bases de datos; caída total del ERP; filtración masiva de datos.} \\ \hline
+{\small \textcolor{sev_alto}{\textbf{P2 -- Alto}}} & {\small Impacto significativo; servicio degradado; riesgo inminente.} & {\small \(< 4\) horas} & {\small Caída de pfSense; VPN caída; acceso no autorizado detectado.} \\ \hline
+{\small \textcolor{sev_medio}{\textbf{P3 -- Medio}}} & {\small Impacto parcial; servicio funcional con limitaciones.} & {\small \(< 24\) horas} & {\small Alerta de Wazuh; respaldo fallido; alerta del WAF.} \\ \hline
+{\small \textcolor{sev_bajo}{\textbf{P4 -- Bajo}}} & {\small Sin impacto operativo; evento informativo.} & {\small \(< 72\) horas} & {\small Intentos de inicio de sesión fallidos; parche pendiente.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+El procedimiento de respuesta sigue seis fases. En la \textbf{deteccion}, Wazuh genera alertas automaticas, los usuarios o el soporte documental reportan al equipo tecnico y CloudWatch emite alertas en AWS. En la \textbf{clasificacion}, Ruben Mark Salazar y Uziel Sauñe Fernandez determinan la prioridad en un plazo menor o igual a 15 minutos. En la \textbf{contencion}, los incidentes P1 y P2 implican aislar la VLAN afectada en pfSense, revocar las credenciales comprometidas y desconectar la VM afectada, preservando evidencia en los registros de Wazuh, pfSense y PostgreSQL. En la \textbf{erradicacion}, se identifica la causa raiz, se elimina el malware o el acceso indebido y se aplica el parche correspondiente. En la \textbf{recuperacion}, los datos se restauran desde el respaldo \texttt{pg\_dump} diario en S3 AWS o mediante conmutacion a RDS Multi-AZ y ECS Fargate, y las maquinas virtuales desde el \textit{snapshot} diario de ESXi, verificando la integridad antes de reactivar el servicio. En el \textbf{post-incidente}, se completa un analisis de causa raiz dentro de cinco dias habiles, se documenta el incidente en Wazuh y se actualizan las politicas o controles si corresponde.
+
+La cadena de escalamiento avanza del usuario o soporte documental al equipo tecnico en 15 minutos, de este a Ruben Mark Salazar en 30 minutos, y luego a Jorge Andres Chavarri Centeno de forma inmediata para incidentes P1 o dentro de dos horas para incidentes P2. En caso de brecha de datos personales, la notificacion a INDECOPI debe realizarse dentro de 72 horas conforme al articulo 26 del D.S. N.\textsuperscript{o} 003-2013-JUS, y la notificacion a los afectados dentro de cinco dias habiles si existe riesgo para sus derechos.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.6cm}|X|@{}}
+\caption{Indicadores y referencia normativa de la política POL-06}
+\label{tab:pol06_complemento} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Campo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Contenido} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Objetivo} & {\small Establecer el procedimiento formal para detectar, clasificar, contener, erradicar y recuperar la operación ante incidentes de seguridad, minimizando el impacto sobre Franco's SAC.} \\ \hline
+
+{\small Alcance} & {\small Todos los sistemas de Franco's SAC --ERP, Active Directory, bases de datos, red e infraestructura-- en los tres locales, ante cualquier evento que comprometa la confidencialidad, integridad o disponibilidad de los activos.} \\ \hline
+
+{\small Responsable} & {\small Ruben Mark Salazar en la coordinacion general; Uziel Sauñe Fernandez y el bloque tecnico en la respuesta tecnica; Jorge Andres Chavarri Centeno en la comunicacion y enlace organizacional.} \\ \hline
+
+{\small Indicadores de cumplimiento} & {\small Tiempo medio de resolución de incidentes P1 menor o igual a 4 horas, de P2 menor o igual a 8 horas y de P3 menor o igual a 48 horas; porcentaje de incidentes con análisis de causa raíz completado en 5 días igual al 100\%; incidentes recurrentes del mismo tipo iguales a cero tras la corrección; tiempo de notificación a la Gerencia en incidentes P1 menor o igual a 30 minutos.} \\ \hline
+
+{\small Referencia normativa} & {\small ISO 27001:2022 A.16, Gestión de Incidentes \citep{iso27001}; NIST CSF RS.RP-1, RS.CO-2, RS.MI-1, RC.RP-1 \citep{nistcsf}; Ley N.\textsuperscript{o} 29733, artículo 26, y D.S. N.\textsuperscript{o} 003-2013-JUS \citep{ds0032013jus}.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\section{Cobertura de las políticas frente a los riesgos identificados}
+
+Las seis políticas, en conjunto, cubren los quince riesgos a mitigar identificados en el CE0322. POL-01 y POL-02 --control de acceso y gestión de contraseñas-- mitigan los riesgos de acceso no autorizado (R-02, R-03 y R-05). POL-03 --respaldo y recuperación-- cubre los riesgos de pérdida de datos (R-01, R-07 y R-09). POL-04 --gestión de parches-- reduce la probabilidad de explotación de vulnerabilidades conocidas (R-01 y R-04). POL-05 y POL-06 cierran el ciclo, cubriendo la concientización del usuario final y la respuesta ante cualquier incidente que pudiera materializarse a pesar de los controles preventivos.
+
+Esta cobertura completa constituye la base para asignar responsabilidades concretas, lo que se desarrolla en el siguiente capítulo mediante la matriz de roles y responsabilidades del sistema de gestión de seguridad de la información.
+
+\chapter{CE0324 - Roles, Responsabilidades y Matriz RACI del SGSI}
+
+\newpage
+\section{Estructura organizacional de seguridad de TI}
+
+La implementacion efectiva de las politicas descritas en el CE0323 requiere una estructura de roles clara, donde cada persona o area conozca su nivel de responsabilidad. Para Franco's SAC se definen roles y responsables vinculados al SGSI, articulando direccion tecnica, coordinacion organizacional, seguridad, operacion tecnica, datos, documentacion y evidencias.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.4cm}|L{2.6cm}|L{1.6cm}|X|@{}}
+\caption{Estructura organizacional de seguridad de TI de Franco's SAC}
+\label{tab:estructura_organizacional_sgsi} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Rol del SGSI} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Persona / área} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Responsabilidad principal} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Rol del SGSI} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Persona / área} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Responsabilidad principal} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Coordinacion y Enlace Organizacional} & {\small Jorge Andres Chavarri Centeno, contacto de Franco's SAC} & {\small Estrategico} & {\small Aprobacion de politicas, autorizacion de inversiones en seguridad, enlace con la organizacion y soporte de comunicacion ante incidentes de datos (ISO 27001:2022 A.5.1, A.5.2).} \\ \hline
+
+{\small Direccion del SGSI} & {\small Ruben Mark Salazar, Director del Proyecto ITI} & {\small Tactico} & {\small Definicion y mantenimiento del SGSI, gestion de riesgos, supervision de politicas, reporte al coordinador del proyecto y coordinacion ante incidentes (ISO 27001:2022 A.5, A.6, A.16, A.18).} \\ \hline
+
+{\small Administrador de Red e Infraestructura} & {\small Uziel Sauñe, Especialista ITI} & {\small Operativo} & {\small Gestion de pfSense, VPN, VLANs, Cisco Catalyst 1000, Dual-WAN, monitoreo con Wazuh y configuraciones de red (ISO 27001:2022 A.13, A.12.1).} \\ \hline
+
+{\small Infraestructura, Virtualizacion y Operaciones} & {\small Joshua Pedraza, Hilter Lanche y Joel Rivera} & {\small Operativo} & {\small Gestion de hipervisores ESXi, maquinas virtuales, Docker, Active Directory, \textit{snapshots} y actualizaciones de sistema operativo y aplicaciones (ISO 27001:2022 A.12, A.14).} \\ \hline
+
+{\small Administrador de bases de datos} & {\small Evan Chacon} & {\small Operativo} & {\small Gestion de PostgreSQL 15, respaldos \texttt{pg\_dump} diarios hacia S3 AWS, usuarios y permisos de base de datos, e integridad de los datos (ISO 27001:2022 A.10, A.12.3).} \\ \hline
+
+{\small Soporte documental, evidencias y usuarios finales} & {\small Pamela Vallejos, Veronica Vergara y empleados de Franco's SAC} & {\small Usuario} & {\small Uso del ERP conforme a la POL-05, reporte de incidentes, cumplimiento de la politica de contraseñas y no compartir credenciales (ISO 27001:2022 A.7, A.9.3).} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+La estructura sigue una linea de reporte directa: Uziel Sauñe Fernandez, el bloque de infraestructura/virtualizacion/cloud y Evan Chacon reportan a Ruben Mark Salazar; Ruben Mark Salazar rinde cuentas ante la estructura de direccion del proyecto; y los usuarios finales o el soporte documental reportan cualquier incidente al equipo tecnico correspondiente segun el sistema afectado.
+
+\section{Matriz RACI de procesos de seguridad}
+
+La matriz RACI asigna de forma explícita quién ejecuta (R), quién rinde cuentas (A), a quién se consulta (C) y a quién se informa (I) en cada proceso de seguridad. Cubre \textbf{13 procesos} de seguridad y los \textbf{6 roles} del SGSI definidos en CE0324: CISO, Jefe de TI, Administrador de Sistemas, Analista de Seguridad, Oficial de Datos y Gerencia General. Esta matriz evita la ambigüedad de responsabilidades en la respuesta a incidentes y la gestión de accesos.
+
+\begin{notabox}{Detalle completo}
+La tabla RACI completa con los 13 procesos y 6 roles figura en el \textbf{Anexo~F} (pág.~\pageref{anex:raci}).
+\end{notabox}
+\section{Responsabilidades operativas por frecuencia}
+
+Además de la matriz RACI, las responsabilidades se organizan por frecuencia de ejecución, lo que facilita su seguimiento operativo diario, semanal, mensual y trimestral.
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{1.8cm}|X|X|X|X|@{}}
+\caption{Responsabilidades operativas de seguridad por frecuencia}
+\label{tab:responsabilidades_operativas_frecuencia} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Frecuencia} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small CISO} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Admin. Red} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Admin. Sistemas / DBA} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Usuario final} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Frecuencia} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small CISO} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Admin. Red} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Admin. Sistemas / DBA} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Usuario final} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Diaria} & {\small Revisar alertas de Wazuh, registros de acceso de AD y el estado de los incidentes abiertos.} & {\small Verificar el estado de las VPN L1--L2, L2--L3 y L2--AWS, revisar los registros del WAF y confirmar que el Dual-WAN esté activo.} & {\small Confirmar el respaldo \texttt{pg\_dump} del día anterior, insumo de AWS RDS Multi-AZ, y revisar las pruebas de salud de Docker.} & {\small Usar el ERP con credenciales propias y reportar cualquier anomalía de inmediato al administrador de TI.} \\ \hline
+
+{\small Semanal} & {\small Revisar el informe de respaldos en S3, las vulnerabilidades nuevas publicadas y actualizar el registro de riesgos si corresponde.} & {\small Revisar los registros completos del \textit{firewall}, verificar los respaldos XML de pfSense en los tres locales y revisar el muestreo SNMP del Cisco Catalyst 1000.} & {\small Confirmar la llegada del OVF del domingo a S3, revisar el estado de los \textit{snapshots} de ESXi y los registros de auditoría de PostgreSQL.} & {\small Verificar que la contraseña no esté próxima a vencer y reportar cualquier incidente de la semana.} \\ \hline
+
+{\small Mensual} & {\small Aplicar parches en la ventana de mantenimiento, revisar los indicadores de seguridad y elaborar el reporte mensual a la Gerencia.} & {\small Aplicar parches de pfSense y del Cisco IOS, optimizar las reglas de las listas de control de acceso y revisar el \textit{trunking} 802.1Q y las VLANs activas.} & {\small Aplicar parches de Ubuntu, Docker y PostgreSQL, revisar roles y permisos en todas las bases de datos y revisar la capacidad de VMFS6 y S3.} & {\small Completar el módulo de capacitación en seguridad y cumplir la política POL-05.} \\ \hline
+
+{\small Trimestral} & {\small Revisar y actualizar las políticas del SGSI, revisar los accesos y usuarios de AD, y elaborar el informe ejecutivo para la Gerencia.} & {\small Auditar la seguridad de la red, revisar los registros de VPN de los últimos tres meses y probar el \textit{failover} del Dual-WAN.} & {\small Probar la restauración de respaldos en un ambiente aislado, verificar el OVF en S3 y revisar los índices y el rendimiento de las bases de datos.} & {\small Recibir la capacitación formal en seguridad de la información definida en la política POL-05.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+\section{Vinculación de los roles con los controles de ISO 27001:2022}
+
+Cada rol del SGSI se vincula con un subconjunto específico de controles del Anexo A de \citet{iso27001}, lo que permite auditar posteriormente si cada control tiene un responsable claramente identificado.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.6cm}|L{3cm}|X|@{}}
+\caption{Vinculación de roles con los controles de ISO 27001:2022}
+\label{tab:vinculacion_roles_iso27001} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Rol} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Controles principales} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Descripción del control} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Rol} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Controles principales} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Descripción del control} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Gerencia General} & {\small A.5.1, A.5.2, A.5.4} & {\small Políticas de seguridad aprobadas por la dirección; responsabilidad de la dirección; roles y responsabilidades de seguridad.} \\ \hline
+{\small CISO} & {\small A.5.1, A.6.1, A.16.1, A.18.1, A.18.2} & {\small Gestión del SGSI; definición de roles; coordinación de incidentes; cumplimiento legal de la Ley N.\textsuperscript{o} 29733; revisiones independientes.} \\ \hline
+{\small Administrador de Red e Infraestructura} & {\small A.8.21, A.8.22, A.8.23, A.13.1, A.13.2} & {\small Segmentación de redes mediante VLANs; filtrado de tráfico con ACL en pfSense; separación de entornos; transferencia segura de información por VPN.} \\ \hline
+{\small Administrador de Sistemas} & {\small A.8.8, A.8.19, A.12.1, A.12.4, A.12.6} & {\small Gestión de vulnerabilidades técnicas; instalación de software; operaciones seguras; registro de eventos; mantenimiento.} \\ \hline
+{\small Administrador de bases de datos} & {\small A.8.3, A.8.10, A.10.1, A.12.3} & {\small Restricción de acceso a la información con mínimo privilegio; eliminación segura de información; controles criptográficos; copias de seguridad.} \\ \hline
+{\small Usuario final} & {\small A.6.3, A.7.1, A.7.2, A.9.3} & {\small Concientización en seguridad; responsabilidades del empleado; uso aceptable de activos; responsabilidades de autenticación.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+La matriz RACI y la vinculación normativa permiten concluir que cada proceso de seguridad de Franco's SAC tiene exactamente un responsable que rinde cuentas, y que cada rol operativo conoce con precisión qué controles del Anexo A de \citet{iso27001} debe sostener en su gestión diaria. Esta claridad de responsabilidades constituye el último elemento técnico antes del cierre documental y ético del Entregable 2, desarrollado en el siguiente capítulo.
+
+\chapter{CE0325 - Calidad Documental y Ética Profesional del Entregable 2}
+
+\newpage
+\section{Propósito del cierre documental y ético}
+
+El presente capítulo cierra el Entregable 2 desde dos dimensiones complementarias: la calidad documental del conjunto CE0321--CE0324 y la responsabilidad ética aplicada a la planificación de seguridad de la información de Franco's SAC. A diferencia de los capítulos anteriores, este no incorpora nuevos activos, riesgos, políticas ni roles. Su función es verificar que lo ya desarrollado mantenga coherencia interna, trazabilidad y una postura profesional responsable frente al manejo de información sensible.
+
+La gestión de la seguridad de la información involucra decisiones que afectan datos personales, privacidad y continuidad operativa. Por ello, la dimensión ética se aborda desde el \citet{acmcode}, considerando principios como el bienestar social, la prevención del daño, la honestidad profesional, la equidad, la privacidad, la confidencialidad y el diseño de sistemas seguros.
+
+\section{Revisión de coherencia del Entregable 2}
+
+La coherencia del SGSI de Franco's SAC requiere que cada sección del Entregable 2 sea insumo directo de la siguiente. La revisión verifica la trazabilidad entre los cinco criterios del entregable: activos, riesgos, políticas, roles y ética.
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{0.9cm}|L{4.6cm}|L{1.8cm}|L{1.8cm}|L{1.8cm}|L{1.8cm}|L{1.8cm}|@{}}
+\caption{Revisión de coherencia del Entregable 2 (CE0321--CE0324)}
+\label{tab:coherencia_entregable2} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small \#} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small Punto de coherencia verificado} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small CE0321} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small CE0322} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small CE0323} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small CE0324} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small \#} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small Punto de coherencia verificado} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small CE0321} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small CE0322} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small CE0323} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small CE0324} &
+\parbox[c][1.2cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small C-01} & {\small Cada riesgo referencia el activo afectado del inventario del CE0321.} & {\small D-01 a P-04} & {\small R-01 a R-18} & {\small --} & {\small --} & {\small Coherente} \\ \hline
+{\small C-02} & {\small Cada política del CE0323 mitiga riesgos identificados en el CE0322.} & {\small --} & {\small R-01 a R-18} & {\small POL-01 a 06} & {\small --} & {\small Coherente} \\ \hline
+{\small C-03} & {\small Cada política tiene un único \textit{Accountable} en la matriz RACI del CE0324.} & {\small --} & {\small --} & {\small POL-01 a 06} & {\small RACI -- A} & {\small Coherente} \\ \hline
+{\small C-04} & {\small Los activos críticos \textit{person-db} y \textit{sales-invent-db} tienen riesgos específicos y políticas dedicadas.} & {\small D-01, D-02 (valor 5)} & {\small R-01, R-02, R-04} & {\small POL-01, POL-03} & {\small DBA \textit{Accountable}} & {\small Coherente} \\ \hline
+{\small C-05} & {\small Los riesgos aceptados (R-12, R-17, R-18) están justificados y no generan políticas operativas adicionales.} & {\small S-02, HW-01/02} & {\small R-12, R-17, R-18: Aceptar} & {\small Sin política} & {\small Sin RACI específico} & {\small Coherente} \\ \hline
+{\small C-06} & {\small La persona asignada como CISO (Ruben Mark Salazar) aparece consistentemente en la portada, la matriz RACI y la declaración.} & {\small --} & {\small --} & {\small --} & {\small \textit{A} en 10 de 13 procesos} & {\small Coherente} \\ \hline
+{\small C-07} & {\small ISO 27001 y el NIST CSF se referencian de forma consistente en los cuatro capítulos.} & {\small ISO 27005} & {\small NIST CSF v2.0} & {\small ISO 27001 A.9--A.16} & {\small ISO 27001 A.5--A.18} & {\small Coherente} \\ \hline
+{\small C-08} & {\small La Ley N.\textsuperscript{o} 29733 aparece en activos, riesgos, políticas y roles de forma consistente.} & {\small D-01 -- Ley 29733} & {\small R-02 -- Ley 29733} & {\small POL-05, POL-06} & {\small CISO notifica} & {\small Coherente} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+Los ocho puntos de coherencia verificados confirman la trazabilidad completa del Entregable 2: los activos conducen a los riesgos, los riesgos conducen a las políticas, las políticas conducen a los roles, y el conjunto se sostiene sobre los mismos marcos normativos --ISO 27001:2022, ISO 27005:2022, el NIST CSF v2.0 y la Ley N.\textsuperscript{o} 29733-- sin contradicciones entre capítulos.
+
+\section{Aplicación del Código de Ética de la ACM}
+
+La planificación de la seguridad de la información de Franco's SAC se revisa frente a los principios del \citet{acmcode}, en un ejercicio análogo al realizado para el diseño de red en el CE0316 del Entregable 1.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.6cm}|X|L{3.4cm}|@{}}
+\caption{Aplicación del Código de Ética de la ACM a la planificación de seguridad}
+\label{tab:aplicacion_acm_e2} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Principio ACM} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aplicación concreta en el SGSI de Franco's SAC} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Evidencia en el Entregable 2} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Principio ACM} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aplicación concreta en el SGSI de Franco's SAC} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Evidencia en el Entregable 2} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small 1.1 -- Contribuir al bienestar de la sociedad} & {\small Las seis políticas de seguridad protegen los datos de entre 30 y 40 trabajadores y de sus clientes. Un SGSI robusto garantiza la continuidad del negocio y la estabilidad económica de los empleados.} & {\small CE0321 -- 28 activos; CE0323 -- POL-01, POL-02.} \\ \hline
+
+{\small 1.2 -- Evitar causar daño} & {\small El análisis de riesgos identifica sistemáticamente los daños potenciales antes de que ocurran. Las políticas implementan controles preventivos. Los riesgos aceptados se documentan con justificación y se comunican a la Gerencia para una decisión informada.} & {\small CE0322 -- 18 riesgos; CE0323; CE0324 -- RACI.} \\ \hline
+
+{\small 1.3 -- Ser honesto y confiable} & {\small Los riesgos R-12, R-17 y R-18 se aceptan de forma transparente y documentada, reconociendo que están fuera del control total del proyecto. No se afirma que el sistema sea completamente seguro; se comunica el riesgo residual a la Gerencia.} & {\small CE0322 -- R-12, R-17, R-18; CE0324 -- Gerencia \textit{Informed}.} \\ \hline
+
+{\small 1.4 -- Ser justo y no discriminar} & {\small La POL-01 garantiza acceso equitativo al ERP para todos los trabajadores según su rol, sin distinción por sede. Los RODC de Local 1 y Local 3 aseguran que los operarios de planta cuenten con el mismo nivel de autenticación que el personal de la Sede Central.} & {\small CE0323 -- POL-01; CE0324 -- Usuario final.} \\ \hline
+
+{\small 1.6 -- Respetar la privacidad} & {\small \textit{person-db} contiene datos personales regulados por la Ley N.\textsuperscript{o} 29733. Se implementan controles específicos: VLAN aislada, mínimo privilegio en PostgreSQL, cifrado en tránsito y respaldo cifrado en S3.} & {\small CE0321 -- D-01; CE0322 -- R-02; CE0323 -- POL-05, POL-06.} \\ \hline
+
+{\small 1.7 -- Honrar la confidencialidad} & {\small La información de riesgos de Franco's SAC --vulnerabilidades identificadas, activos críticos, configuraciones-- se trata con estricta confidencialidad y se clasifica como de uso académico restringido.} & {\small Clasificación del documento; Acta de Conformidad.} \\ \hline
+
+{\small 2.5 -- Evaluación exhaustiva de los impactos} & {\small El inventario cubre 28 activos en seis categorías; el análisis de riesgos evalúa 18 riesgos con metodología cuantitativa. Ningún riesgo se minimiza por conveniencia: los ocho riesgos de nivel alto están documentados con sus controles.} & {\small CE0321 -- 28 activos; CE0322 -- 18 riesgos.} \\ \hline
+
+{\small 2.9 -- Diseñar sistemas seguros} & {\small Las políticas de seguridad definen controles desde el diseño del SGSI, no como un parche posterior. La POL-04 y la POL-06 garantizan que el sistema mantenga su postura de seguridad en el tiempo.} & {\small CE0323 -- POL-01 a POL-06; CE0324 -- RACI operativo.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\section{Impacto social, legal y responsabilidad profesional}
+
+El SGSI diseñado para Franco's SAC genera implicaciones más allá del ámbito técnico, particularmente en el tratamiento de datos personales y en la continuidad operativa de una organización con entre 30 y 40 trabajadores.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.8cm}|X|L{4cm}|@{}}
+\caption{Impacto social, legal y responsabilidad profesional del Entregable 2}
+\label{tab:impacto_social_legal_e2} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Dimensión} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Análisis} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Control implementado} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Dimensión} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Análisis} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Control implementado} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Ley N.\textsuperscript{o} 29733 -- Protección de Datos Personales} & {\small \textit{person-db} contiene datos personales de empleados, clientes y proveedores. La ley exige consentimiento informado, medidas de seguridad técnicas, no cesión a terceros sin autorización y notificación de brechas dentro de 72 horas al INDECOPI.} & {\small VLAN aislada; mínimo privilegio en la base de datos; VPN cifrada; POL-06 con notificación a INDECOPI dentro de 72 horas; respaldo en una región autorizada de AWS.} \\ \hline
+
+{\small D.S. N.\textsuperscript{o} 003-2013-JUS -- Reglamento de la Ley N.\textsuperscript{o} 29733} & {\small Obliga al responsable del banco de datos a implementar medidas de seguridad físicas, técnicas y organizativas proporcionales al riesgo. Franco's SAC es responsable de los datos almacenados.} & {\small El CE0321 al CE0324 constituyen el marco de medidas organizativas; las medidas técnicas se desarrollaron en el Entregable 1 (CE0313 a CE0315).} \\ \hline
+
+{\small Impacto social en los empleados} & {\small Un incidente de seguridad que paralice el ERP impacta directamente a entre 30 y 40 trabajadores: sin registro de ventas, sin control de inventario y sin remuneraciones a tiempo.} & {\small Disponibilidad objetivo del 99\% en horario laboral; RTO y RPO definidos; RODC garantiza autenticación local sin VPN; conmutación a AWS ante falla de la Sede Central.} \\ \hline
+
+{\small Ley N.\textsuperscript{o} 30096 -- Delitos Informáticos \citep{ley30096}} & {\small El acceso no autorizado a sistemas informáticos y la interceptación de datos son delitos tipificados. El SGSI reduce la probabilidad de ser víctima y documenta los controles de debida diligencia del responsable.} & {\small WAF ModSecurity; VPN cifrada; ACL en pfSense; auditoría con Wazuh; POL-06 de respuesta a incidentes.} \\ \hline
+
+{\small Responsabilidad profesional del equipo ITI} & {\small El diseño del SGSI genera obligaciones éticas: documentar los riesgos con honestidad, no ocultar vulnerabilidades a la Gerencia y recomendar controles proporcionales al riesgo y al presupuesto disponible.} & {\small R-12, R-17 y R-18 documentados y aceptados con justificación; riesgos comunicados a la Gerencia mediante la matriz RACI.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\section{Declaración de calidad documental y ética del Entregable 2}
+
+A partir de la revisión realizada en los bloques anteriores, se declara que el Entregable 2 mantiene una estructura documental coherente y una orientación ética adecuada para el alcance académico del proyecto. Esta declaración no representa una certificación externa de seguridad ni una auditoría formal del SGSI, sino una validación interna del documento respecto a claridad técnica, trazabilidad y responsabilidad profesional.
+
+El conjunto CE0321--CE0325 se elaboró como una línea continua: primero se identifican y valoran los activos, luego se analizan los riesgos que los amenazan, después se definen las políticas que los mitigan, se asignan roles y responsabilidades concretas, y finalmente se revisa la calidad documental y ética del trabajo completo.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.2cm}|X|X|@{}}
+\caption{Declaración de calidad documental y ética del Entregable 2}
+\label{tab:declaracion_calidad_etica_e2} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Eje declarado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Declaración} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Evidencia dentro del entregable} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Eje declarado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Declaración} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Evidencia dentro del entregable} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Calidad documental} & {\small El Entregable 2 está compuesto por cinco secciones que cubren la totalidad de los criterios de la rúbrica CE032, con terminología técnica alineada a ISO 27005:2022, ISO 27001:2022 y el NIST CSF v2.0.} & {\small CE0321--CE0325; ocho puntos de coherencia verificados en la sección anterior.} \\ \hline
+
+{\small Código de Ética ACM} & {\small Los ocho principios revisados del \citet{acmcode} se aplicaron explícitamente en el diseño del SGSI, priorizando la protección de datos personales y documentando con transparencia los riesgos aceptados.} & {\small Sección de aplicación del Código de Ética ACM de este capítulo.} \\ \hline
+
+{\small Marco legal peruano} & {\small El SGSI incorpora los requisitos de la Ley N.\textsuperscript{o} 29733 y su reglamento, especialmente en la protección de \textit{person-db} y en el procedimiento de notificación ante brechas de datos.} & {\small CE0323 -- POL-05, POL-06; sección de impacto social y legal de este capítulo.} \\ \hline
+
+{\small Transparencia} & {\small Los riesgos R-12, R-17 y R-18 se aceptaron de forma documentada y comunicada a la Gerencia, reconociendo los límites del control del proyecto sobre la infraestructura física del laboratorio de la UPeU.} & {\small CE0322 -- R-12, R-17, R-18; CE0324 -- matriz RACI.} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+Con base en esta revisión, se deja constancia de que el Entregable 2 ha sido elaborado con una intención técnica y ética clara. El documento no se limita a enumerar controles de seguridad, sino que explica por qué cada control responde a un riesgo identificado sobre un activo concreto de Franco's SAC, y reconoce honestamente los riesgos que quedan fuera del control directo del proyecto.
+
+\section{Cierre del Entregable 2}
+
+El presente bloque cierra el segundo Entregable correspondiente a la planificación de seguridad de la información para Franco's SAC. Tras revisar los capítulos CE0321 a CE0325, se evidencia que el documento desarrolla una línea técnica continua: identifica los activos, analiza los riesgos que los amenazan, define las políticas que los mitigan, asigna responsabilidades concretas y cierra con una revisión documental y ética.
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.6cm}|X|L{2.2cm}|@{}}
+\caption{Cierre del Entregable 2 según ejes documentales}
+\label{tab:cierre_entregable2_ejes} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Eje del entregable} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Resultado alcanzado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Eje del entregable} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Resultado alcanzado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Identificación de activos} & {\small Se identificaron y valoraron 28 activos en seis categorías mediante el modelo CIA, conforme al Anexo B de ISO 27005:2022.} & {\small Cubierto} \\ \hline
+{\small Análisis de riesgos} & {\small Se analizaron 18 riesgos mediante la metodología Probabilidad \(\times\) Impacto, mapeados a los cinco dominios del NIST CSF v2.0.} & {\small Cubierto} \\ \hline
+{\small Políticas de seguridad} & {\small Se definieron seis políticas formales que cubren los quince riesgos a mitigar, alineadas al Anexo A de ISO 27001:2022.} & {\small Cubierto} \\ \hline
+{\small Roles y responsabilidades} & {\small Se establecieron seis roles del SGSI, una matriz RACI de trece procesos y responsabilidades operativas por frecuencia.} & {\small Cubierto} \\ \hline
+{\small Calidad documental y ética} & {\small Se verificó la coherencia entre los cinco criterios, se aplicaron los principios del Código de Ética ACM y se analizó el impacto legal y social del SGSI.} & {\small Cubierto} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+El resultado es un sistema de gestión de seguridad de la información organizado, trazable y defendible, que complementa el diseño de red del Entregable 1 y constituye la base de seguridad sobre la cual se sostiene el diseño del centro de datos desarrollado en el Entregable 3.
+
+
+% ============================================================
+%  ANEXOS
+% ============================================================
+\appendix
+
+\chapter{Anexo~A --- Inventario de Activos Primarios --- Datos e Información}
+\label{anex:activos_datos}
+
+Los activos de datos e información constituyen el núcleo del ERP de Franco's SAC. Incluyen las bases de datos operativas, los respaldos generados a partir de ellas y las configuraciones que permiten reconstruir la infraestructura ante un incidente. Estos activos concentran los valores más altos del inventario porque su pérdida o corrupción afecta directamente la continuidad del negocio y, en el caso de los datos personales, genera responsabilidad legal conforme a la Ley N.\textsuperscript{o} 29733.
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{1.6cm}|L{3cm}|X|L{2.6cm}|L{1.6cm}|L{2.6cm}|@{}}
+\caption{Inventario de activos primarios — Datos e información}
+\label{tab:inventario_activos_datos} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Descripción} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Propietario} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Descripción} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Propietario} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small D-01} & {\small\textbf{person-db}} & {\small Base de datos PostgreSQL con datos de empleados, clientes y proveedores de Franco's SAC: nombres, DNI, contactos y roles. Sujeta a la Ley N.\textsuperscript{o} 29733.} & {\small Gerencia General} & {\small 5 / 5 / 4} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+
+{\small D-02} & {\small\textbf{sales-invent-db}} & {\small Base de datos de ventas e inventario: órdenes, productos, stock, precios y clientes. Núcleo del ERP operativo.} & {\small Gerencia Comercial} & {\small 4 / 5 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+
+{\small D-03} & {\small\textbf{strategic-db}} & {\small Base de datos de KPI, reportes de inteligencia de negocio y métricas estratégicas.} & {\small Gerencia General} & {\small 4 / 3 / 3} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+
+{\small D-04} & {\small\textbf{Respaldos en S3 AWS}} & {\small Copias \texttt{pg\_dump} diarias de las tres bases de datos y exportaciones OVF semanales, almacenadas en \texttt{francos-db-backups/} y \texttt{francos-vm-exports/}, con retención de 30 días.} & {\small Equipo TI} & {\small 5 / 4 / 4} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+
+{\small D-05} & {\small\textbf{Configuración pfSense (XML)}} & {\small Respaldo XML de las reglas de firewall, túneles VPN, DHCP y NAT de pfSense-BORDE, pfSense-L1 y pfSense-L3.} & {\small Equipo TI} & {\small 5 / 5 / 3} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+
+{\small D-06} & {\small\textbf{Imágenes Docker (ECR)}} & {\small Imágenes Docker de los microservicios (gateway, autenticación, personas, ventas, estratégico) almacenadas en AWS ECR.} & {\small Equipo TI / Desarrollo} & {\small 3 / 4 / 3} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+
+\chapter{Anexo~B --- Inventario de Activos Primarios --- Servicios y Procesos de Negocio}
+\label{anex:activos_servicios}
+
+Los servicios y procesos de negocio representan la operación visible de Franco's SAC: el sistema ERP, la autenticación corporativa, la conectividad entre sedes, la resolución de nombres, el monitoreo y la interfaz de usuario. A diferencia de los activos de datos, su pérdida no implica necesariamente pérdida de información, pero sí interrupción del proceso de negocio asociado.
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{1.6cm}|L{3cm}|X|L{2.6cm}|L{1.6cm}|L{2.6cm}|@{}}
+\caption{Inventario de activos primarios — Servicios y procesos de negocio}
+\label{tab:inventario_activos_servicios} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Descripción} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Propietario} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Descripción} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Propietario} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small S-01} & {\small\textbf{ERP Franco's SAC} (API Gateway + microservicios)} & {\small Sistema ERP completo: API Gateway en NestJS, broker NATS y los microservicios de autenticación, personas, ventas/inventario y estratégico. Proceso de negocio principal.} & {\small Gerencia General} & {\small 4 / 5 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+
+{\small S-02} & {\small\textbf{Active Directory} (DC1 único + RODC L1/L3)} & {\small Servicio de autenticación corporativa \texttt{francos.local}. El DC1 (H2) no cuenta con réplica on-premises --riesgo aceptado--; los RODC de Local 1 y Local 3 cubren autenticación local en caché.} & {\small Equipo TI} & {\small 4 / 5 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+
+{\small S-03} & {\small\textbf{Conectividad VPN} (L1-L2, L2-L3, L2-AWS)} & {\small Túneles IPSec IKEv2 con AES-256-GCM que interconectan los tres locales y AWS. Sin VPN activa, Local 1 y Local 3 no acceden al ERP ni sincronizan datos.} & {\small Equipo TI} & {\small 3 / 4 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+
+{\small S-04} & {\small\textbf{DNS \texttt{francos.local}}} & {\small Resolución de nombres internos para el controlador de dominio, el API Gateway y los microservicios. Sin DNS, el ERP y la autenticación dejan de operar.} & {\small Equipo TI} & {\small 2 / 4 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+
+{\small S-05} & {\small\textbf{Monitoreo} (Wazuh + CloudWatch)} & {\small Plataforma de observabilidad y SIEM centralizada que cubre los tres locales y AWS, con alertas ante caídas de servicio y anomalías.} & {\small Equipo TI} & {\small 2 / 3 / 3} & {\small 3 -- \textcolor{sev_medio}{\textbf{Importante}}} \\ \hline
+
+{\small S-06} & {\small\textbf{Frontend Angular} (CloudFront + S3 AWS)} & {\small Interfaz del ERP servida desde CloudFront y alojamiento estático en S3. Punto de acceso de todos los usuarios al sistema.} & {\small Equipo de Desarrollo / TI} & {\small 2 / 4 / 4} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+
+\chapter{Anexo~C --- Inventario de Activos Secundarios --- Software, Hardware, Red y Personas}
+\label{anex:activos_secundarios}
+
+Los activos secundarios sostienen técnica y humanamente a los activos primarios descritos en las secciones anteriores. Se agrupan en cuatro subcategorías --software de infraestructura, hardware, infraestructura de red y personas-- siguiendo la misma lógica de valoración CIA, salvo en el caso de las personas, donde la criticidad se asocia al conocimiento que poseen sobre la operación de la infraestructura.
+
+\subsection{Software de infraestructura}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{1.5cm}|L{4.4cm}|L{1.6cm}|L{2.4cm}|@{}}
+\caption{Inventario de activos secundarios — Software de infraestructura}
+\label{tab:inventario_activos_software} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Software} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Software} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small SW-01} & {\small pfSense 2.7 CE -- firewall, router y concentrador VPN} & {\small 5 / 5 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+{\small SW-02} & {\small VMware ESXi 8.0 Update 3 -- plataforma de virtualización} & {\small 3 / 5 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+{\small SW-03} & {\small Samba AD-DC 4.x -- directorio activo} & {\small 5 / 5 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+{\small SW-04} & {\small PostgreSQL 15 -- motor de bases de datos} & {\small 4 / 5 / 4} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+{\small SW-05} & {\small NATS 2.x con JetStream -- message broker} & {\small 2 / 4 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+{\small SW-06} & {\small Docker Engine -- plataforma de contenedores} & {\small 2 / 4 / 4} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+{\small SW-07} & {\small NGINX con ModSecurity v3 -- WAF} & {\small 3 / 4 / 4} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+{\small SW-08} & {\small Wazuh 4.x -- monitoreo y SIEM} & {\small 2 / 3 / 3} & {\small 3 -- \textcolor{sev_medio}{\textbf{Importante}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\subsection{Hardware}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{1.5cm}|L{4.4cm}|L{1.6cm}|L{2.4cm}|@{}}
+\caption{Inventario de activos secundarios — Hardware}
+\label{tab:inventario_activos_hardware} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo y ubicación} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo y ubicación} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small HW-01} & {\small ESXi H1 -- Dell Precision 7920 (6 núcleos Xeon Bronze, 31.65 GB RAM, 348 GB). Sede Central, Local 2.} & {\small 3 / 4 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+{\small HW-02} & {\small ESXi H2 y H3 -- hipervisores de Servicios y Backend. Sede Central, Local 2.} & {\small 3 / 4 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+{\small HW-03} & {\small ESXi H4 -- hipervisor de Local 1.} & {\small 2 / 3 / 4} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+{\small HW-04} & {\small ESXi H5 -- hipervisor de Local 3.} & {\small 2 / 3 / 4} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+{\small HW-05} & {\small Cisco Catalyst 1000 -- switch de distribución de la Sede Central.} & {\small 2 / 4 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+{\small HW-06} & {\small FortiGate 40F -- gateway de respaldo ISP2/WAN2.} & {\small 2 / 3 / 3} & {\small 3 -- \textcolor{sev_medio}{\textbf{Importante}}} \\ \hline
+{\small HW-07} & {\small AP WiFi FrancosCorp -- acceso inalámbrico VLAN 20.} & {\small 2 / 2 / 2} & {\small 2 -- \textcolor{sev_normal}{\textbf{Normal}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\subsection{Infraestructura de red y personas}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{1.5cm}|L{4.4cm}|L{1.6cm}|L{2.4cm}|@{}}
+\caption{Inventario de activos secundarios — Infraestructura de red}
+\label{tab:inventario_activos_red} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small C / I / A} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Valor y clasificación} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small NW-01} & {\small ISP1 / WAN1 -- enlace primario de Internet y VPN (Cisco Router del laboratorio).} & {\small 2 / 3 / 5} & {\small 5 -- \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+{\small NW-02} & {\small ISP2 / WAN2 -- enlace secundario con conmutación automática (FortiGate 40F).} & {\small 2 / 3 / 4} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+{\small NW-03} & {\small Túnel VPN L1--L2 -- conectividad entre Local 1 y Sede Central.} & {\small 3 / 4 / 4} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+{\small NW-04} & {\small Túnel VPN L2--L3 -- conectividad entre Sede Central y Local 3.} & {\small 3 / 4 / 4} & {\small 4 -- \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+{\small NW-05} & {\small Túnel VPN L2--AWS -- conectividad privada hacia AWS para respaldos e imágenes Docker.} & {\small 3 / 3 / 3} & {\small 3 -- \textcolor{sev_medio}{\textbf{Importante}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{1.5cm}|L{3.5cm}|X|L{2.4cm}|@{}}
+\caption{Inventario de activos secundarios — Personas}
+\label{tab:inventario_activos_personas} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Conocimiento crítico que posee} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Clasificación} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Código} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Conocimiento crítico que posee} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Clasificación} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small P-01} & {\small Equipo TI del proyecto} & {\small Configuración de pfSense, ESXi, Active Directory, VPN y respaldos. Sin este conocimiento, la recuperación ante fallos es inviable.} & {\small \textcolor{sev_critico}{\textbf{Crítico}}} \\ \hline
+
+{\small P-02} & {\small Gerencia de Franco's SAC} & {\small Autorización de cambios en sistemas críticos y acceso a información financiera.} & {\small \textcolor{sev_alto}{\textbf{Alto}}} \\ \hline
+
+{\small P-03} & {\small Personal de ventas y administración (Local 2)} & {\small Uso del ERP para registro de ventas, facturación y reportes.} & {\small \textcolor{sev_medio}{\textbf{Importante}}} \\ \hline
+
+{\small P-04} & {\small Operarios de producción (Local 1, Local 3)} & {\small Registro de producción y acceso a inventario a través del ERP.} & {\small \textcolor{sev_normal}{\textbf{Normal}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+
+
+\chapter{Anexo~D --- Matriz Completa de Riesgos Identificados}
+\label{anex:matriz_riesgos}
+
+El análisis identifica dieciocho riesgos sobre la infraestructura de Franco's SAC. Cada riesgo combina una amenaza --el evento que podría ocurrir-- con una vulnerabilidad --la condición que permite que la amenaza se materialice-- sobre uno o más activos del inventario del CE0321.
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{1cm}|L{4.4cm}|L{4.6cm}|L{2.8cm}|L{1.4cm}|L{2.2cm}|@{}}
+\caption{Matriz de riesgos identificados sobre la infraestructura de Franco's SAC}
+\label{tab:matriz_riesgos_identificados} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small ID} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Amenaza} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Vulnerabilidad} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo afectado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small P / I / Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Tratamiento} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small ID} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Amenaza} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Vulnerabilidad} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Activo afectado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small P / I / Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Tratamiento} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small R-01} & {\small Ransomware cifra las bases de datos PostgreSQL} & {\small Acceso lateral si un contenedor Docker es comprometido; sin aislamiento total de la VLAN 50} & {\small D-01, D-02} & {\small 3 / 5 / 15} & {\small \textcolor{sev_alto}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-02} & {\small Acceso no autorizado a datos personales} & {\small Credenciales de base de datos débiles o compartidas; sin auditoría de acceso activa} & {\small D-01, P-01--P-04} & {\small 3 / 5 / 15} & {\small \textcolor{sev_alto}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-03} & {\small Fuerza bruta / \textit{credential stuffing} al API Gateway} & {\small Endpoint TCP 443 expuesto a Internet; \textit{rate limiting} solo en el WAF (100 req/s)} & {\small S-01} & {\small 4 / 4 / 16} & {\small \textcolor{sev_alto}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-04} & {\small Inyección SQL a través de microservicios} & {\small Validación insuficiente de entradas si un microservicio no usa el ORM correctamente} & {\small D-01, D-02, D-03} & {\small 3 / 5 / 15} & {\small \textcolor{sev_alto}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-05} & {\small Compromiso de credenciales de AD por \textit{phishing}} & {\small Usuarios sin autenticación multifactor; política de contraseñas sin verificación en tiempo real} & {\small S-02, SW-03} & {\small 3 / 5 / 15} & {\small \textcolor{sev_alto}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-06} & {\small Caída del ISP1 / WAN1 primario} & {\small Enlace WAN primario sin garantía de disponibilidad del proveedor} & {\small NW-01, S-01, S-03} & {\small 3 / 4 / 12} & {\small \textcolor{sev_alto}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-07} & {\small Pérdida o fallo del respaldo diario \texttt{pg\_dump} hacia S3} & {\small Dependencia del túnel VPN L2--AWS; sin alerta automática si el respaldo falla} & {\small D-04} & {\small 3 / 4 / 12} & {\small \textcolor{sev_alto}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-08} & {\small Error de configuración en pfSense} & {\small Sin proceso formal de gestión de cambios; cambios sin respaldo previo} & {\small SW-01, D-05} & {\small 3 / 4 / 12} & {\small \textcolor{sev_alto}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-09} & {\small Falla del hipervisor H3 (\textit{backend}: microservicios y bases de datos primarias)} & {\small Todos los microservicios y bases de datos primarias en un único host físico} & {\small S-01, D-01--D-03} & {\small 2 / 5 / 10} & {\small \textcolor{sev_medio}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-10} & {\small Caída de pfSense-BORDE (concentrador VPN y \textit{firewall} principal)} & {\small Punto único de falla de toda la conectividad interlocal y el filtrado de tráfico} & {\small SW-01, S-03, S-01} & {\small 2 / 5 / 10} & {\small \textcolor{sev_medio}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-11} & {\small Interceptación de tráfico interlocal durante una falla temporal de la VPN} & {\small Ventana breve sin cifrado durante la reconexión \textit{Dead Peer Detection} del túnel} & {\small D-01, D-02, S-03} & {\small 2 / 5 / 10} & {\small \textcolor{sev_medio}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-12} & {\small Caída del DNS \texttt{francos.local} (DC1 sin failover)} & {\small Sin un segundo controlador de dominio activo, el DNS deja de responder y el ERP falla} & {\small S-04, S-02, S-01} & {\small 2 / 5 / 10} & {\small \textcolor{sev_medio}{\textbf{Aceptar}}} \\ \hline
+
+{\small R-13} & {\small Exfiltración de datos mediante un token JWT robado} & {\small Token de larga duración interceptado permite acceso ilegítimo al ERP} & {\small D-01, D-02, S-01} & {\small 2 / 5 / 10} & {\small \textcolor{sev_medio}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-14} & {\small Ataque de denegación de servicio distribuido al API Gateway / CloudFront} & {\small Saturación del \textit{endpoint} HTTPS; WAF limitado a 100 req/s por IP} & {\small S-01, S-06} & {\small 2 / 4 / 8} & {\small \textcolor{sev_medio}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-15} & {\small Inyección de mensajes falsos en NATS} & {\small NATS sin autenticación NKeys explícita; acceso disponible desde la VLAN 40 interna} & {\small SW-05, S-01} & {\small 2 / 4 / 8} & {\small \textcolor{sev_medio}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-16} & {\small Pérdida de conocimiento crítico del equipo TI} & {\small Conocimiento no documentado sobre la configuración de la infraestructura} & {\small P-01} & {\small 3 / 3 / 9} & {\small \textcolor{sev_medio}{\textbf{Mitigar}}} \\ \hline
+
+{\small R-17} & {\small Acceso físico no autorizado a los hipervisores del laboratorio} & {\small El control de acceso físico depende de las políticas de UPeU, no del proyecto} & {\small HW-01, HW-02} & {\small 2 / 5 / 10} & {\small \textcolor{sev_medio}{\textbf{Aceptar}}} \\ \hline
+
+{\small R-18} & {\small Interrupción prolongada de energía en el laboratorio} & {\small Sin UPS ni grupo electrógeno bajo control del proyecto} & {\small HW-01, HW-02, HW-05} & {\small 2 / 5 / 10} & {\small \textcolor{sev_medio}{\textbf{Aceptar}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+De los dieciocho riesgos identificados, ocho alcanzan nivel alto (P\(\times\)I entre 12 y 16) y diez alcanzan nivel medio (P\(\times\)I entre 8 y 10). Ningún riesgo alcanza nivel crítico, resultado que se explica por los controles de redundancia ya implementados en el Entregable 1: Dual-WAN, CARP en alta disponibilidad, respaldo y recuperación ante desastres consolidados en AWS, y un WAF en la zona desmilitarizada.
+
+\section{Mapa de calor de probabilidad e impacto}
+
+El mapa de calor permite visualizar de forma conjunta la distribución de los dieciocho riesgos según su probabilidad y su impacto, facilitando la identificación de las combinaciones que concentran mayor exposición.
+
+\renewcommand{\arraystretch}{1.5}
+\footnotesize
+
+\begin{tabularx}{\textwidth}{@{}|L{2cm}|X|X|X|X|X|@{}}
+\hline
+\rowcolor{upeu_dark}
+\parbox[c][0.9cm][c]{\linewidth}{\centering\color{white}\bfseries\small P \textbackslash\ I} &
+\parbox[c][0.9cm][c]{\linewidth}{\centering\color{white}\bfseries\small 1 Mínimo} &
+\parbox[c][0.9cm][c]{\linewidth}{\centering\color{white}\bfseries\small 2 Bajo} &
+\parbox[c][0.9cm][c]{\linewidth}{\centering\color{white}\bfseries\small 3 Medio} &
+\parbox[c][0.9cm][c]{\linewidth}{\centering\color{white}\bfseries\small 4 Alto} &
+\parbox[c][0.9cm][c]{\linewidth}{\centering\color{white}\bfseries\small 5 Crítico} \\ \hline
+
+\cellcolor{upeu_light}{\small\bfseries 5 Muy alta} & {\small 5} & {\small 10} & {\small 15} & \cellcolor{sev_alto!15}{\small 20} & \cellcolor{sev_critico!20}{\small 25} \\ \hline
+
+\cellcolor{upeu_light}{\small\bfseries 4 Alta} & {\small 4} & {\small 8} & {\small 12} & \cellcolor{sev_alto!15}{\small 16 -- R-03} & \cellcolor{sev_critico!20}{\small 20} \\ \hline
+
+\cellcolor{upeu_light}{\small\bfseries 3 Media} & {\small 3} & {\small 6} & \cellcolor{sev_medio!15}{\small 9 -- R-16} & \cellcolor{sev_alto!15}{\small 12 -- R-06, R-07, R-08} & \cellcolor{sev_critico!20}{\small 15 -- R-01, R-02, R-04, R-05} \\ \hline
+
+\cellcolor{upeu_light}{\small\bfseries 2 Baja} & {\small 2} & {\small 4} & {\small 6} & \cellcolor{sev_medio!15}{\small 8 -- R-14, R-15} & \cellcolor{sev_medio!15}{\small 10 -- R-09, R-10, R-11, R-12, R-13, R-17, R-18} \\ \hline
+
+\cellcolor{upeu_light}{\small\bfseries 1 Muy baja} & {\small 1} & {\small 2} & {\small 3} & {\small 4} & {\small 5} \\ \hline
+
+\end{tabularx}
+
+\normalsize
+
+Ningún riesgo se ubica en la zona crítica del mapa de calor (P\(\times\)I mayor o igual a 20), lo que confirma que los controles de redundancia descritos en el CE0314 --Dual-WAN, CARP en alta disponibilidad, respaldo y recuperación ante desastres en AWS y WAF-- ya reducen la probabilidad o el impacto de las amenazas más severas antes de aplicar los controles adicionales que se detallan en el siguiente capítulo.
+
+
+\chapter{Anexo~E --- Mapeo al NIST CSF y Plan de Tratamiento de Riesgos}
+\label{anex:nist_tratamiento}
+
+Cada riesgo se vincula a uno o más subcategorías del \citet{nistcsf}, lo que permite ordenar los controles según su función: proteger, detectar, responder o recuperar. Esta vinculación es el puente entre el análisis de riesgos y las políticas de seguridad formales que se desarrollan en el CE0323.
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{1cm}|L{3.6cm}|L{1.6cm}|L{2.2cm}|X|L{1.8cm}|@{}}
+\caption{Mapeo de riesgos a NIST CSF v2.0 y control implementado}
+\label{tab:mapeo_nist_csf_tratamiento} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small ID} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Riesgo (resumen)} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small NIST CSF} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Control implementado o acción} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Tratamiento} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small ID} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Riesgo (resumen)} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small NIST CSF} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Control implementado o acción} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Tratamiento} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small R-01} & {\small Ransomware en bases de datos PostgreSQL} & {\small Alto} & {\small PR.DS-1, RC.RP} & {\small VLAN 50 aislada; acceso solo desde la VLAN 40 por TCP 5432; AWS RDS Multi-AZ; \texttt{pg\_dump} diario hacia S3; reinicio automático de contenedores} & {\small Mitigar} \\ \hline
+
+{\small R-02} & {\small Acceso no autorizado a datos personales} & {\small Alto} & {\small PR.AC-4, DE.CM-3} & {\small Usuarios de base de datos con mínimo privilegio; registros de auditoría en PostgreSQL; VPN cifrada; cumplimiento de la Ley N.\textsuperscript{o} 29733} & {\small Mitigar} \\ \hline
+
+{\small R-03} & {\small Fuerza bruta al API Gateway} & {\small Alto} & {\small PR.AC-1, DE.AE-2} & {\small WAF ModSecurity con límite de 100 req/s por IP; JWT de corta duración (15 minutos); bloqueo tras cinco intentos fallidos en el microservicio de autenticación} & {\small Mitigar} \\ \hline
+
+{\small R-04} & {\small Inyección SQL vía microservicios} & {\small Alto} & {\small PR.DS-6, DE.AE-2} & {\small WAF ModSecurity con OWASP CRS bloquea inyecciones; ORM TypeORM con consultas parametrizadas en NestJS; validación de entradas en cada microservicio} & {\small Mitigar} \\ \hline
+
+{\small R-05} & {\small Compromiso de credenciales de AD} & {\small Alto} & {\small PR.AC-1, PR.AC-6} & {\small Directiva de contraseñas: mínimo diez caracteres, complejidad y rotación de 90 días; bloqueo de cuenta tras cinco intentos; auditoría de inicio de sesión; autenticación multifactor pendiente para el siguiente semestre} & {\small Mitigar} \\ \hline
+
+{\small R-06} & {\small Caída del ISP1 / WAN1} & {\small Alto} & {\small PR.IP-9, RS.RP-1} & {\small Dual-WAN en pfSense: el FortiGate 40F asume el tráfico en menos de diez segundos; \textit{Dead Peer Detection} reconecta la VPN por la WAN secundaria} & {\small Mitigar} \\ \hline
+
+{\small R-07} & {\small Fallo del respaldo \texttt{pg\_dump} hacia S3} & {\small Alto} & {\small PR.IP-4, DE.CM-4} & {\small Alarma de CloudWatch si no se registra un \textit{PutObject} en S3 entre las 22:00 y las 23:00; Wazuh alerta si el script de respaldo falla; sin respaldo on-premises alterno --AWS es el único sitio de respaldo y recuperación-- riesgo aceptado de RPO menor a 24 horas} & {\small Mitigar} \\ \hline
+
+{\small R-08} & {\small Error de configuración en pfSense} & {\small Alto} & {\small PR.IP-1, PR.IP-3} & {\small Respaldo XML de pfSense antes de cada cambio; procedimiento formal de gestión de cambios; entorno de prueba separado pendiente} & {\small Mitigar} \\ \hline
+
+{\small R-09} & {\small Falla del hipervisor H3} & {\small Medio} & {\small RC.RP-1, PR.IP-4} & {\small Conmutación a AWS: ECS Fargate para los microservicios y RDS Multi-AZ a través de Route 53, con un RTO aproximado de 15 minutos y un RPO menor a 24 horas, sin replicación en tiempo real; \textit{snapshot} diario en ESXi} & {\small Mitigar} \\ \hline
+
+{\small R-10} & {\small Caída de pfSense-BORDE} & {\small Medio} & {\small RS.MI-1, RC.RP} & {\small CARP en alta disponibilidad entre los nodos BORDE-A y BORDE-B con conmutación menor a dos segundos; \textit{snapshot} diario de la VM; Local 1 y Local 3 operan localmente mediante RODC y servidor de archivos si la VPN cae} & {\small Mitigar} \\ \hline
+
+{\small R-11} & {\small Interceptación de tráfico interlocal} & {\small Medio} & {\small PR.DS-2, PR.DS-5} & {\small VPN IPSec IKEv2 con AES-256-GCM siempre activa; \textit{Dead Peer Detection} menor a 30 segundos; los datos sensibles solo viajan por la VPN según las reglas de pfSense} & {\small Mitigar} \\ \hline
+
+{\small R-12} & {\small Caída del DNS \texttt{francos.local} sin un segundo controlador} & {\small Medio} & {\small PR.IP-9, RC.RP-1} & {\small Riesgo aceptado por decisión de diseño tras consolidar el respaldo y la recuperación en AWS, que no provee Active Directory; los RODC de Local 1 y Local 3 cubren solo autenticación local en caché; pfSense Unbound actúa como DNS terciario en caché} & {\small Aceptar} \\ \hline
+
+{\small R-13} & {\small Exfiltración vía token JWT robado} & {\small Medio} & {\small PR.AC-4, PR.DS-5} & {\small JWT con vigencia de 15 minutos y \textit{refresh token}; revocación de tokens en el microservicio de autenticación; registros de acceso por usuario; HTTPS obligatorio} & {\small Mitigar} \\ \hline
+
+{\small R-14} & {\small Ataque de denegación de servicio distribuido} & {\small Medio} & {\small PR.AC-5, RS.MI-1} & {\small CloudFront absorbe el tráfico mediante su red de distribución; \textit{rate limiting} del WAF; verificación de estado de Route 53 redirige si el origen cae} & {\small Mitigar} \\ \hline
+
+{\small R-15} & {\small Mensajes falsos en NATS} & {\small Medio} & {\small PR.AC-4, PR.DS-2} & {\small NATS aislado en la VLAN 40; solo se permite el tráfico desde la VLAN 30 hacia el puerto 4222; autenticación NKeys pendiente de configuración para el segundo semestre} & {\small Mitigar} \\ \hline
+
+{\small R-16} & {\small Pérdida de conocimiento del equipo TI} & {\small Medio} & {\small PR.AT-1, PR.IP-11} & {\small Documentación técnica completa en archivos de especificación por hipervisor y sede, bitácoras operativas y repositorio de control de versiones} & {\small Mitigar} \\ \hline
+
+{\small R-17} & {\small Acceso físico no autorizado al laboratorio} & {\small Medio} & {\small PR.AC-2} & {\small Control de acceso físico gestionado por la UPeU, fuera del alcance del proyecto; riesgo aceptado con justificación documentada} & {\small Aceptar} \\ \hline
+
+{\small R-18} & {\small Corte eléctrico prolongado} & {\small Medio} & {\small PR.IP-9} & {\small UPS y grupo electrógeno gestionados por la UPeU, fuera del alcance del proyecto; riesgo aceptado; en una instalación real se contempla UPS dedicado y generador} & {\small Aceptar} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+\section{Resultado del análisis de riesgos}
+
+El análisis identifica dieciocho riesgos: ocho de nivel alto y diez de nivel medio. Ningún riesgo alcanza nivel crítico, debido a que la arquitectura definida en el Entregable 1 ya implementa controles preventivos efectivos --Dual-WAN, CARP en alta disponibilidad, respaldo y recuperación ante desastres en AWS, WAF y controladores de dominio de solo lectura. De los dieciocho riesgos, quince se tratan mediante mitigación con controles técnicos y procedimentales, y tres se aceptan de forma documentada: el riesgo R-12, asociado a la ausencia de un segundo controlador de dominio on-premises tras la consolidación del respaldo en AWS, y los riesgos R-17 y R-18, asociados al acceso físico y a la energía del laboratorio de la UPeU, ambos fuera del control del proyecto.
+
+Este resultado constituye el punto de partida del CE0323, donde cada riesgo a mitigar se traduce en una o más políticas formales de seguridad de la información.
+
+
+\chapter{Anexo~F --- Matriz RACI de Procesos de Seguridad}
+\label{anex:raci}
+
+La matriz RACI --\textit{Responsible}, \textit{Accountable}, \textit{Consulted}, \textit{Informed}-- asigna de forma explícita quién ejecuta, quién rinde cuentas, a quién se consulta y a quién se informa en cada proceso de seguridad. Esta matriz evita la ambigüedad de responsabilidades, particularmente en los procesos críticos de respuesta a incidentes y gestión de accesos.
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|X|L{1.6cm}|L{1.4cm}|L{1.7cm}|L{1.7cm}|L{1.3cm}|L{1.6cm}|@{}}
+\caption{Matriz RACI de procesos de seguridad de la información}
+\label{tab:matriz_raci_procesos_seguridad} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Proceso de seguridad} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Gerencia} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small CISO} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Admin. Red} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Admin. Sistemas} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small DBA} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Usuario} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Proceso de seguridad} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Gerencia} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small CISO} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Admin. Red} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Admin. Sistemas} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small DBA} &
+\parbox[c][1.3cm][c]{\linewidth}{\centering\color{white}\bfseries\small Usuario} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small Definición y aprobación de políticas del SGSI} & {\small\bfseries A} & {\small\bfseries R} & {\small C} & {\small C} & {\small C} & {\small I} \\ \hline
+{\small Gestión de accesos (alta, baja y modificación de cuentas AD)} & {\small I} & {\small\bfseries A} & {\small\bfseries R} & {\small C} & {\small --} & {\small I} \\ \hline
+{\small Revisión trimestral de cuentas y accesos} & {\small I} & {\small\bfseries A} & {\small\bfseries R} & {\small C} & {\small C} & {\small --} \\ \hline
+{\small Respaldo y recuperación de datos (\texttt{pg\_dump}, \textit{snapshots})} & {\small --} & {\small\bfseries A} & {\small C} & {\small\bfseries R} & {\small\bfseries R} & {\small --} \\ \hline
+{\small Prueba de restauración de respaldos (trimestral)} & {\small I} & {\small\bfseries A} & {\small C} & {\small\bfseries R} & {\small\bfseries R} & {\small --} \\ \hline
+{\small Gestión de parches y actualizaciones} & {\small I} & {\small\bfseries A} & {\small\bfseries R} & {\small\bfseries R} & {\small\bfseries R} & {\small --} \\ \hline
+{\small Monitoreo continuo (Wazuh y CloudWatch)} & {\small --} & {\small\bfseries A} & {\small\bfseries R} & {\small C} & {\small C} & {\small --} \\ \hline
+{\small Detección y clasificación de incidentes (P1 a P4)} & {\small I} & {\small\bfseries A} & {\small\bfseries R} & {\small C} & {\small C} & {\small\bfseries R} \\ \hline
+{\small Respuesta y contención ante incidentes P1 o P2} & {\small\bfseries A} & {\small\bfseries R} & {\small\bfseries R} & {\small\bfseries R} & {\small\bfseries R} & {\small I} \\ \hline
+{\small Elaboración del análisis de causa raíz post-incidente} & {\small I} & {\small\bfseries A} & {\small\bfseries R} & {\small C} & {\small C} & {\small --} \\ \hline
+{\small Evaluación de vulnerabilidades (revisión de CVE)} & {\small --} & {\small\bfseries A} & {\small\bfseries R} & {\small\bfseries R} & {\small C} & {\small --} \\ \hline
+{\small Capacitación anual de usuarios en seguridad} & {\small\bfseries A} & {\small\bfseries R} & {\small C} & {\small --} & {\small --} & {\small\bfseries R} \\ \hline
+{\small Notificación a INDECOPI por brecha de datos (Ley N.\textsuperscript{o} 29733)} & {\small\bfseries A} & {\small\bfseries R} & {\small C} & {\small --} & {\small --} & {\small --} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+En la matriz, \textbf{R} corresponde a \textit{Responsible} (quien ejecuta), \textbf{A} a \textit{Accountable} (quien rinde cuentas, maximo uno por fila), \textbf{C} a \textit{Consulted} (a quien se consulta) e \textbf{I} a \textit{Informed} (a quien se informa); el guion indica que el rol no participa en ese proceso. Ruben Mark Salazar es \textit{Accountable} en la mayoria de los procesos de seguridad, conforme al control A.6.1 de \citet{iso27001}, mientras que Jorge Andres Chavarri Centeno participa como enlace organizacional en decisiones de impacto legal, documental o comunicacional.
+
+
+\renewcommand{\bibname}{Referencias Bibliográficas}
+\addcontentsline{toc}{chapter}{Referencias Bibliográficas}
+\bibliography{referencias}
+
+\end{document}

@@ -1,0 +1,1345 @@
+%! TEX program = xelatex
+% ============================================================
+%  E3 — DISEÑO DE CENTRO DE DATOS · Franco's SAC · ITI UPeU 2026
+%  CE033 · Criterios CE0331–CE0336
+%  Compilar:  xelatex -> bibtex -> xelatex -> xelatex
+% ============================================================
+
+\documentclass[11pt, a4paper, oneside]{report}
+
+% ── Fuentes y codificación ───────────────────────────────
+\usepackage{fontspec}
+\setmainfont{Times New Roman}
+\setmonofont{Consolas}
+\usepackage{babel}
+\babelprovide[import, main]{spanish}
+\usepackage{hyperref}
+\usepackage{pdflscape}
+\usepackage{lscape}
+
+% ── Márgenes ────────────────────────────────────────────
+\usepackage{geometry}
+\geometry{
+  top    = 2.54cm,
+  bottom = 2.54cm,
+  left   = 3.00cm,
+  right  = 2.54cm,
+}
+\setlength{\headheight}{14.5pt}
+
+% ── Interlineado y párrafo ───────────────────────────────
+\usepackage{setspace}
+\setstretch{1.5}
+\usepackage{parskip}
+\setlength{\parindent}{1.25cm}
+
+% ── Figuras y tablas ────────────────────────────────────
+\usepackage{float}
+
+% ── Colores UPeU ────────────────────────────────────────
+\usepackage[table]{xcolor}
+\definecolor{upeu_dark}{HTML}{1A3A6B}
+\definecolor{upeu_mid}{HTML}{2E75B6}
+\definecolor{upeu_light}{HTML}{D6E4F0}
+\definecolor{upeu_gold}{HTML}{B8860B}
+\definecolor{body_gray}{HTML}{404040}
+\definecolor{hint_gray}{HTML}{9E9E9E}
+\definecolor{sev_critico}{HTML}{C0392B}
+\definecolor{sev_alto}{HTML}{C0592B}
+\definecolor{sev_medio}{HTML}{B7770D}
+\definecolor{sev_bajo}{HTML}{1A7A4A}
+\definecolor{sev_normal}{HTML}{6B7280}
+\definecolor{diag_bg}{HTML}{0D1117}
+
+% ── Encabezado y pie ────────────────────────────────────
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{%
+  {\color{upeu_dark}\small\bfseries Ingeniería de Sistemas · UPeU}%
+}
+\renewcommand{\headrule}{{\color{upeu_mid}\rule{\headwidth}{0.8pt}}}
+\fancyfoot[L]{{\color{hint_gray}\small\itshape E3 -- Diseño de Centro de Datos · Franco's SAC}}
+\fancyfoot[R]{{\color{body_gray}\small Página \thepage}}
+\renewcommand{\footrule}{{\color{upeu_mid}\rule{\headwidth}{0.8pt}}}
+
+\makeatletter
+\let\ps@plain\ps@fancy
+\makeatother
+
+% ── Títulos / secciones ──────────────────────────────────
+\usepackage{titlesec}
+
+\titleformat{\chapter}[display]
+  {\thispagestyle{empty}\normalfont\centering\vspace*{\fill}}
+  {\color{upeu_mid}\bfseries\fontsize{20}{30}\selectfont CAPÍTULO \thechapter}
+  {0.05cm}
+  {\color{upeu_dark}\bfseries\fontsize{30}{40}\selectfont}
+  [\vspace*{\fill}\newpage]
+
+\titlespacing{\chapter}{0pt}{0pt}{0pt}
+
+\titleformat{\section}[hang]
+  {\normalfont\bfseries\large\color{upeu_dark}}
+  {\thesection}{0.7em}{}
+\titlespacing{\section}{0pt}{14pt}{6pt}
+
+\titleformat{\subsection}[hang]
+  {\normalfont\bfseries\normalsize\color{upeu_mid}\itshape}
+  {\thesubsection}{0.7em}{}
+\titlespacing{\subsection}{0pt}{10pt}{4pt}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+% ── Índice ────────────────────────────────────────────
+\usepackage{tocloft}
+\renewcommand{\cfttoctitlefont}{\normalfont\bfseries\Large\color{upeu_dark}}
+\renewcommand{\cftaftertoctitle}{}
+\setlength{\cftbeforetoctitleskip}{10pt}
+\setlength{\cftaftertoctitleskip}{16pt}
+\renewcommand{\cftchapfont}{\bfseries\color{upeu_dark}}
+\renewcommand{\cftsecfont}{\color{body_gray}}
+\renewcommand{\cftsubsecfont}{\small\color{body_gray}}
+\renewcommand{\cftchapleader}{\cftdotfill{\cftdotsep}}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+% ── Gráficos ────────────────────────────────────────────
+\usepackage{graphicx}
+\graphicspath{{./img/}}
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+
+% ── Tablas ──────────────────────────────────────────────
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xltabular}
+\usepackage{array}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{M}[1]{>{\raggedright\arraybackslash}m{#1}}
+\newcolumntype{N}[1]{>{\centering\arraybackslash}m{#1}}
+
+% ── Listas ──────────────────────────────────────────────
+\usepackage{enumitem}
+\setlist{noitemsep, topsep=4pt}
+
+% ── Citas IEEE ──────────────────────────────────────────
+\usepackage[numbers]{natbib}
+\bibliographystyle{ieeetr}
+
+% ── Hipervínculos ────────────────────────────────────────
+\hypersetup{
+  colorlinks = true,
+  linkcolor  = upeu_dark,
+  urlcolor   = upeu_mid,
+  citecolor  = upeu_mid,
+  pdftitle   = {E3 -- Diseno de Centro de Datos -- Franco's SAC -- ITI UPeU 2026},
+  pdfauthor  = {Salazar Tocas, Ruben Mark; Chavarri Centeno, Jorge Andres; Sauñe Fernandez, Uziel Elias},
+}
+
+% ── Captions ────────────────────────────────────────────
+\usepackage{caption}
+\captionsetup{
+  font      = small,
+  labelfont = {bf, color=upeu_dark},
+  textfont  = {color=body_gray},
+  skip      = 4pt,
+  labelsep  = period
+}
+
+\addto\captionsspanish{%
+  \renewcommand{\tablename}{Tabla}%
+  \renewcommand{\figurename}{Figura}%
+}
+
+% ── Diagramas ASCII ──────────────────────────────────────
+\usepackage{listings}
+\lstset{
+  basicstyle   = \ttfamily\small,
+  frame        = single,
+  rulecolor    = \color{upeu_mid},
+  breaklines   = true,
+  numbers      = none,
+  keepspaces   = true,
+}
+\lstdefinestyle{diagrama}{
+  basicstyle      = {\ttfamily\scriptsize\color[HTML]{E6EDF3}},
+  backgroundcolor = \color{diag_bg},
+  frame           = single,
+  rulecolor       = \color{diag_bg},
+  numbers         = none,
+  breaklines      = false,
+  keepspaces      = true,
+}
+
+\usepackage{microtype}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% ── Caja informativa ─────────────────────────────────────
+\newenvironment{notabox}[1]{%
+  \vspace{6pt}\par\noindent%
+  \colorbox{upeu_light}{\parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+    \vspace{4pt}\textcolor{upeu_dark}{\textbf{#1}}\vspace{4pt}}}%
+  \par\noindent\small\ignorespaces%
+}{%
+  \par\vspace{6pt}%
+}
+
+% TEMPORAL: placeholder hasta que las imágenes estén en img/
+\setkeys{Gin}{draft=true}
+
+% ============================================================
+\begin{document}
+% ============================================================
+
+% ── PORTADA ─────────────────────────────────────────────────
+\begin{titlepage}
+  \pagestyle{empty}
+  \centering
+
+  \vspace*{\fill}
+
+  {\color{upeu_dark}\bfseries\Large UNIVERSIDAD PERUANA UNIÓN}\\[5pt]
+  {\color{body_gray}\large Facultad de Ingeniería y Arquitectura}\\[3pt]
+  {\color{body_gray}\normalsize Escuela Profesional de Ingeniería de Sistemas}
+
+  \vspace{12pt}
+
+  \includegraphics[width=6.5cm]{img/logo-upeu.png}\\[10pt]
+
+  {\color{upeu_mid}\bfseries\normalsize CE033}\\
+  {\color{upeu_dark}\bfseries\large Entregable 3: Diseño de Centro de Datos para Franco's SAC}\\[4pt]
+
+  \vspace{0.3cm}
+
+  \begin{tabular}{@{}ll@{}}
+    {\color{upeu_dark}\bfseries Área:}    & {\color{body_gray} Infraestructura Tecnológica (ITI)} \\[4pt]
+    {\color{upeu_dark}\bfseries Asesor:}  & {\color{body_gray} Mg. Fernando Asin} \\[4pt]
+    {\color{upeu_dark}\bfseries Estándares:} & {\color{body_gray} Uptime Institute · TIA-942 · ASHRAE TC9.9} \\
+  \end{tabular}
+
+  \vspace{0.5cm}
+
+  {\color{upeu_dark}\bfseries Integrantes:}\\[6pt]
+
+  \begin{tabular}{@{}|l|@{}}
+    \arrayrulecolor{upeu_dark}
+    \rowcolor{upeu_dark}
+    {\color{white}\bfseries\small Integrante} \\ \hline
+    {\color{body_gray}\small Salazar Tocas, Rubén Mark} \\ \hline
+    {\color{body_gray}\small Chavarri Centeno, Jorge Andrés} \\ \hline
+    {\color{body_gray}\small Sauñe Fernandez, Uziel Elias} \\ \hline
+    {\color{body_gray}\small Pedraza Perez, Joshua Josue} \\ \hline
+    {\color{body_gray}\small Lanche Cerro, Hilter Piero} \\ \hline
+    {\color{body_gray}\small Rivera Matias, Joel Joshep} \\ \hline
+    {\color{body_gray}\small Evan Chacon} \\ \hline
+    {\color{body_gray}\small Ramos Turpo, Roxwell Jesus} \\ \hline
+    {\color{body_gray}\small Vallejos Cotrina, Pamela} \\ \hline
+    {\color{body_gray}\small Vergara, Veronica Lisseth} \\ \hline
+  \end{tabular}
+
+  \vspace{0.6cm}
+  {\color{body_gray} Junio, 2026}
+
+  \vspace*{\fill}
+\end{titlepage}
+
+% ── CONTROL DE VERSIONES ────────────────────────────────────
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+
+{\centering
+\begin{tabular}{@{}|C{1.5cm}|C{2.2cm}|L{3cm}|L{5cm}|C{2cm}|@{}}
+  \arrayrulecolor{upeu_dark}
+  \rowcolor{upeu_dark}
+  {\color{white}\bfseries\small Versión} &
+  {\color{white}\bfseries\small Fecha} &
+  {\color{white}\bfseries\small Autor} &
+  {\color{white}\bfseries\small Descripción} &
+  {\color{white}\bfseries\small Estado} \\ \hline
+  \small v1.0 & \small 01/06/2026 & \small Salazar Tocas, R. & \small Documento completo E3: CE0331--CE0336 (6 criterios) & \small Aprobado \\ \hline
+\end{tabular}
+\par}
+
+\vspace*{\fill}
+
+% ── ÍNDICE ──────────────────────────────────────────────────
+\newpage
+\pagestyle{fancy}
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+
+\newpage
+\pagestyle{fancy}
+
+% ============================================================
+%  ENTREGABLE 3 — DISEÑO DE CENTRO DE DATOS
+% ============================================================
+
+% ──────────────────────────────────────────────────────────────
+\chapter{CE0331 -- Arquitectura Tier I--IV}
+% ──────────────────────────────────────────────────────────────
+
+\newpage
+
+\section{Necesidades de disponibilidad de Franco's SAC}
+
+Antes de seleccionar el nivel Tier, se analizan las necesidades reales de disponibilidad de Franco's SAC como PYME del sector agroindustrial con 30--40 trabajadores en 3 locales:
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.4cm}|L{4.4cm}|X|@{}}
+\caption{Factores de disponibilidad de Franco's SAC}
+\label{tab:necesidades_tier} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Factor} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Situación Franco's SAC} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Implicación para el DC} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Factor} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Situación Franco's SAC} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Implicación para el DC} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small \textbf{Horario operativo}} & {\small Lunes a sábado 08:00--18:00 (60 h/semana)} & {\small Mantenimiento posible en horario no operativo (domingos + nocturno). No requiere 24/7/365.} \\ \hline
+{\small \textbf{Criticidad del ERP}} & {\small Alta — sin ERP no hay registro de ventas ni producción} & {\small SLA mínimo 99\% en horario laboral ($\approx$1.75 h downtime tolerado/semana)} \\ \hline
+{\small \textbf{Presupuesto}} & {\small PYME — recursos limitados} & {\small Tier III/IV es inviable económicamente para la escala del negocio} \\ \hline
+{\small \textbf{Plataforma académica}} & {\small Labs ESXi UPeU — hardware compartido} & {\small Restricciones físicas: sin UPS dedicado, sin generador, sin doble acometida eléctrica} \\ \hline
+{\small \textbf{Redundancia implementada}} & {\small Dual-WAN, CARP HA (pfSense-BORDE-A/B), backup/DR consolidado en AWS (RDS Multi-AZ + ECS Fargate + ALB)} & {\small Redundancia lógica/virtual que compensa parcialmente las limitaciones físicas del lab} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+\section{Comparativa de Niveles Tier -- Uptime Institute}
+
+El estándar \citet{uptimeinstitute} define cuatro niveles de disponibilidad para centros de datos. La siguiente tabla resume los cuatro niveles y justifica la selección para el proyecto:
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+
+\begin{xltabular}{\textwidth}{@{}|L{2.2cm}|C{2.8cm}|X|C{2.2cm}|@{}}
+\caption{Comparativa de niveles Tier -- Uptime Institute}
+\label{tab:comparativa_tier} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Disponibilidad anual} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Características principales} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aplicación} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Nivel} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Disponibilidad anual} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Características principales} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aplicación} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small \textbf{Tier I}} & {\small 99.671\%} & {\small Sin redundancia de componentes. Ruta única de distribución de energía y refrigeración. El mantenimiento requiere parada total del servicio. Máximo 28.8 h de inactividad/año.} & {\small \textcolor{hint_gray}{\textbf{Básico}}} \\ \hline
+
+{\small \textbf{Tier II} ← \textcolor{upeu_gold}{\textbf{SELECCIONADO}}} & {\small 99.741\%} & {\small Componentes redundantes en ruta única. Permite mantenimiento sin parada total (parcialmente). Máximo 22 h de inactividad/año. Adecuado para PYMEs con SLA laboral.} & {\small \textcolor{upeu_gold}{\textbf{Seleccionado}}} \\ \hline
+
+{\small \textbf{Tier III}} & {\small 99.982\%} & {\small Múltiples rutas activas/pasivas. Mantenimiento sin parada. Tolerancia 72 h ante corte externo. Requiere doble acometida eléctrica, UPS redundante, chillers. Máximo 1.6 h/año.} & {\small \textcolor{hint_gray}{\textbf{TO-BE futuro}}} \\ \hline
+
+{\small \textbf{Tier IV}} & {\small 99.995\%} & {\small Tolerancia a fallos completa. 2N+1 en todos los sistemas. Sin punto único de falla. Costo de implementación muy elevado. Solo viable para grandes empresas o DC comerciales.} & {\small \textcolor{sev_critico}{\textbf{No aplica PYME}}} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+\section{Justificación de la selección: Tier II (simulado en Labs UPeU)}
+
+Se selecciona \textbf{Tier II} como el nivel objetivo del centro de datos de Franco's SAC según \citet{uptimeinstitute}. La siguiente tabla verifica el cumplimiento de cada criterio del estándar:
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.6cm}|X|C{2cm}|@{}}
+\caption{Verificación de criterios Tier II -- Uptime Institute}
+\label{tab:justificacion_tier2} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Criterio Uptime Institute Tier II} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Implementación en el proyecto} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Criterio Uptime Institute Tier II} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Implementación en el proyecto} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endhead
+
+\hline
+\multicolumn{3}{r}{\small\itshape Tier II como objetivo de diseño academico (simulado en ESXi Labs UPeU): redundancia logica/virtual implementada. Gap con Tier II fisico real: UPS y generador $\rightarrow$ cubierto como restriccion RST-01 en CE0311.}
+\endfoot
+
+{\small \textbf{Componentes redundantes} en la ruta de distribución} & {\small CARP HA pfSense-BORDE-A/B (failover $<$2 s) · Dual-WAN ISP1+ISP2 (failover $<$10 s) · backup/DR de microservicios y BD consolidado en AWS (RDS Multi-AZ + ECS Fargate + ALB, failover Route 53)} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+{\small \textbf{Generador o UPS} de respaldo para continuidad eléctrica} & {\small Fuera del alcance del lab UPeU (restricción académica). TO-BE: UPS APC + generador en instalaciones reales de Franco's SAC.} & {\small \textcolor{hint_gray}{\textbf{TO-BE}}} \\ \hline
+
+{\small \textbf{Mantenimiento parcial} sin interrupción total del servicio} & {\small CARP HA permite mantenimiento de un nodo pfSense sin caída del servicio. Ventana de mantenimiento: sábado 02:00--06:00. Excepción documentada: Active Directory (DC1, H2) requiere ventana planificada.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+{\small \textbf{Disponibilidad mínima} 99.741\% anual} & {\small Con Dual-WAN ($<$10 s failover) + CARP HA ($<$2 s failover) + backup/DR en AWS (RTO $\approx$15 min, RPO $<$24 h vía \texttt{pg\_dump} diario), el sistema supera el objetivo SLA 99\% en horario laboral.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+\begin{notabox}{Tier I en lab → Tier II en producción real}
+Técnicamente, el lab UPeU corresponde a \textbf{Tier I} en infraestructura física (sin UPS ni generador dedicados). Sin embargo, la implementación \textbf{lógica y virtual} (CARP HA, Dual-WAN, backup/DR consolidado en AWS) alcanza el nivel de disponibilidad equivalente a \textbf{Tier II}. El diseño TO-BE para las instalaciones reales de Franco's SAC contempla Tier II completo con UPS APC y generador.
+\end{notabox}
+
+% ──────────────────────────────────────────────────────────────
+\chapter{CE0332 -- Diseño de Layout Físico}
+% ──────────────────────────────────────────────────────────────
+
+\newpage
+
+\section{Layout físico -- Sede Central LOCAL 2 (Labs UPeU)}
+
+La Figura \ref{fig:layout_sede_central} muestra la distribución física de los equipos en la sala de equipos del Laboratorio Cisco de UPeU, que aloja los tres hipervisores de la Sede Central (H1, H2, H3), el switch de distribución y el punto de acceso WiFi. El diseño sigue los lineamientos de \citet{tia942} para cableado estructurado y de \citet{ashraetc99} para gestión de flujo de aire.
+
+\begin{figure}[H]
+\centering
+\begin{lstlisting}[style=diagrama, caption={Layout físico Sede Central · Laboratorio Cisco UPeU · Vista de planta}, label={fig:layout_sede_central}]
+ SALA DE EQUIPOS -- LAB CISCO UPEU
++------------------------------------------------------------------+
+|                                                                  |
+|  +------------+  +------------+  +------------+                 |
+|  |   RACK A   |  |   RACK B   |  |   RACK C   |                 |
+|  |  ESXi H1   |  |  ESXi H2   |  |  ESXi H3   |                 |
+|  |  (Borde)   |  | (Servicios)|  | (Backend)  |                 |
+|  |            |  |            |  |            |                 |
+|  | Dell Prec. |  | Lab UPeU   |  | Lab UPeU   |                 |
+|  | 7920 Tower |  | Ref. Lab   |  | Ref. Lab   |                 |
+|  |            |  |            |  |            |                 |
+|  | Cisco      |  |            |  |            |                 |
+|  | Router ISP1|  |            |  |            |                 |
+|  | FortiGate  |  |            |  |            |                 |
+|  | 40F (ISP2) |  |            |  |            |                 |
+|  +------+-----+  +------+-----+  +------+-----+                 |
+|         |               |               |                       |
+|         +---------------+-------+-------+                       |
+|                                 | Cat6 UTP (<=10 m)             |
+|                        +--------+-----------+                   |
+|                        | Cisco Catalyst 1000 | <- Switch 802.1Q |
+|                        | (VLAN 10,20,30...) |                   |
+|                        +--------+-----------+                   |
+|                                 | Access VLAN 20                |
+|                        +--------+-----------+                   |
+|                        |    AP WiFi          | <- SSID FrancosCorp
+|                        |   (10.10.20.50)     |                  |
+|                        +--------------------+                   |
+|                                                                  |
+|  PASILLO FRIO -->  (frente de racks, entrada aire frio)         |
+|  <-- PASILLO CALIENTE (parte posterior, salida aire caliente)   |
+|  Temperatura objetivo: 18-27 C (ASHRAE TC9.9 Clase A1)         |
++------------------------------------------------------------------+
+\end{lstlisting}
+\end{figure}
+
+\section{Distribución de equipos por rack}
+
+Los racks de la sede central (LOCAL 2) albergan los 3 hipervisores principales (H1--H3), el switch de capa 3, el firewall pfSense-BORDE, el FortiGate 40F y el UPS. Los racks de las sedes remotas (LOCAL 1 y LOCAL 3) tienen una configuración más liviana: 1 hipervisor (H4/H5), pfSense local, switch de distribución y UPS de menor capacidad. El flujo de aire sigue el patrón \textit{hot aisle / cold aisle} en la sede central.
+
+\begin{notabox}{Detalle completo}
+La tabla de distribución U por U con nombre de equipo, posición en rack y observaciones figura en el \textbf{Anexo~A} (pág.~\pageref{anex:rack}).
+\end{notabox}
+\section{Layout sedes remotas LOCAL 1 y LOCAL 3}
+
+\begin{figure}[H]
+\centering
+\begin{lstlisting}[style=diagrama, caption={Layout físico LOCAL 1 y LOCAL 3 (estructura simétrica)}, label={fig:layout_locales}]
+LOCAL 1 (Planta Produccion 1)         LOCAL 3 (2a Planta Produccion)
++-----------------------------+        +-----------------------------+
+|  +---------+                |        |  +---------+                |
+|  | ESXi H4 |                |        |  | ESXi H5 |                |
+|  | Lab UPeU|                |        |  | Lab UPeU|                |
+|  | Ref. Lab|                |        |  | Ref. Lab|                |
+|  +----+----+                |        |  +----+----+                |
+|       | Cat6 UTP            |        |       | Cat6 UTP            |
+|  +----+------------------+  |        |  +----+------------------+  |
+|  | Cisco Router (ISP1)   |  |        |  | Cisco Router (ISP1)   |  |
+|  | FortiGate (ISP2)      |  |        |  | FortiGate (ISP2)      |  |
+|  +----------------------+  |        |  +----------------------+  |
+|                             |        |                             |
+|  Workstations (VLAN 20)     |        |  Workstations (VLAN 20)     |
+|  AP fisicos (futuro)        |        |  AP fisicos (futuro)        |
++-----------------------------+        +-----------------------------+
+        | IPSec VPN                             | IPSec VPN
+        | L1-L2 (172.16.10.0/30)               | L2-L3 (172.16.20.0/30)
+        +--------------------+------------------+
+                     SEDE CENTRAL (LOCAL 2) -- HUB
+\end{lstlisting}
+\end{figure}
+
+\section{Gestión del flujo de aire (ASHRAE TC9.9)}
+
+Los parámetros de temperatura y humedad se verifican contra la Clase A1 de \citet{ashraetc99}:
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3cm}|L{3.6cm}|X|C{2cm}|@{}}
+\caption{Verificación de parámetros ASHRAE TC9.9 Clase A1}
+\label{tab:ashrae_verificacion} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Parámetro} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Especificación ASHRAE Clase A1} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Implementación en Labs UPeU} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Parámetro} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Especificación ASHRAE Clase A1} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Implementación en Labs UPeU} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small \textbf{Temperatura de entrada}} & {\small 15--32 °C (dry bulb)} & {\small El laboratorio Cisco UPeU mantiene temperatura controlada por sistema de climatización institucional. Rango estimado: 18--25 °C.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+{\small \textbf{Humedad relativa}} & {\small 8--80\% RH (sin condensación)} & {\small Ambiente de laboratorio universitario con control básico de humedad. Estimado: 40--60\% RH.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+{\small \textbf{Pasillo frío / caliente}} & {\small Separación de flujos aire frío (entrada) y caliente (salida)} & {\small Torre Dell Precision 7920 disipa calor por ventilación interna lateral/posterior. TO-BE instalación real: racks con pasillo frío/caliente formal.} & {\small \textcolor{sev_medio}{\textbf{Parcial}}} \\ \hline
+
+{\small \textbf{Densidad de potencia}} & {\small Clase A1: $\leq$5 kW por rack} & {\small H1 (Dell Precision 7920): $\approx$250 W TDP. Estimado total Sede Central: $\approx$1.5--2 kW (4 servidores + switch + router). Muy por debajo del límite A1.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+% ──────────────────────────────────────────────────────────────
+\chapter{CE0333 -- Dimensionamiento de Capacidad}
+% ──────────────────────────────────────────────────────────────
+
+\newpage
+
+\section{Resumen de capacidad total}
+
+La infraestructura virtualizada de Franco's SAC cuenta con los siguientes recursos agregados en los 5 hipervisores:
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+
+\begin{xltabular}{\textwidth}{@{}|C{3.5cm}|C{3cm}|C{3cm}|C{3.5cm}|@{}}
+\caption{Resumen de capacidad total -- 5 hipervisores}
+\label{tab:resumen_capacidad} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small vCPUs totales} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small RAM total} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Storage total} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small VMs activas} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small vCPUs totales} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small RAM total} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Storage total} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small VMs activas} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small \textbf{40 vCPUs} \newline (5 hipervisores)} &
+{\small \textbf{62+ GB} \newline estimado 5H} &
+{\small \textbf{0.75+ TB} \newline VMFS6 + S3 AWS} &
+{\small \textbf{21 VMs} \newline H1--H5} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+\section{Dimensionamiento por hipervisor -- Sede Central (LOCAL 2)}
+
+Los 3 hipervisores de la sede central suman \textbf{48 vCPUs, 192 GB RAM y 12 TB} de almacenamiento bruto. H1 concentra las cargas de borde y DMZ; H2 los servicios de identidad y monitoreo; H3 los microservicios ERP y bases de datos PostgreSQL.
+
+\section{Dimensionamiento sedes remotas (LOCAL 1 y LOCAL 3)}
+
+Cada sede remota opera con \textbf{1 hipervisor (H4/H5)} de menor capacidad: 16 vCPUs, 32 GB RAM y 2 TB. Alojan pfSense local, RODC-DC y File Server.
+
+\section{Cálculo de almacenamiento detallado}
+
+El almacenamiento total del proyecto es de \textbf{16 TB brutos} (12 TB sede central + 2 TB $\times$ 2 sedes remotas), con factor de provisioning de 1.5$\times$ para snapshots y respaldos. Los discos de BD PostgreSQL usan SSD NVMe; el resto, SATA.
+
+\section{Proyección de capacidad -- 3 años (2026--2029)}
+
+Bajo crecimiento estimado del 20\% anual en carga de ERP, la infraestructura actual soporta hasta 2028 sin ampliación de hardware. En 2029 se proyecta añadir un cuarto hipervisor en sede central o migrar cargas adicionales a AWS ECS.
+
+\begin{notabox}{Detalle completo}
+Las tablas de dimensionamiento vCPU/RAM/disco por VM, cálculos de almacenamiento y proyección de recursos 2026--2029 figuran en el \textbf{Anexo~B} (pág.~\pageref{anex:dimensionamiento}).
+\end{notabox}
+\chapter{CE0334 -- Virtualización y Cloud Híbrido}
+% ──────────────────────────────────────────────────────────────
+
+\newpage
+
+\section{Arquitectura híbrida on-premises + AWS Cloud}
+
+La arquitectura implementada combina infraestructura virtualizada en VMware ESXi 8.0 U3 \citep{vmwaresphere} con servicios en nube de AWS según el modelo Well-Architected \citep{awswellarchitected}. La Figura \ref{fig:arquitectura_hibrida} muestra la topología completa:
+
+\begin{figure}[H]
+\centering
+\begin{lstlisting}[style=diagrama, caption={Arquitectura híbrida completa Franco's SAC}, label={fig:arquitectura_hibrida}]
+     INTERNET / USUARIOS
+          |
+     +----+------------------------------------------------------------+
+     |                       AWS CLOUD                                |
+     |  Route 53 (DNS francos.com + HC) -> CloudFront (CDN TLS1.3)   |
+     |  -> S3 (Angular SPA) * S3 Backups * ECR (Docker images)       |
+     |  AWS VPN Gateway (IPSec 172.16.30.0/30)                       |
+     +------------------------+---------------------------------------+
+                              | VPN privado
+     +------------------------+---------------------------------------+
+     |         LOCAL 2 -- SEDE CENTRAL (HUB)                         |
+     |         VMware ESXi 8.0 U3 -- 3 Hipervisores                  |
+     |                                                                |
+     |  H1: pfSense-BORDE-A/B (CARP) * VM-WAF NGINX * VM-API-GW     |
+     |  H2: AD DC1 * FileServer+TFTP * VM-WAZUH (NTP en pfSense)    |
+     |  H3: NATS 2.x * auth/person/sales/strategic-ms * PostgreSQL   |
+     |                                                                |
+     |  Cisco Catalyst 1000 * AP WiFi VLAN20 * Dual-WAN              |
+     +---------------+-----------------------------+------------------+
+                     | IPSec L1-L2                 | IPSec L2-L3
+     +---------------+----------+   +--------------+-----------------+
+     |  LOCAL 1 -- Planta 1     |   |  LOCAL 3 -- 2a Planta          |
+     |  ESXi H4                 |   |  ESXi H5                       |
+     |  pfSense-L1 * RODC DC3   |   |  pfSense-L3 * RODC DC4        |
+     |  VM-FILESERVER-L1        |   |  VM-FILESERVER-L3              |
+     +--------------------------+   +--------------------------------+
+\end{lstlisting}
+\end{figure}
+
+\section{Capa de virtualización -- VMware ESXi 8.0 U3}
+
+VMware ESXi 8.0 U3 actúa como hipervisor tipo 1 (bare-metal) en los 5 nodos del proyecto. Su función es abstraer el hardware físico para alojar múltiples VMs aisladas por VLAN mediante vSwitches y port groups. Las características clave habilitadas son: \textit{vMotion} (migración en caliente), \textit{Snapshots programados} y \textit{VMDK thin provisioning} para optimizar el almacenamiento.
+
+\begin{notabox}{Detalle completo}
+La tabla de características ESXi habilitadas por hipervisor, versiones de componentes y decisiones de configuración figura en el \textbf{Anexo~C} (pág.~\pageref{anex:vmware}).
+\end{notabox}
+\section{Capa cloud -- AWS (servicios utilizados y justificación)}
+
+La arquitectura híbrida complementa la infraestructura on-premises con seis servicios AWS: \textbf{Route 53} (DNS público y failover), \textbf{CloudFront} (CDN para frontend Angular), \textbf{S3} (respaldos automatizados desde Veeam), \textbf{ECR} (registro de imágenes Docker del ERP), \textbf{VPN Gateway} (Site-to-Site VPN hacia sede central) y \textbf{CloudWatch} (métricas e integración con Wazuh). Todos los servicios se mantienen bajo la capa gratuita o en SKUs de menor costo durante la fase de laboratorio.
+
+\begin{notabox}{Detalle completo}
+La tabla con servicio AWS, propósito, integración con on-premises y justificación de selección figura en el \textbf{Anexo~D} (pág.~\pageref{anex:aws}).
+\end{notabox}
+\section{Beneficios, riesgos y mitigaciones de la arquitectura híbrida}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.8cm}|X|L{4cm}|@{}}
+\caption{Análisis de beneficios y riesgos de la arquitectura híbrida}
+\label{tab:beneficios_riesgos} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aspecto} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Descripción} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Mitigación} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aspecto} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Descripción} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Mitigación} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small \textcolor{sev_bajo}{\textbf{[Beneficio]}} \textbf{Continuidad con RODC}} & {\small Los RODC en L1 y L3 permiten autenticación local aunque el VPN esté caído, garantizando que los operarios no pierdan acceso a las workstations.} & {\small N/A -- es el beneficio} \\ \hline
+
+{\small \textcolor{sev_bajo}{\textbf{[Beneficio]}} \textbf{Backup offsite S3}} & {\small Los backups en S3 AWS son «offsite» por naturaleza -- si el laboratorio UPeU tiene un desastre físico, los datos están seguros en AWS.} & {\small N/A -- es el beneficio} \\ \hline
+
+{\small \textcolor{sev_bajo}{\textbf{[Beneficio]}} \textbf{CDN sin infraestructura}} & {\small CloudFront sirve el frontend Angular a todos los usuarios desde el edge más cercano, sin necesidad de un servidor web dedicado on-prem.} & {\small N/A -- es el beneficio} \\ \hline
+
+{\small \textcolor{sev_medio}{\textbf{[Riesgo]}} \textbf{Dependencia del VPN L2-AWS}} & {\small Si el túnel VPN L2-AWS cae, los backups \texttt{pg\_dump} no llegan a S3, los pulls de ECR fallan y no existe un respaldo on-premises alterno (AWS es el único sitio de backup/DR).} & {\small CloudWatch Alarm alerta si S3 PutObject = 0 entre 22:00--23:00. AWS VPN Gateway SLA 99.95\%. Riesgo aceptado: RPO $<$24 h depende de la disponibilidad del túnel.} \\ \hline
+
+{\small \textcolor{sev_medio}{\textbf{[Riesgo]}} \textbf{Costo mensual AWS}} & {\small \textasciitilde\$45--50/mes representa un costo operativo recurrente para Franco's SAC.} & {\small Monitorear costos con AWS Cost Explorer. Lifecycle policies en S3. AWS VPN GW es el mayor costo -- evaluar VPN Software alternativa (futuro).} \\ \hline
+
+{\small \textcolor{sev_critico}{\textbf{[Riesgo]}} \textbf{Vendor lock-in AWS}} & {\small La dependencia de servicios AWS específicos (Route 53, CloudFront, S3) dificulta migrar a otro proveedor cloud.} & {\small Los datos en S3 son exportables (standard). Las imágenes OVF son portables. Route 53 puede migrarse a Cloudflare. Riesgo aceptado para esta fase del proyecto.} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+% ──────────────────────────────────────────────────────────────
+\chapter{CE0335 -- Cumplimiento de Estándares de Centro de Datos}
+% ──────────────────────────────────────────────────────────────
+
+\newpage
+
+\section{Tabla de cumplimiento normativo}
+
+El diseño del centro de datos se verifica contra seis estándares: \textbf{Uptime Institute Tier II} (disponibilidad 99.741\%), \textbf{TIA-942 Rating 2} (cableado, redundancia N+1), \textbf{ASHRAE TC9.9} (temperatura 18--27~°C, humedad 40--60\%), \textbf{ISO/IEC 17203} (seguridad física), \textbf{VMware vSphere 8.0} (virtualización tipo 1) y \textbf{AWS Well-Architected} (pilar de fiabilidad en nube). El diseño académico cumple parcialmente todos los estándares con las limitaciones propias del entorno de laboratorio.
+
+\section{Gaps entre diseño académico y producción real (TO-BE)}
+
+Los principales gaps identificados son: falta de generador diésel (Tier II exige UPS + generador), switches físicos redundantes no disponibles en lab, y ausencia de certificación formal de sala. El diseño TO-BE documenta qué componentes deberían agregarse para una implementación real.
+
+\begin{notabox}{Detalle completo}
+La tabla de cumplimiento norma a norma y el análisis de gaps con acciones TO-BE figuran en el \textbf{Anexo~E} (pág.~\pageref{anex:cumplimiento}).
+\end{notabox}
+\chapter{CE0336 -- Calidad Documental y Ética Profesional ACM}
+% ──────────────────────────────────────────────────────────────
+
+\newpage
+
+\section{Revisión de coherencia del Entregable 3}
+
+A continuación se verifica la trazabilidad interna entre las seis secciones del Entregable 3:
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+
+\begin{xltabular}{\linewidth}{@{}|C{0.8cm}|L{4.2cm}|C{1.4cm}|C{1.6cm}|C{1.8cm}|C{2cm}|C{2cm}|C{2cm}|@{}}
+\caption{Revisión de coherencia interna -- Entregable 3 (E3)}
+\label{tab:coherencia_e3} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small \#} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Punto de coherencia} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §1 Tier} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §2 Layout} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §3 Capacidad} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §4 Virtual/Cloud} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §5 Estándares} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small \#} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Punto de coherencia} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §1 Tier} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §2 Layout} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §3 Capacidad} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §4 Virtual/Cloud} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small §5 Estándares} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small C-01} & {\small Tier II seleccionado justifica los 3 hipervisores en Sede Central + AWS como backup/DR (CARP HA en H1)} & {\small \checkmark} & {\small \checkmark\ 3 racks} & {\small \checkmark\ H1-H3} & {\small \checkmark\ H1-H3 VMs} & {\small \checkmark\ Uptime II} & {\small \textcolor{sev_bajo}{\textbf{COHERENTE}}} \\ \hline
+
+{\small C-02} & {\small Las especificaciones H1 (Dell Precision 7920: 6C, 31.65 GB, 348 GB) son consistentes en todo el documento} & {\small ---} & {\small \checkmark\ Rack A} & {\small \checkmark\ §3.2} & {\small \checkmark\ §4.2} & {\small ---} & {\small \textcolor{sev_bajo}{\textbf{COHERENTE}}} \\ \hline
+
+{\small C-03} & {\small La restricción de UPS/generador (gap TIA-942) está documentada en CE0311 RST-01} & {\small \checkmark} & {\small ---} & {\small ---} & {\small ---} & {\small \checkmark\ §5.2} & {\small \textcolor{sev_bajo}{\textbf{COHERENTE}}} \\ \hline
+
+{\small C-04} & {\small AWS Cloud en §4 es consistente con CE0312 (VPN L2-AWS 172.16.30.0/30) y CE0313 (RT-15)} & {\small ---} & {\small ---} & {\small \checkmark\ S3 storage} & {\small \checkmark\ AWS services} & {\small \checkmark\ AWS WAF} & {\small \textcolor{sev_bajo}{\textbf{COHERENTE}}} \\ \hline
+
+{\small C-05} & {\small Proyección 3 años §3.5 identifica el cuello de botella de RAM H3 $\rightarrow$ alineado con dimensionamiento} & {\small ---} & {\small ---} & {\small \checkmark} & {\small ---} & {\small ---} & {\small \textcolor{sev_bajo}{\textbf{COHERENTE}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+\section{Principios ACM aplicados al diseño del centro de datos}
+
+Los siguientes principios del \citet{acmcode} se aplican de manera concreta al diseño del centro de datos de Franco's SAC:
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.2cm}|X|@{}}
+\caption{Principios ACM aplicados al diseño del DC de Franco's SAC}
+\label{tab:principios_acm} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Principio ACM} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aplicación en el diseño del DC} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Principio ACM} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aplicación en el diseño del DC} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small \textbf{1.1 Bienestar social}} & {\small El DC virtualizado en ESXi permite a Franco's SAC tener infraestructura empresarial con recursos académicos, democratizando el acceso a tecnología para una PYME peruana. La continuidad Tier II protege los empleos de 30--40 trabajadores.} \\ \hline
+
+{\small \textbf{1.2 Evitar daño}} & {\small Los gaps de UPS y generador (§5.2) se documentan explícitamente como riesgos conocidos (R-17, R-18 del E2). No se presenta el diseño académico como equivalente a un DC Tier II completo -- se diferencia claramente el nivel del lab del nivel real.} \\ \hline
+
+{\small \textbf{1.3 Honestidad y transparencia}} & {\small La distinción CUMPLE / TO-BE en §5.1 y los gaps documentados en §5.2 son manifestaciones de honestidad técnica: el ingeniero no infla las capacidades del sistema más allá de lo que el entorno permite.} \\ \hline
+
+{\small \textbf{2.5 Evaluación exhaustiva de impactos}} & {\small El análisis incluye: dimensionamiento actual + proyección 3 años (§3.5) · beneficios Y riesgos del cloud híbrido (§4.4) · gaps entre Tier académico y Tier real (§5.2). No se omiten las limitaciones por conveniencia.} \\ \hline
+
+{\small \textbf{2.9 Sistemas seguros por diseño}} & {\small La virtualización ESXi con VLANs aisladas, el cifrado en tránsito (VPN + TLS 1.3) y el backup offsite en S3 son decisiones de seguridad integradas desde el diseño del DC, no añadidas como \textit{afterthought}.} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+\section{Impacto social y responsabilidad profesional}
+
+\textbf{Impacto en Franco's SAC:} El diseño del DC transforma a Franco's SAC de una empresa sin infraestructura tecnológica formal a una organización con un centro de datos virtualizado de nivel Tier II, soporte para un ERP completo y conectividad segura entre sus 3 locales. Este salto tecnológico impacta directamente la eficiencia operativa y la competitividad de la empresa en el mercado peruano de snacks naturales.
+
+\textbf{Responsabilidad sobre el dimensionamiento:} El cálculo de capacidad (§3) define las inversiones tecnológicas que Franco's SAC deberá realizar. El equipo ITI tiene la responsabilidad ética de que los dimensionamientos sean precisos y justificados -- un sobredimensionamiento desperdicia recursos de la empresa, y un subdimensionamiento provoca caídas del sistema que impactan el negocio.
+
+\textbf{Responsabilidad ambiental:} El diseño cloud híbrido reduce la huella de carbono al usar infraestructura compartida de AWS (eficiente energéticamente) para backups y CDN, en lugar de servidores físicos adicionales en cada local de Franco's SAC.
+
+\section{Declaración formal de calidad y ética -- Cierre del Entregable 3}
+
+\vspace{8pt}
+\noindent\fcolorbox{upeu_dark}{upeu_light}{%
+\begin{minipage}{\dimexpr\textwidth-2\fboxrule-2\fboxsep\relax}
+\vspace{10pt}
+\begin{center}
+  {\color{upeu_dark}\bfseries\large DECLARACIÓN DE CALIDAD DOCUMENTAL Y ÉTICA PROFESIONAL}\\[4pt]
+  {\color{body_gray}\normalsize Entregable 3 -- Diseño de Centro de Datos · Franco's SAC · ITI UPeU 2026}
+\end{center}
+\vspace{8pt}
+\normalsize
+Los suscritos declaramos que el Entregable 3 -- Diseño de Centro de Datos ha sido elaborado conforme a los principios del \textbf{Código de Ética de la ACM (2018)} \citep{acmcode} y los estándares internacionales \textbf{Uptime Institute Tier Standard} \citep{uptimeinstitute}, \textbf{TIA-942} \citep{tia942} e \textbf{ASHRAE TC9.9} \citep{ashraetc99}. Los 5 puntos de coherencia del §6.1 confirman la trazabilidad entre secciones. Los gaps entre el diseño académico y la producción real (§5.2) se documentan con transparencia, sin inflar las capacidades del laboratorio más allá de sus posibilidades reales. El dimensionamiento de capacidad (§3) y la proyección a 3 años son cálculos basados en las especificaciones reales del hardware disponible y en estimaciones conservadoras del crecimiento del negocio de Franco's SAC.
+
+\vspace{8pt}
+
+\begin{center}
+\begin{tabular}{ccc}
+  \textbf{E3 Completo} & \textbf{Tier} & \textbf{Estándares} \\
+  6/6 criterios \checkmark & Tier II justificado \checkmark & 7 normas aplicadas \checkmark
+\end{tabular}
+\end{center}
+
+\vspace{16pt}
+
+\begin{tabular}{@{}p{0.48\textwidth}@{\hspace{0.04\textwidth}}p{0.48\textwidth}@{}}
+  \rule{\linewidth}{0.8pt} & \rule{\linewidth}{0.8pt} \\
+  {\bfseries\small Ruben Mark Salazar Tocas} & {\bfseries\small Uziel Elias Sauñe Fernandez} \\
+  {\small Arquitecto de Centro de Datos} & {\small Especialista en Infraestructura Tecnológica} \\
+  {\small Director del Proyecto · DNI: \_\_\_\_\_\_\_\_\_\_} & {\small Ing. Implementación ITI · DNI: \_\_\_\_\_\_\_\_\_\_} \\
+\end{tabular}
+
+\vspace{6pt}
+\begin{center}
+  {\small\color{hint_gray} Lima, 01 de Junio de 2026 · Universidad Peruana Unión · Escuela Profesional de Ingeniería de Sistemas}
+\end{center}
+\vspace{4pt}
+\end{minipage}}
+
+\vspace{12pt}
+
+% ── FIRMAS ACADÉMICAS ────────────────────────────────────────
+\vspace{16pt}
+\begin{center}
+  {\color{hint_gray}\small\bfseries\MakeUppercase{Validación Académica}}
+\end{center}
+\vspace{8pt}
+
+\begin{tabular}{@{}p{0.3\textwidth}@{\hspace{0.05\textwidth}}p{0.3\textwidth}@{\hspace{0.05\textwidth}}p{0.3\textwidth}@{}}
+  \rule{\linewidth}{0.8pt} & \rule{\linewidth}{0.8pt} & \rule{\linewidth}{0.8pt} \\
+  {\small\bfseries [Nombre del asesor]} & {\small\bfseries [Coordinador ITI]} & {\small\bfseries [Director de Escuela]} \\
+  {\small Asesor del Proyecto · UPeU} & {\small Coordinador de Área ITI · UPeU} & {\small Director de Escuela · Ing. Sistemas · UPeU} \\
+\end{tabular}
+
+% ── REFERENCIAS ─────────────────────────────────────────────
+
+% ============================================================
+%  ANEXOS
+% ============================================================
+\appendix
+
+\chapter{Anexo~A --- Distribución de Equipos por Rack}
+\label{anex:rack}
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{1.4cm}|L{3.2cm}|L{3.8cm}|L{2.6cm}|X|@{}}
+\caption{Distribución de equipos por rack -- Sede Central (LOCAL 2)}
+\label{tab:distribucion_racks} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Rack} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Equipo principal} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Modelo / Specs} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Rol} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Conexiones} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Rack} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Equipo principal} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Modelo / Specs} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Rol} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Conexiones} \\ \hline
+\endhead
+
+\hline
+\multicolumn{5}{r}{\small\itshape Cableado: Cat6 UTP (IEEE 802.3ab, 1000BASE-T) · longitud máxima $\leq$10 m (norma TIA/EIA-568 máx 100 m) · conectores RJ45 T568B.}
+\endfoot
+
+{\small \textbf{Rack A}} & {\small ESXi H1 (Dell Precision 7920 Tower)} & {\small 6C Xeon Bronze 3204 · 31.65 GB RAM · 348 GB VMFS6 · 3 NICs} & {\small Borde: pfSense-BORDE · WAF · API Gateway} & {\small vmnic0$\rightarrow$Cisco Router (ISP1) · vmnic1$\rightarrow$FortiGate 40F (ISP2) · vmnic2$\rightarrow$Cisco Catalyst 1000} \\ \hline
+
+{\small \textbf{Rack A}} & {\small Cisco Router Lab (ISP1)} & {\small Router Cisco · GW 172.17.25.121} & {\small WAN1 primaria · enlace internet ISP1} & {\small $\rightarrow$ vmnic0 ESXi H1 (Cat6 UTP)} \\ \hline
+
+{\small \textbf{Rack A}} & {\small FortiGate 40F (ISP2)} & {\small FortiGate 40F · sin licencia · 5$\times$GE RJ45} & {\small WAN2 failover · enlace internet ISP2} & {\small $\rightarrow$ vmnic1 ESXi H1 (Cat6 UTP)} \\ \hline
+
+{\small \textbf{Rack B}} & {\small ESXi H2 (Lab UPeU -- referencia logica documental)} & {\small 11,4 GHz CPU · 31,65 GB RAM · 348,75 GB · ESXi 8.0} & {\small Servicios: AD DC1 · FileServer+TFTP · Wazuh} & {\small $\rightarrow$ Cisco Catalyst 1000 (trunk VLANs 10,40,60)} \\ \hline
+
+{\small \textbf{Rack C}} & {\small ESXi H3 (Lab UPeU -- referencia logica documental)} & {\small 11,4 GHz CPU · 31,65 GB RAM · 348,75 GB · ESXi 8.0} & {\small Backend: NATS · microservicios · PostgreSQL} & {\small $\rightarrow$ Cisco Catalyst 1000 (trunk VLANs 40,50)} \\ \hline
+
+{\small \textbf{Switch}} & {\small Cisco Catalyst 1000} & {\small Switch físico 802.1Q · GigE ports} & {\small Distribución VLANs a H1--H3 · acceso VLAN20$\rightarrow$AP} & {\small Upstream $\rightarrow$ vmnic2 H1 · Downstream $\rightarrow$ H2, H3, AP} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+
+\chapter{Anexo~B --- Dimensionamiento Detallado de Capacidad --- Cómputo, Almacenamiento y Proyección}
+\label{anex:dimensionamiento}
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{1.8cm}|L{3.6cm}|L{3.8cm}|C{1.4cm}|C{1.4cm}|C{1.8cm}|C{1.2cm}|C{1.2cm}|@{}}
+\caption{Dimensionamiento por hipervisor -- Sede Central H1--H3}
+\label{tab:dimensionamiento_sede_central} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Hipervisor} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Hardware host} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small VMs} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small vCPU usados} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small RAM usada} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Storage usado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small \% CPU} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small \% RAM} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Hipervisor} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Hardware host} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small VMs} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small vCPU usados} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small RAM usada} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Storage usado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small \% CPU} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small \% RAM} \\ \hline
+\endhead
+
+\hline
+\multicolumn{8}{r}{\small\itshape (*) H3 RAM 150\%: requiere hipervisor con $\geq$32 GB RAM. El 133\% de vCPU en H1 proviene del par CARP BORDE-A/B (ambos en el mismo host); uso real pfSense $\approx$15\% CPU c/u.}
+\endfoot
+
+{\small \textbf{H1 -- Borde}} &
+{\small Dell Precision 7920 \newline 6C Xeon Bronze 3204 \newline 31.65 GB · 348 GB VMFS6} &
+{\small VM-PFSENSE-BORDE-A/B (CARP) · VM-WAF · VM-API-GW} &
+{\small 8 vCPU} & {\small 10 GB} & {\small 90 GB} &
+{\small \textcolor{sev_medio}{\textbf{133\%}}} &
+{\small \textcolor{sev_bajo}{\textbf{32\%}}} \\ \hline
+
+{\small \textbf{H2 -- Servicios}} &
+{\small Lab UPeU \newline 11,4 GHz CPU · 31,65 GB RAM · 348,75 GB} &
+{\small VM-AD-DC · VM-FILESERVER (+TFTP) · VM-WAZUH} &
+{\small 6 vCPU} & {\small 12 GB} & {\small 190 GB} &
+{\small \textcolor{sev_medio}{\textbf{38\%}}} &
+{\small \textcolor{sev_bajo}{\textbf{75\%}}} \\ \hline
+
+{\small \textbf{H3 -- Backend}} &
+{\small Lab UPeU \newline 11,4 GHz CPU · 31,65 GB RAM · 348,75 GB} &
+{\small VM-NATS · auth-ms · person-ms · sales-ms · strategic-ms · 3$\times$PostgreSQL} &
+{\small 16 vCPU} & {\small 24 GB} & {\small 250 GB} &
+{\small \textcolor{sev_medio}{\textbf{44\%}}} &
+{\small \textcolor{sev_critico}{\textbf{150\%*}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+\section{Dimensionamiento sedes remotas (LOCAL 1 y LOCAL 3)}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+
+\begin{xltabular}{\textwidth}{@{}|L{2.2cm}|L{5cm}|C{1.6cm}|C{1.8cm}|C{2.2cm}|@{}}
+\caption{Dimensionamiento mínimo -- Hipervisores H4 y H5 (sedes remotas)}
+\label{tab:dimensionamiento_remotas} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Hipervisor} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small VMs} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small vCPU} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small RAM mín.} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Storage mín.} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Hipervisor} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small VMs} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small vCPU} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small RAM mín.} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Storage mín.} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small \textbf{H4 (LOCAL 1)}} & {\small VM-PFSENSE-L1 · VM-AD-DC-L1 (RODC) · VM-FILESERVER-L1} & {\small 5 vCPU} & {\small 8 GB} & {\small 110 GB} \\ \hline
+{\small \textbf{H5 (LOCAL 3)}} & {\small VM-PFSENSE-L3 · VM-AD-DC-L3 (RODC) · VM-FILESERVER-L3} & {\small 5 vCPU} & {\small 8 GB} & {\small 110 GB} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+\section{Cálculo de almacenamiento detallado}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{3.4cm}|L{2.6cm}|L{3.4cm}|L{2.6cm}|@{}}
+\caption{Cálculo de almacenamiento detallado por componente -- 2026--2029}
+\label{tab:storage_detallado} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Componente} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Almacenamiento actual} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Crecimiento est./año} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Proyección 3 años} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Componente} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Almacenamiento actual} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Crecimiento est./año} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Proyección 3 años} \\ \hline
+\endhead
+
+\hline
+\multicolumn{4}{r}{\small\itshape H1 actual: 348 GB VMFS6. H2/H3 usan una referencia logica documental de 348,75 GB c/u. Con crecimiento a 3 años, H3 queda ajustado y requeriria ampliacion o redistribucion de carga. S3 AWS cubre los backups sin impactar el almacenamiento local.}
+\endfoot
+
+{\small \textbf{person-db} (datos personas)} & {\small $\approx$5 GB inicial} & {\small +1 GB/año} & {\small $\approx$8 GB} \\ \hline
+{\small \textbf{sales-invent-db} (ventas)} & {\small $\approx$10 GB inicial} & {\small +5 GB/año} & {\small $\approx$25 GB} \\ \hline
+{\small \textbf{strategic-db} (KPIs/reportes)} & {\small $\approx$3 GB inicial} & {\small +1 GB/año} & {\small $\approx$6 GB} \\ \hline
+{\small \textbf{VM OS + Docker images}} & {\small $\approx$200 GB (todos los hosts)} & {\small +20 GB/año} & {\small $\approx$260 GB} \\ \hline
+{\small \textbf{Backups S3 AWS} (30 días)} & {\small $\approx$40 GB (3 \texttt{pg\_dump} × 30d)} & {\small +15 GB/año} & {\small $\approx$85 GB} \\ \hline
+{\small \textbf{OVF exports S3} (4 semanas)} & {\small $\approx$100 GB (4 VMs críticas)} & {\small +10 GB/año} & {\small $\approx$130 GB} \\ \hline
+{\small \textbf{Logs Wazuh + auditoría}} & {\small $\approx$10 GB/año} & {\small +10 GB/año} & {\small $\approx$30 GB} \\ \hline
+{\small \textbf{TOTAL Sede Central}} & {\small $\approx$368 GB} & {\small +62 GB/año} & {\small $\approx$\textbf{554 GB}} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+\section{Proyección de capacidad -- 3 años (2026--2029)}
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+
+\begin{xltabular}{\linewidth}{@{}|L{3.4cm}|C{2.4cm}|C{2cm}|C{2cm}|C{2cm}|X|@{}}
+\caption{Proyección de capacidad 2026--2029}
+\label{tab:proyeccion_capacidad} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Recurso} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small 2026 (actual)} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small 2027} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small 2028} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small 2029} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Acción requerida} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Recurso} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small 2026 (actual)} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small 2027} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small 2028} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small 2029} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Acción requerida} \\ \hline
+\endhead
+
+\hline
+\multicolumn{6}{r}{\small\itshape Proyección conservadora (+5 usuarios/año, +2 microservicios en 2028). VLANs /24 soportan hasta 253 hosts/VLAN -- suficiente para el horizonte de 3 años.}
+\endfoot
+
+{\small \textbf{vCPUs Sede Central}} & {\small 30 vCPU} & {\small 30} & {\small 34 (+2 ms)} & {\small 38 (+2 ms)} & {\small H3 requiere host con $>$8 cores para 2028} \\ \hline
+{\small \textbf{RAM H3 (Backend)}} & {\small 24 GB} & {\small 28 GB} & {\small 32 GB} & {\small 36 GB} & {\small Upgrade RAM H3 a 32+ GB para 2027} \\ \hline
+{\small \textbf{Storage total (local)}} & {\small $\approx$700 GB} & {\small $\approx$780 GB} & {\small $\approx$860 GB} & {\small $\approx$940 GB} & {\small Requiere seguimiento del crecimiento de H3 sobre la referencia logica de 348,75 GB por host} \\ \hline
+{\small \textbf{Storage S3 AWS}} & {\small $\approx$140 GB} & {\small $\approx$165 GB} & {\small $\approx$190 GB} & {\small $\approx$215 GB} & {\small S3 escala automáticamente (sin acción)} \\ \hline
+{\small \textbf{Usuarios concurrentes}} & {\small 30--40} & {\small 40--45} & {\small 45--55} & {\small 55--65} & {\small Ampliar VLAN 20 (actual /24 = 253 hosts)} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+% ──────────────────────────────────────────────────────────────
+
+\chapter{Anexo~C --- Configuración de la Capa de Virtualización --- VMware ESXi 8.0 U3}
+\label{anex:vmware}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.4cm}|L{3.6cm}|L{2.8cm}|X|@{}}
+\caption{Componentes de virtualización VMware ESXi 8.0 U3}
+\label{tab:vmware_esxi} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Componente} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Configuración} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Beneficio} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Justificación} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Componente} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Configuración} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Beneficio} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Justificación} \\ \hline
+\endhead
+
+\hline
+\endfoot
+
+{\small \textbf{Hipervisor tipo 1}} & {\small VMware ESXi 8.0 U3 bare-metal} & {\small Sin overhead de SO host · acceso directo al hardware · mayor rendimiento} & {\small ESXi tipo 1 es el estándar de la industria para virtualización empresarial (Gartner líder 2024)} \\ \hline
+
+{\small \textbf{vSwitches + Port Groups}} & {\small 3 vSwitches por host (WAN1, WAN2, LAN) · port groups con VLAN ID por zona} & {\small Segmentación de red virtual equivalente a segmentación física · sin costo de switches adicionales} & {\small VLAN ID 4095 en ESXi habilita trunk completo $\rightarrow$ pfSense segmenta internamente} \\ \hline
+
+{\small \textbf{VMFS6 Datastore}} & {\small Filesystem optimizado para VMs · bloque 1 MB · soporte snapshots} & {\small Snapshots en segundos · thin provisioning · deduplicación} & {\small VMFS6 soporta VMs hasta 62 TB · snapshots para backup y rollback en mantenimiento} \\ \hline
+
+{\small \textbf{Snapshots ESXi}} & {\small Diarios 23:00 · retención 7 días} & {\small RTO $<$15 min para restauración · sin impacto en producción} & {\small Snapshot = punto de recuperación instantáneo sin necesidad de apagar la VM} \\ \hline
+
+{\small \textbf{OVF Export}} & {\small Semanal domingo 02:00 $\rightarrow$ S3 AWS} & {\small Backup completo portable · recuperación en cualquier host compatible} & {\small OVF es el estándar abierto de portabilidad de VMs (ISO/IEC 17203 \citep{iso17203})} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+
+\chapter{Anexo~D --- Servicios AWS Utilizados y Justificación Técnica}
+\label{anex:aws}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\textwidth}{@{}|L{2.4cm}|L{3.6cm}|X|L{2.8cm}|@{}}
+\caption{Servicios AWS utilizados en la arquitectura híbrida}
+\label{tab:aws_servicios} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Servicio AWS} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Función en el proyecto} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Beneficio} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Costo estimado} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Servicio AWS} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Función en el proyecto} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Beneficio} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Costo estimado} \\ \hline
+\endhead
+
+\hline
+\multicolumn{4}{r}{\small\itshape Total estimado AWS: \textasciitilde\$45--50/mes (\textasciitilde S/.~170--190/mes). AWS Free Tier cubre parcialmente Route53, S3 y ECR en el primer año.}
+\endfoot
+
+{\small \textbf{Route 53}} & {\small DNS público francos.com + health checks al API Gateway on-prem} & {\small Alta disponibilidad DNS (99.99\% SLA AWS) · health check activa failover automático} & {\small \textasciitilde\$0.50/mes} \\ \hline
+
+{\small \textbf{CloudFront + S3}} & {\small CDN global para Angular 20 SPA · static hosting · TLS 1.3 incluido} & {\small Latencia baja para usuarios · sin servidor web dedicado on-prem · SSL automático} & {\small \textasciitilde\$1--5/mes} \\ \hline
+
+{\small \textbf{S3 Buckets}} & {\small Backup: \texttt{francos-db-backups/} (\texttt{pg\_dump} 30d) + \texttt{francos-vm-exports/} (OVF 4 sem)} & {\small Almacenamiento duradero (11 nueves durabilidad) · sin mantenimiento · escala automática} & {\small \textasciitilde\$2--5/mes} \\ \hline
+
+{\small \textbf{ECR Registry}} & {\small Repositorio de imágenes Docker de los microservicios} & {\small Versionado de releases · fuente autorizada para ECS Fargate en failover DR · pull seguro via VPN} & {\small \textasciitilde\$1/mes} \\ \hline
+
+{\small \textbf{AWS VPN Gateway}} & {\small Túnel IPSec site-to-site L2-AWS (172.16.30.0/30)} & {\small Canal privado cifrado para backups S3 y pull ECR · sin exposición pública} & {\small \textasciitilde\$36/mes} \\ \hline
+
+\end{xltabular}
+\normalsize
+
+
+\chapter{Anexo~E --- Tabla de Cumplimiento Normativo y Análisis de Gaps (TO-BE)}
+\label{anex:cumplimiento}
+
+A continuación se verifica el cumplimiento del diseño del centro de datos contra los estándares \citet{uptimeinstitute}, \citet{tia942}, \citet{ashraetc99}, \citet{iso17203}, \citet{vmwaresphere} y \citet{awswellarchitected}:
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{3cm}|L{3.2cm}|X|C{2.2cm}|@{}}
+\caption{Tabla de cumplimiento normativo -- Diseño del Centro de Datos}
+\label{tab:cumplimiento_normativo} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estándar · Versión} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Elemento del diseño} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aplicación en el proyecto} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estándar · Versión} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Elemento del diseño} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Aplicación en el proyecto} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estado} \\ \hline
+\endhead
+
+\hline
+\multicolumn{4}{r}{\small\itshape 6/7 elementos CUMPLE · 1 PARCIAL (TIA-942 Cat 1 física vs.\ Cat 2 TO-BE -- restricción del lab UPeU documentada en CE0311 RST-01). Ningún elemento sin referencia normativa.}
+\endfoot
+
+{\small \textbf{Uptime Institute Tier Standard v1.0} \newline Tier II seleccionado} & {\small Arquitectura Tier II · redundancia de componentes · disponibilidad 99.741\%} & {\small CARP HA pfSense-BORDE-A/B · backup/DR de microservicios y BD consolidado en AWS (RDS Multi-AZ + ECS Fargate + ALB) · Dual-WAN · mantenimiento en ventana nocturna. Tier II lógico sobre plataforma lab. TO-BE: UPS + generador para Tier II completo.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE (lógico)}}} \\ \hline
+
+{\small \textbf{TIA-942 Ed. 2 (2014)} \newline Categoría 1/2} & {\small Cat 1 (física lab) $\rightarrow$ Cat 2 (diseño TO-BE)} & {\small Subsistema arquitectónico: sala de equipos lab UPeU. Subsistema eléctrico: acometida única del laboratorio (Cat 1). Subsistema mecánico: HVAC institucional. Subsistema de telecomunicaciones: Cat6 UTP, Cisco Catalyst 1000, racks organizados. TO-BE Cat 2: UPS N+1, doble acometida.} & {\small \textcolor{sev_medio}{\textbf{Parcial (Cat 1 lab)}}} \\ \hline
+
+{\small \textbf{TIA-942 -- Subsistema telecomunicaciones}} & {\small Cableado estructurado Cat6 · redundancia de paths de red} & {\small Cable Cat6 UTP (IEEE 802.3ab, 1000BASE-T) · longitud $\leq$10 m (norma máx 100 m) · RJ45 T568B · Cisco Catalyst 1000 como switch distribución · trunk 802.1Q hacia H1--H3. Cumple TIA-942 subsistema de telecomunicaciones.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+{\small \textbf{ASHRAE TC9.9 (2021)} \newline Clase A1} & {\small Temperatura 15--32 °C · Humedad 8--80\% RH · densidad potencia $\leq$5 kW/rack} & {\small Lab Cisco UPeU: temperatura estimada 18--25 °C · humedad 40--60\% RH · consumo estimado Sede Central $\approx$1.5--2 kW total (muy por debajo del límite A1 de 5 kW/rack). Cumple criterios ASHRAE Clase A1 para equipos de grado empresarial.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE (Clase A1)}}} \\ \hline
+
+{\small \textbf{ISO/IEC 17203} \newline (OVF Standard)} & {\small Portabilidad de VMs · formato OVF/OVA para backups} & {\small OVF Export semanal de VMs críticas $\rightarrow$ S3 AWS. Formato estándar abierto compatible con cualquier hipervisor VMware/VirtualBox/KVM. Garantiza portabilidad ante migración futura.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+{\small \textbf{VMware ESXi 8.0 vSphere Standard}} & {\small Hipervisor tipo 1 · vSwitches · VMFS6 · snapshots} & {\small ESXi 8.0 Update 3 es la versión más reciente (LTS). Soporte hasta 2029. vSwitches con port groups VLAN-aware. VMFS6 con thin provisioning y deduplicación. Snapshots en segundos.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+{\small \textbf{AWS Well-Architected Framework (2024)}} & {\small 5 pilares: Excelencia operacional · Seguridad · Confiabilidad · Eficiencia · Optimización de costos} & {\small Seguridad: VPN IPSec + TLS 1.3 + IAM. Confiabilidad: Route 53 health checks + CloudFront multi-edge. Eficiencia: S3 lifecycle policies + CloudFront caché. Optimización: Free Tier + right-sizing S3.} & {\small \textcolor{sev_bajo}{\textbf{CUMPLE}}} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+\section{Gaps entre diseño académico y producción real (TO-BE)}
+
+\begin{landscape}
+\thispagestyle{fancy}
+
+\renewcommand{\arraystretch}{1.3}
+\footnotesize
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+
+\begin{xltabular}{\linewidth}{@{}|L{3.6cm}|L{3.4cm}|L{4.8cm}|X|@{}}
+\caption{Gaps entre diseño académico (lab UPeU) y producción real (TO-BE)}
+\label{tab:gaps_tobe} \\
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Gap} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estándar afectado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Situación en lab UPeU} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small TO-BE instalación real Franco's SAC} \\ \hline
+\endfirsthead
+
+\arrayrulecolor{upeu_dark}
+\rowcolor{upeu_dark}
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Gap} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Estándar afectado} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small Situación en lab UPeU} &
+\parbox[c][1.1cm][c]{\linewidth}{\centering\color{white}\bfseries\small TO-BE instalación real Franco's SAC} \\ \hline
+\endhead
+
+\hline
+\multicolumn{4}{r}{\small\itshape Los 4 gaps están fuera del alcance del proyecto académico (restricción RST-01 -- CE0311). El diseño TO-BE contempla todos los requisitos TIA-942 Cat 2.}
+\endfoot
+
+{\small \textbf{UPS / Alimentación ininterrumpida}} & {\small Uptime Institute Tier II · TIA-942 Cat 2} & {\small Depende de la red eléctrica de UPeU sin UPS dedicado para el proyecto} & {\small UPS APC Smart-UPS 1500VA por rack · autonomía mínima 30 min · grupo electrógeno para cortes prolongados} \\ \hline
+
+{\small \textbf{Doble acometida eléctrica}} & {\small TIA-942 Cat 2} & {\small Acometida única del laboratorio} & {\small 2 acometidas de diferentes subestaciones · conmutación automática (ATS)} \\ \hline
+
+{\small \textbf{CRAC / Cooling dedicado}} & {\small ASHRAE TC9.9 · TIA-942} & {\small HVAC general del laboratorio (no dedicado)} & {\small CRAC unitario dedicado para la sala de servidores · sensores de temperatura por rack} \\ \hline
+
+{\small \textbf{Sistema de supresión de incendios}} & {\small TIA-942} & {\small Sistema general del edificio UPeU} & {\small Sistema FM-200 o Novec 1230 dedicado para sala de servidores · sin daño a equipos} \\ \hline
+
+\end{xltabular}
+
+\normalsize
+\end{landscape}
+
+% ──────────────────────────────────────────────────────────────
+
+\renewcommand{\bibname}{Referencias Normativas}
+\addcontentsline{toc}{chapter}{Referencias Normativas}
+\bibliography{referencias}
+
+\end{document}
